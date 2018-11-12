@@ -1,0 +1,3 @@
+cd exe
+run
+cd ..
