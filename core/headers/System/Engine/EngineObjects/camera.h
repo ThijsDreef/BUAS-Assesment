@@ -2,6 +2,7 @@
 #define CAMERA__
 #include "System/Engine/EngineObjects/component.h"
 #include "Math/matrix.h"
+
 class Camera : public Component
 {
 protected:
