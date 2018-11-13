@@ -130,6 +130,7 @@ bool Geometry::parseObj(const std::string& name, MaterialLib * matlib)
 					}
 				}
 				mtlFile.close();
+				if (currentMaterialName.size() > 0) matlib->addMaterial(currentMaterialName, currentMaterial);
 			}
 		}
 	}

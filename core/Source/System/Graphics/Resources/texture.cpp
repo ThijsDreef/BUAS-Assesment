@@ -9,6 +9,7 @@ Texture::Texture(const std::string & fileName)
   name = fileName;
   iFormat = GL_RGBA;
   format = GL_RGBA;
+  if (error) std::cout << error << "\n";
 
   glGenTextures(1, &id);
   glBindTexture(GL_TEXTURE_2D, id);

@@ -100,7 +100,7 @@ void DefferedRenderModule::updatePerspective(int width, int height, int fov, flo
 
 void DefferedRenderModule::updateOrthoGraphic(int width, int height, float near, float far)
 {
-  projection.orthographicView(width / (float)height, 1, near, far);
+  projection.orthographicView((float)width / (float)height * 10, 10, near, far);
 }
 
 void DefferedRenderModule::addObject(Object * object)

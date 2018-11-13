@@ -1,26 +1,38 @@
 #include "Game/Object/playerMovement.h"
 
-PlayerMovement::PlayerMovement(Vec3<float> * target, Input * input, Object * object) : Component(object)
+PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targetRotation, Input * input, Object * object) : Component(object)
 {
   this->input = input;
-  posPointer = target;
+  posPointer = targetPosition;
+  rotPointer = targetRotation;
 }
 
 void PlayerMovement::update()
 {
+  
+  Vec3<float> frameForce;
+
   if (input->getKeyDown(87)) {
-    force[2] -= 0.02f;
+    frameForce[2] -= 0.02f;
   } else if (input->getKeyDown(83)) {
-    force[2] += 0.02f;
+    frameForce[2] += 0.02f;
   }
 
   if (input->getKeyDown(65)) {
-    force[0] -= 0.02f;    
+    frameForce[0] -= 0.02f;    
   } else if (input->getKeyDown(68)) {
-    force[0] += 0.02f;
+    frameForce[0] += 0.02f;
   }
 
+  Matrix<float> rotationMatrix;
+  rotationMatrix = rotationMatrix.rotation(*rotPointer);
+
+  frameForce = rotationMatrix.multiplyByVector(frameForce);
+
+  force += frameForce;
+
   force *= 0.95;
+
   *posPointer += force;
 }
 

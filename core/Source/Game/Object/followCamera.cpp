@@ -19,5 +19,6 @@ Matrix<float> & FollowCamera::getMatrix()
   matrix = matrix.multiplyByMatrix(other);
   camera.translateMatrix(-*posPointer - offset);
   camera = matrix.multiplyByMatrix(camera);
+  // camera.lookAt((*posPointer) - offset, *posPointer, Vec3<float>(0, 1, 0));
   return camera;
 }
