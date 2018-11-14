@@ -14,6 +14,7 @@ public:
   {
     dataPointer = pointer;
     this->baseText = baseText;
+    scale = 0.5;
   };
   virtual ~TextDebug() 
   {

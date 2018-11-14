@@ -26,8 +26,8 @@ protected:
   std::string text;
   Vec2<float> pos;
   Matrix<float> mv;
-private:
   float scale = 1.f;
+private:
   bool dirty;
   std::vector<unsigned int> indices;
   Buffer fontBuffer;
@@ -35,7 +35,7 @@ public:
   bool outLine = true;
   Matrix<float> & getMatrix();
   std::vector<unsigned int> & getIndices();
-  void buildBuffer(Font * font);
+  void buildBuffer(Font * font, float inverseAspect);
   unsigned int getBuffer();
   void setPos(Vec2<float> position);
   Vec2<float> & getPos();

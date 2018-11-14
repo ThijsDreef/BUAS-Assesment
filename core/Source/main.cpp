@@ -19,7 +19,7 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine(1/60.0f, 1920, 1080);
+  Engine engine("pingu on a mission", 1920, 1080, 32, false, 1/60.0f);
 
   std::vector<Object*> objects;
 
@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
       for (int z = -10; z < 10; z++) {
         Object * o = new Object({});
         o->addComponent(new Transform(Vec3<float>(x * 2.2, y * 2.2, z * 2.2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {"blue"}, o));
-        instancedTransform->addToInstance(o->getComponent<Transform>());
+        instancedTransform->addToInstance(o->getComponent<Transform>()); 
         objects.push_back(o);
       }
     }
@@ -52,14 +52,14 @@ int main(int argc, char const *argv[])
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
 
   Object * camera = new Object({});
-  camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-800, 500), &engine.frames, camera));
+  camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 50, 50), Vec3<float>(35.2, 45, 0)));
 
   Object * dx = new Object({});
-  dx->addComponent(new TextDebug<float>("dx: ", Vec2<float>(-800, 400), &player->getComponent<RotateToMouse>()->deltaX, dx));
+  dx->addComponent(new TextDebug<float>("dx: ", Vec2<float>(-1, 0.8), &player->getComponent<RotateToMouse>()->deltaX, dx));
 
   Object * dy = new Object({});
-  dy->addComponent(new TextDebug<float>("dy: ", Vec2<float>(-800, 300), &player->getComponent<RotateToMouse>()->deltaY, dy));
+  dy->addComponent(new TextDebug<float>("dy: ", Vec2<float>(-1, 0.9), &player->getComponent<RotateToMouse>()->deltaY, dy));
 
   objects.push_back(ice);
   objects.push_back(camera);
@@ -85,7 +85,7 @@ int main(int argc, char const *argv[])
           renderModule
         },
         {
-          new UiRenderer("fonts/text", engine.getShaderManger(), 1920, 1080)
+          new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())
         }
       }
     ));

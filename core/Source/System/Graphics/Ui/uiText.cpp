@@ -23,7 +23,7 @@ std::vector<unsigned int> & UIText::getIndices()
     return indices;
 }
 
-void UIText::buildBuffer(Font * font)
+void UIText::buildBuffer(Font * font, float inverseAspect)
 {   
     indices.clear();
     std::vector<unsigned int> defaultIndices = {0, 1, 2, 0, 3, 1};
@@ -52,9 +52,9 @@ void UIText::buildBuffer(Font * font)
         indiceOffset += 4;
     }
     Matrix<float> temp;
-    temp.translateMatrix(Vec3<float>(pos[0], pos[1], 0));
+    temp.translateMatrix(Vec3<float>(pos[0], pos[1] * inverseAspect, 0));
     // might need to fix this shit
-    mv.scaleMatrix(Vec3<float>(600, 600, 1));
+    mv.scaleMatrix(Vec3<float>(scale, scale, 1));
     mv = temp.multiplyByMatrix(mv);
     fontBuffer.bufferData(sizeof(TextGPUData) * textGPUData.size(), &textGPUData[0], GL_STATIC_DRAW);
 }
