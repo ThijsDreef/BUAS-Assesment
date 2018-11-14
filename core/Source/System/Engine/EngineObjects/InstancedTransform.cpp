@@ -21,6 +21,10 @@ void InstancedTransform::prepareBuffer(Matrix<float> & view, Matrix<float> & p)
 {
     for (unsigned int i = 0; i < instances.size(); i++) 
     {
+        if (instances[i]->isDead()) {
+            instances[i]->setRemoved();
+            instances.erase(instances.begin() + i);
+        }
         // MatrixBufferObject o = instances[i]->getBuffer(view, p);
         bufferData[i] = instances[i]->getModelMatrix();
     }

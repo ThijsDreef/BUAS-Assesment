@@ -10,6 +10,8 @@
 #include "System/Graphics/Ui/uiRenderer.h"
 #include "System/Graphics/Ui/uiText.h"
 #include "System/Engine/EngineObjects/textDebug.h"
+#include "System/Engine/EngineObjects/particleSystem.h"
+
 #include "Game/Object/playerMovement.h"
 #include "Game/Object/followCamera.h"
 #include "Game/Object/rotateToMouse.h"
@@ -43,8 +45,16 @@ int main(int argc, char const *argv[])
   }
   ice->addComponent(instancedTransform);
 
-  // Object * ice = new Object({});
-  // ice->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(15, 1, 15), Vec3<float>(0, 0, 0), "ice", {"blue"}, ice));
+  Object * particles = new Object({});
+  ParticleSystem * particleComponet = new ParticleSystem(particles);
+
+  for (unsigned int i = 0; i < 10000; i++) {
+    Object * o = new Object({});
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "icoSphere", {"None"}, o));
+    objects.push_back(o);
+    particleComponet->addToInstance(o->getComponent<Transform>());
+  }
+  particles->addComponent(particleComponet);
 
   Object * player = new Object({});
   player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 180, 0), "pinguin", {}, player));
@@ -58,6 +68,8 @@ int main(int argc, char const *argv[])
   objects.push_back(ice);
   objects.push_back(camera);
   objects.push_back(cube);
+  objects.push_back(particles);
+
 
   objects.push_back(player);
 
