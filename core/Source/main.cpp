@@ -19,7 +19,7 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920, 1080, 32, false, 1/60.0f);
+  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0f);
 
   std::vector<Object*> objects;
 
@@ -55,19 +55,9 @@ int main(int argc, char const *argv[])
   camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 50, 50), Vec3<float>(35.2, 45, 0)));
 
-  Object * dx = new Object({});
-  dx->addComponent(new TextDebug<float>("dx: ", Vec2<float>(-1, 0.8), &player->getComponent<RotateToMouse>()->deltaX, dx));
-
-  Object * dy = new Object({});
-  dy->addComponent(new TextDebug<float>("dy: ", Vec2<float>(-1, 0.9), &player->getComponent<RotateToMouse>()->deltaY, dy));
-
   objects.push_back(ice);
   objects.push_back(camera);
   objects.push_back(cube);
-  objects.push_back(dx);
-  objects.push_back(dy);
-
-
 
   objects.push_back(player);
 

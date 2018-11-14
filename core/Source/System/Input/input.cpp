@@ -35,6 +35,21 @@ float Input::getDy()
   return dy;
 }
 
+void Input::setScreenSize(int width, int height)
+{
+  screenX = width;
+  screenY = height;
+}
+
+float Input::getNx()
+{
+  return (y / screenY * 2) - 1;
+}
+float Input::getNy()
+{
+  return (x / screenX * 2) - 1;
+}
+
 bool Input::getMouseLock()
 {
   return lockMouse;

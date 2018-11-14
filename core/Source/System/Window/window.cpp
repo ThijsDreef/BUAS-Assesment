@@ -210,6 +210,7 @@ void Window::resize(unsigned int width, unsigned int height)
 {
   this->width = width;
   this->height = height;
+  input.setScreenSize(width, height);
   glViewport(0, 0, width, height);
 }
 

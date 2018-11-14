@@ -26,16 +26,9 @@ void RotateToMouse::update()
   dy = -dy;
 
   float length = sqrtf(dx * dx + dy * dy);
-  dx /= length;
   dy /= length;
 
   float angle = acosf(dy) * 180 / M_PI;
   
   (*rotation)[1] = ((dx > 0) ? angle : -angle) + 45;
-
-  deltaX = dx;
-  deltaY = dy;
-
-  
-
 }

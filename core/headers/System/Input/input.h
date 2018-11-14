@@ -15,6 +15,7 @@ private:
   int x, y;
   int lockX;
   int lockY;
+  int screenX, screenY;
   bool lockMouse = false;
 public:
   Input ();
@@ -28,8 +29,11 @@ public:
   void setMousePosition(int ix, int iy);
   bool getKeyDown(int keyCode);
   bool getMouseButtonDown(int buttonCode);
+  void setScreenSize(int width, int height);
   float getDx();
   float getDy();
+  float getNx();
+  float getNy();
   void resetDelta();
   int getLockX();
   int getLockY();
