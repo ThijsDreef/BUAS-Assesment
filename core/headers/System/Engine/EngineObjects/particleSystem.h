@@ -12,10 +12,10 @@ class ParticleSystem : public InstancedTransform
 {
 protected:
   std::vector<ParticleInfo> particleInformation;
-  Vec3<float> position;
+  Vec3<float> * position;
 public: 
   ParticleSystem(Object * object);
   ~ParticleSystem();
-  void update();
+  virtual void update();
 };
 #endif

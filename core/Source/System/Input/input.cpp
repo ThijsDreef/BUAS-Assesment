@@ -43,11 +43,11 @@ void Input::setScreenSize(int width, int height)
 
 float Input::getNx()
 {
-  return (y / screenY * 2) - 1;
+  return (((float)x / screenX) * 2.0f) - 1.0f;
 }
 float Input::getNy()
 {
-  return (x / screenX * 2) - 1;
+  return (((float)y / screenY )* 2.0f) - 1.0f;
 }
 
 bool Input::getMouseLock()

@@ -14,6 +14,8 @@
 
 #include "Game/Object/playerMovement.h"
 #include "Game/Object/followCamera.h"
+#include "Game/Object/particleGun.h"
+
 #include "Game/Object/rotateToMouse.h"
 
 
@@ -21,7 +23,7 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0f);
+  Engine engine("pingu on a mission", 2560, 1440, 32, true, 1/60.0f);
 
   std::vector<Object*> objects;
 
@@ -45,21 +47,22 @@ int main(int argc, char const *argv[])
   }
   ice->addComponent(instancedTransform);
 
-  Object * particles = new Object({});
-  ParticleSystem * particleComponet = new ParticleSystem(particles);
-
-  for (unsigned int i = 0; i < 10000; i++) {
-    Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "icoSphere", {"None"}, o));
-    objects.push_back(o);
-    particleComponet->addToInstance(o->getComponent<Transform>());
-  }
-  particles->addComponent(particleComponet);
 
   Object * player = new Object({});
   player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 180, 0), "pinguin", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
+
+  Object * particles = new Object({});
+  ParticleGun * particleComponet = new ParticleGun(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), particles);
+
+  for (unsigned int i = 0; i < 1000; i++) {
+    Object * o = new Object({});
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "icoSphere", {"blue"}, o));
+    objects.push_back(o);
+    particleComponet->addToInstance(o->getComponent<Transform>());
+  }
+  particles->addComponent(particleComponet);
 
   Object * camera = new Object({});
   camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));

@@ -14,14 +14,14 @@ RotateToMouse::~RotateToMouse()
 
 void RotateToMouse::update()
 {
-  float dx = input->getMouseX() / (1920.0f);
-  float dy = input->getMouseY() / (1080.0f);
+  float dx = input->getNx();
+  float dy = input->getNy();
 
-  dx -= 0.5;
-  dy -= 0.5;
+  // dx -= 0.5;
+  // dy -= 0.5;
 
-  dx *= 2;
-  dy *= 2;
+  // dx *= 2;
+  // dy *= 2;
 
   dy = -dy;
 
