@@ -14,7 +14,7 @@
 
 #include "Game/Object/playerMovement.h"
 #include "Game/Object/followCamera.h"
-#include "Game/Object/particleGun.h"
+#include "Game/Object/particleTrail.h"
 
 #include "Game/Object/rotateToMouse.h"
 
@@ -23,12 +23,14 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 2560, 1440, 32, true, 1/60.0f);
+  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0f);
 
   std::vector<Object*> objects;
 
-  Material blue = Material(Vec4<float>(0, 0, 1, 1));
-  engine.getMatLib()->addMaterial("blue", blue);
+  
+  engine.getMatLib()->addMaterial("blue", Material(Vec4<float>(0, 0, 1, 1)));
+  engine.getMatLib()->addMaterial("lightBlue", Material(Vec4<float>(0.37, 0.61, 1, 1)));
+
 
   Object * cube = new Object({});
   cube->addComponent(new Transform(Vec3<float>(1, 1, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, cube));
@@ -54,11 +56,11 @@ int main(int argc, char const *argv[])
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
 
   Object * particles = new Object({});
-  ParticleGun * particleComponet = new ParticleGun(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), particles);
+  ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), particles);
 
   for (unsigned int i = 0; i < 1000; i++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "icoSphere", {"blue"}, o));
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"lightBlue"}, o));
     objects.push_back(o);
     particleComponet->addToInstance(o->getComponent<Transform>());
   }
@@ -71,10 +73,10 @@ int main(int argc, char const *argv[])
   objects.push_back(ice);
   objects.push_back(camera);
   objects.push_back(cube);
-  objects.push_back(particles);
 
 
   objects.push_back(player);
+  objects.push_back(particles);
 
   DefferedRenderModule * renderModule = new DefferedRenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(1920, 1080, -1000.0f, 1000.0f);

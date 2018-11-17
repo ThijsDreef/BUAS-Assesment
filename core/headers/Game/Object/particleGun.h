@@ -1,18 +1,19 @@
 #ifndef PARTICLEGUN__
 #define PARTICLEGUN__
 
+#include "System/Input/input.h"
 #include "System/Engine/EngineObjects/particleSystem.h"
 
-class ParticleGun : public ParticleSystem 
+class ParticleGun : public ParticleSystem
 {
 private:
-  int spawnCount = 10;
-  Vec3<float> * rot;
+  Vec3<float> * spawnPosition;
+  Vec3<float> * rotation;
+  Input * input;
 public:
-    ParticleGun(Vec3<float> * rotation, Vec3<float> * position, Object * object);
-    ~ParticleGun();
-    void update();
+  ParticleGun(Vec3<float> * spawnPos, Vec3<float> * rot, Input * input, Object * object);
+  ~ParticleGun();
+  void update();
 };
-
 
 #endif

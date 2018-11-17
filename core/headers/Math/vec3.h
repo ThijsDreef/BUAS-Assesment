@@ -158,6 +158,15 @@ public:
   {
     return otherVec * other;
   }
+  friend bool operator!= (Vec3<T> other, Vec3<T> otherVec) 
+  {
+    int correct = 0;
+    for (unsigned int i = 0; i < 3; i++) {
+      if (other[i] != otherVec[i])
+        correct++;
+    }
+    return (correct != 0 ) ? true : false;
+  }
 
   ~Vec3 ()
   {

@@ -32,7 +32,7 @@ void PlayerMovement::update()
   force += frameForce;
 
   force *= 0.95;
-
+  
   *posPointer += force;
 }
 
