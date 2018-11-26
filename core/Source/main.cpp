@@ -23,42 +23,55 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0f);
+  Engine engine("pingu on a mission", 2560, 1440, 32, true, 1/60.0f);
 
   std::vector<Object*> objects;
 
   
   engine.getMatLib()->addMaterial("blue", Material(Vec4<float>(0, 0, 1, 1)));
   engine.getMatLib()->addMaterial("lightBlue", Material(Vec4<float>(0.37, 0.61, 1, 1)));
+  engine.getMatLib()->addMaterial("red", Material(Vec4<float>(1, 0, 0, 1)));
+
 
 
   Object * cube = new Object({});
   cube->addComponent(new Transform(Vec3<float>(1, 1, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, cube));
+  cube->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 1.5, 1.5)), cube->getComponent<Transform>(), cube));
+
 
   Object * ice = new Object({});
-  InstancedTransform * instancedTransform = new InstancedTransform(ice);
+  // InstancedTransform * instancedTransform = new InstancedTransform(ice);
   for (int x = -10; x < 10; x++) {
-    for (int y = -0; y < 1; y++)  {
+    for (int y = 0; y < 2; y++)  {
       for (int z = -10; z < 10; z++) {
+        if (y == 1 && !((x == -10 || x == 9) || (z == -10 || z == 9))) continue;
         Object * o = new Object({});
-        o->addComponent(new Transform(Vec3<float>(x * 2.2, y * 2.2, z * 2.2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {"blue"}, o));
-        instancedTransform->addToInstance(o->getComponent<Transform>()); 
+        o->addComponent(new Transform(Vec3<float>(x * 2, y * 2, z * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {"red"}, o));
+        if (y != 0) {
+          o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(0.95, 0.95, 0.95)), o->getComponent<Transform>(), o));
+          
+          o->getComponent<Transform>()->materials[0] = "blue";
+        }
+        
+        // instancedTransform->addToInstance(o->getComponent<Transform>()); 
         objects.push_back(o);
       }
     }
   }
-  ice->addComponent(instancedTransform);
+  // ice->addComponent(instancedTransform);
 
 
   Object * player = new Object({});
   player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 180, 0), "pinguin", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
+  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 5, 1.5)), player->getComponent<Transform>(), player));
+
 
   Object * particles = new Object({});
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), particles);
 
-  for (unsigned int i = 0; i < 1000; i++) {
+  for (unsigned int i = 0; i < 500; i++) {
     Object * o = new Object({});
     o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"lightBlue"}, o));
     objects.push_back(o);
@@ -78,15 +91,18 @@ int main(int argc, char const *argv[])
   objects.push_back(player);
   objects.push_back(particles);
 
+  CollisionModule * collisionModule = new CollisionModule(50, 2);
+  player->addComponent(new TextDebug<unsigned int>("collisionCount: ", Vec2<float>(-1, 0.8), &collisionModule->collisionCount, player));
+
   DefferedRenderModule * renderModule = new DefferedRenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
-  renderModule->updateOrthoGraphic(1920, 1080, -1000.0f, 1000.0f);
+  renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
 
   engine.start(new Scene
     (
       objects,
       {
-        {
-          new CollisionModule(50, 4)
+        { 
+          collisionModule
         },
         {
           renderModule

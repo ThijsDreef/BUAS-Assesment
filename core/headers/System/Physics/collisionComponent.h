@@ -9,12 +9,11 @@ class CollisionComponent : public Component
 private:
   Collider * coll;
   Transform * transform;
-  bool moveAble;
 public:
   CollisionComponent (bool isStatic, Collider * collider, Transform * transform, Object * object);
-  bool getStatic();
   Collider * getCollider();
   virtual ~CollisionComponent ();
+  bool getStatic();
   void update();
 };
 

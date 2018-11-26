@@ -54,6 +54,8 @@ void Octree::checkBucketCollision(Bucket * b, std::vector<Collision> & collision
     std::vector<Collider*> childDynamicNodes = children[i]->getDynamic();
     checkPair(collisions, dynamicNodes, childStaticNode);
     checkPair(collisions, dynamicNodes, childDynamicNodes);
+    checkPair(collisions, staticNodes, childStaticNode);
+    checkPair(collisions, staticNodes, childDynamicNodes);
   }
 
 }

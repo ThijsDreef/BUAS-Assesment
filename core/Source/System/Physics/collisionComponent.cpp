@@ -2,8 +2,8 @@
 
 CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Transform * t, Object * object) : Component(object)
 {
-  moveAble = isStatic;
   coll = collider;
+  collider->isStatic = isStatic;
   transform = t;
   if (transform)
     coll->syncPos(&transform->getPos());
@@ -21,7 +21,7 @@ void CollisionComponent::update()
 
 bool CollisionComponent::getStatic()
 {
-  return moveAble;
+  return coll->isStatic;
 }
 
 Collider * CollisionComponent::getCollider()

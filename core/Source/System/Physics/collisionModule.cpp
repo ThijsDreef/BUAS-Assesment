@@ -16,7 +16,10 @@ void CollisionModule::update()
     // reall dirty way to resolve collisions needs some better way eventually
     while (collisions[i].hit->intersectB(collisions[i].other)) {
       Vec3<float> resolve = collisions[i].other->intersectA(collisions[i].hit);
-      collisions[i].other->getPos() += resolve;
+      if (!collisions[i].other->isStatic)
+        collisions[i].other->getPos() += resolve;
+      if (!collisions[i].other->isStatic)
+        collisions[i].hit->getPos() -= resolve;
     }
   }
   // set debug count here
@@ -29,8 +32,10 @@ void CollisionModule::addObject(Object * object)
   CollisionComponent * comp = object->getComponent<CollisionComponent>();
   if (comp)
   {
-    if (comp->getStatic())
+    if (comp->getStatic()) {
       staticColliders.push_back(comp);
+      octree.addStaticCollider(comp->getCollider());
+    }
     else
       dynamicColliders.push_back(comp);
   }
