@@ -15,7 +15,7 @@ void CollisionModule::update()
   {
     // reall dirty way to resolve collisions needs some better way eventually
     int tries = 0;
-    while (collisions[i].hit->intersectB(collisions[i].other) || tries < 200) {
+    while (collisions[i].hit->intersectB(collisions[i].other) && tries < 200) {
       Vec3<float> resolve = collisions[i].other->intersectA(collisions[i].hit);
       if (!collisions[i].other->isStatic)
         collisions[i].other->getPos() += resolve;
