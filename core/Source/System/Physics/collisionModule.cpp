@@ -24,6 +24,9 @@ void CollisionModule::update()
 
       tries ++;
     }
+    collisions[i].hit->getCollisionComponent()->getObject()->sendMessage("collision", &collisions[i].other);
+    collisions[i].other->getCollisionComponent()->getObject()->sendMessage("collision", &collisions[i].hit);
+
   }
   // set debug count here
   collisionCount = collisions.size();

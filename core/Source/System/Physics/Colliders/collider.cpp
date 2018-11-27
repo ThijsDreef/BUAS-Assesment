@@ -37,3 +37,13 @@ void Collider::syncPos(Vec3<float> * pos)
 {
   posPointer = pos;
 }
+
+void Collider::setCollisionComponent(CollisionComponent * component)
+{
+  collComponent = component;
+}
+
+CollisionComponent * Collider::getCollisionComponent()
+{
+  return collComponent;
+}

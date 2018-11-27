@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
 
   Object * cube = new Object({});
   cube->addComponent(new Transform(Vec3<float>(1, 1, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, cube));
-  cube->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 1.5, 1.5)), cube->getComponent<Transform>(), cube));
+  cube->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 0.5, 1.5)), cube->getComponent<Transform>(), cube));
 
 
   Object * ice = new Object({});
@@ -47,11 +47,11 @@ int main(int argc, char const *argv[])
         if (y == 1 && !((x == -10 || x == 9) || (z == -10 || z == 9))) continue;
         Object * o = new Object({});
         o->addComponent(new Transform(Vec3<float>(x * 2, y * 2, z * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {"red"}, o));
-        if (y != 0) {
-          o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(0.95, 0.95, 0.95)), o->getComponent<Transform>(), o));
-          
+      
+        o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(0.5, 0.5, 0.5)), o->getComponent<Transform>(), o));
+        if (y != 0) 
           o->getComponent<Transform>()->materials[0] = "blue";
-        }
+        
         
         // instancedTransform->addToInstance(o->getComponent<Transform>()); 
         objects.push_back(o);
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
   player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "p", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
-  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 5, 1.5)), player->getComponent<Transform>(), player));
+  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 0.5, 1.5)), player->getComponent<Transform>(), player));
 
 
   Object * particles = new Object({});
