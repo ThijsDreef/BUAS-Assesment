@@ -6,6 +6,7 @@ class Collider {
 protected:
   Vec3<float> p;
 public:
+  bool isStatic;
   Collider ();
   virtual ~Collider ();
   virtual bool intersectB(Collider * other);

@@ -6,17 +6,17 @@ Bucket::Bucket(AABB aabb, Bucket * top, int recursiveCount)
   parent = top;
   bb = aabb;
   Vec3<float> pos = bb.getPos();
-  Vec3<float> rad = bb.getRadius() * 0.5f;
+  Vec3<float> rad = bb.getRadius() * 0.5;
   if (recursiveCount <= 0) return;
   //make this a for loop you dummy
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] - rad[1], pos[2] - rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] + rad[1], pos[2] - rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] - rad[1], pos[2] + rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] + rad[1], pos[2] + rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] - rad[1], pos[2] - rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] + rad[1], pos[2] - rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] - rad[1], pos[2] + rad[2]), rad), this, recursiveCount));
-  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] + rad[1], pos[2] + rad[2]), rad), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] - rad[1], pos[2] - rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] + rad[1], pos[2] - rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] - rad[1], pos[2] + rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] - rad[0], pos[1] + rad[1], pos[2] + rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] - rad[1], pos[2] - rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] + rad[1], pos[2] - rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] - rad[1], pos[2] + rad[2]), rad * 0.5), this, recursiveCount));
+  children.push_back(new Bucket(AABB(Vec3<float>(pos[0] + rad[0], pos[1] + rad[1], pos[2] + rad[2]), rad * 0.5), this, recursiveCount));
 }
 
 Bucket::~Bucket()

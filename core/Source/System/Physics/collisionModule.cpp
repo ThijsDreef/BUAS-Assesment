@@ -14,9 +14,15 @@ void CollisionModule::update()
   for (unsigned int i = 0; i < collisions.size(); i++)
   {
     // reall dirty way to resolve collisions needs some better way eventually
-    while (collisions[i].hit->intersectB(collisions[i].other)) {
+    int tries = 0;
+    while (collisions[i].hit->intersectB(collisions[i].other) || tries < 200) {
       Vec3<float> resolve = collisions[i].other->intersectA(collisions[i].hit);
-      collisions[i].other->getPos() += resolve;
+      if (!collisions[i].other->isStatic)
+        collisions[i].other->getPos() += resolve;
+      if (!collisions[i].hit->isStatic)
+        collisions[i].hit->getPos() -= resolve;
+
+      tries ++;
     }
   }
   // set debug count here
@@ -29,8 +35,10 @@ void CollisionModule::addObject(Object * object)
   CollisionComponent * comp = object->getComponent<CollisionComponent>();
   if (comp)
   {
-    if (comp->getStatic())
+    if (comp->getStatic()) {
       staticColliders.push_back(comp);
+      octree.addStaticCollider(comp->getCollider());
+    }
     else
       dynamicColliders.push_back(comp);
   }
