@@ -5,7 +5,7 @@
 
 struct ParticleInfo {
   Vec3<float> force;
-  float lifeTime = -1;
+  float lifeTime = 0;
 };
 
 class ParticleSystem : public InstancedTransform 

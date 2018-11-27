@@ -2,7 +2,8 @@
 
 Texture::Texture(const std::string & fileName)
 {
-  std::vector<unsigned char> buffer, image;
+  std::vector<unsigned char> buffer;
+  std::vector<unsigned char> image;
   UtilLoader::loadFile(buffer, fileName);
   //w and h members are set here
   int error = decodePNG(image, w, h, buffer.empty() ? 0 : &buffer[0], (unsigned long)buffer.size());  

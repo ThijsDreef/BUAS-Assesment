@@ -34,19 +34,15 @@ void Engine::loadResources()
   {
     //read lines that end with .obj
     //then load these files into the geolib
-    if (rsLine.substr(rsLine.size() - 4, rsLine.size()) == ".obj")
+    std::string extension = rsLine.substr(rsLine.size() - 4, rsLine.size());
+    if (extension == ".obj" || extension == ".dae")
     {
       std::string name = rsLine.substr(rsLine.rfind("/") + 1);
       name = name.substr(0, name.size() - 4);
       std::cout << "parsing " << name << "\n";
 
-      geometryLib.addGeometry(Geometry(rsLine.c_str(), name.c_str(), &materialLib));
+      geometryLib.addGeometry(Geometry(rsLine, name, materialLib));
     } 
-    else if (rsLine.substr(rsLine.size() - 4, rsLine.size()) == ".png")
-    {
-      materialLib.addTexture(rsLine.substr(0, rsLine.size() - 4), new Texture(rsLine));
-    }
-
   }
 }
 

@@ -5,9 +5,13 @@ Geometry::Geometry()
   name = "error";
 }
 
-Geometry::Geometry(const char* fileName, const char* name, MaterialLib * materialLib)
+Geometry::Geometry(const std::string& fileName, const std::string& name, MaterialLib& materialLib)
 {
-  parseObj(fileName, materialLib);
+	std::string extension = fileName.substr(fileName.size() - 4, fileName.size());
+	if (extension == ".obj")
+  	parseObj(fileName, materialLib);
+	else if (extension == ".dae")
+		parseDae(fileName, materialLib);
 	this->name = name;
 }
 
@@ -19,14 +23,162 @@ void Geometry::setIndiceOffset(int offset)
       offsetIndices[i][j] = allIndices[i][j] + offset;
 }
 
-bool Geometry::parseObj(const std::string& name, MaterialLib * matlib)
+void Geometry::parseDaeGeometry(rapidxml::xml_node<> * geometryNode)
+{
+	std::map<std::string, std::vector<float>> float_arrays;
+	// for all geomtries in library_geometries
+		for (rapidxml::xml_node<>* mesh = geometryNode->first_node("mesh"); mesh; mesh = mesh->next_sibling("mesh"))
+		{
+			std::string verticesAlias;
+			// for all meshes in geomtries
+			for (rapidxml::xml_node<>* source = mesh->first_node("source"); source; source = source->next_sibling("source"))
+			{
+				// for all sources in mesh
+				std::string temp = source->name();
+				std::string id = source->first_attribute()->value();
+				std::cout << id << "\n";
+				std::string tokens = source->first_node()->value();
+				char* token = strtok(&tokens[0], " ");
+				while (token != 0) 
+				{
+					float_arrays[id].push_back((float)atof(token));
+					token = std::strtok(0, " ");
+				}
+				std::cout << float_arrays[id].size() << "\n"; 
+			}
+			for (rapidxml::xml_node<>* vertices = mesh->first_node("vertices"); vertices; vertices = vertices->next_sibling("vertices"))
+			{
+				verticesAlias = vertices->first_node()->first_attribute("source")->value();
+			}
+			for (rapidxml::xml_node<>* triangles = mesh->first_node("triangles"); triangles; triangles = triangles->next_sibling("triangles"))
+			{
+				std::string vSource;
+				std::string nSource;
+				std::string uvSource;
+
+				unsigned int vOffset;
+				unsigned int nOffset;
+				unsigned int uvOffset;
+				// read all input tags
+				for (rapidxml::xml_node<>* input = triangles->first_node("input"); input; input = input->next_sibling("input")) 
+				{
+					std::string semantic = input->first_attribute("semantic")->value();
+					// set the offset for this polyList
+					if (semantic == "VERTEX") {
+						vSource = input->first_attribute("source")->value();
+						vOffset = atoi(input->first_attribute("offset")->value());
+					} else if (semantic == "NORMAL") {
+						nSource = input->first_attribute("source")->value();
+						nOffset = atoi(input->first_attribute("offset")->value());
+					} else if (semantic == "TEXCOORD") {
+						uvSource = input->first_attribute("source")->value();
+						uvOffset = atoi(input->first_attribute("offset")->value());
+					}
+				}
+
+				vSource = (verticesAlias.size() != 0) ? verticesAlias.substr(1, verticesAlias.length()) : vSource.substr(1, vSource.length());
+				nSource = nSource.substr(1, nSource.length());
+				uvSource = uvSource.substr(1, uvSource.length());
+
+				//build polyList now
+				//push back the material for the polylist
+				materials.push_back(triangles->first_attribute("material")->value());
+				std::map<std::string, int> uniqueIndices;
+				allIndices.push_back(std::vector<unsigned int>());
+				offsetIndices.push_back(std::vector<unsigned int>());
+				// always expect a polylist in triangles so vcount = 3 everywhere
+				std::string indices = triangles->first_node("p")->value();
+				char* token  = strtok(&indices[0], " ");
+
+				Vec3<float> currentVertex;
+				Vec3<float> currentNormal;
+				Vec2<float> currentUv;
+
+				std::string unique;
+
+				unsigned int count = 0;
+				//how hacky can my parsers get D:
+				unsigned int largestOffset = (vOffset > nOffset) ? ((vOffset > uvOffset) ? vOffset : uvOffset) : (nOffset > uvOffset) ? nOffset : uvOffset;
+
+				while (token != 0) 
+				{
+					int indiceToken = atoi(token);
+					if (count == vOffset) {
+							std::vector<float> array = float_arrays[vSource];
+							currentVertex = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
+							unique += token;
+							unique += "/";
+					} 
+					if (count == nOffset) {
+							std::vector<float> array = float_arrays[nSource];
+							currentNormal = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
+							unique += token;
+							unique += "/";
+					}
+					if (count == uvOffset) {
+							std::vector<float> array = float_arrays[uvSource];
+							currentUv = Vec2<float>(array[indiceToken * 2], array[indiceToken * 2 + 1]);
+							unique += token;
+							unique += "/";
+					}
+					if (count == largestOffset + 1) {
+							auto it = uniqueIndices.find(unique);
+							if (it == uniqueIndices.end()) {
+								storedVertices.push_back(VertexFormat(currentVertex, currentNormal, currentUv));
+								uniqueIndices[unique] = storedVertices.size() - 1;
+							}
+							int indicePos = uniqueIndices[unique];
+							allIndices[allIndices.size() - 1].push_back(indicePos);
+							offsetIndices[offsetIndices.size() - 1].push_back(indicePos);
+							unique.clear();
+					}
+					//make unique string for all indices
+					count++;
+					count %= (largestOffset + 2);
+					if (count != largestOffset + 1)
+						token = strtok(0, " ");
+				}
+			}
+		}
+}
+
+void Geometry::parseDaeMaterials(rapidxml::xml_node<> * materialNode) 
+{
+
+}
+
+void Geometry::parseDaeImages(rapidxml::xml_node<> * imageNode)
+{
+
+}
+
+void Geometry::parseDae(const std::string& fileName, MaterialLib& matLib)
+{
+	std::vector<char> text;
+	UtilLoader::loadFile(text, fileName);
+	text.push_back('\0');
+	rapidxml::xml_document<> doc;
+	doc.parse<0>(&text[0]);
+
+
+	rapidxml::xml_node<> *rootNode = doc.first_node("COLLADA");
+	rapidxml::xml_node<> *library_images = rootNode->first_node("library_images");
+	rapidxml::xml_node<> *library_effects = rootNode->first_node("library_effects");
+	rapidxml::xml_node<> *library_materials = rootNode->first_node("library_materials");
+	rapidxml::xml_node<> *library_geometry = rootNode->first_node("library_geometries");
+
+	for (rapidxml::xml_node<>* geometry = library_geometry->first_node("geometry"); geometry; geometry = geometry->next_sibling("geometry"))
+	{	
+		parseDaeGeometry(geometry);
+	}
+
+}
+
+void Geometry::parseObj(const std::string& name, MaterialLib& matlib)
 {
   std::map<std::string, int> unique;
   int currentMaterialGroup = -1;
 	Material currentMaterial;
-	std::vector<int> verticesIndices;
-	std::vector<int> normalsIndices;
-	std::vector<int> textureIndices;
 	std::vector<VertexFormat> finalVertices;
 	std::vector<Vec3<float>> vertices;
 	std::vector<Vec2<float>> texture;
@@ -108,7 +260,7 @@ bool Geometry::parseObj(const std::string& name, MaterialLib * matlib)
 						//add texture here
 						std::string textureName = name.substr(0, name.rfind("/") + 1) + mtlLine.substr(7, mtlLine.size());
 						Texture * texture = new Texture(textureName);
-						matlib->addTexture(textureName, texture);
+						matlib.addTexture(textureName, texture);
 						currentMaterial.texture = texture->getId();
 						std::cout << textureName << " id" << currentMaterial.texture << "\n";
 						
@@ -124,18 +276,17 @@ bool Geometry::parseObj(const std::string& name, MaterialLib * matlib)
 					else if (mtlLine.substr(0, 7) == "newmtl ")
 					{
 						if (currentMaterialName.size() > 0)
-							matlib->addMaterial(currentMaterialName, currentMaterial);
+							matlib.addMaterial(currentMaterialName, currentMaterial);
 						currentMaterialName = mtlLine.substr(7, mtlLine.size());
 						currentMaterial = Material();
 					}
 				}
 				mtlFile.close();
-				if (currentMaterialName.size() > 0) matlib->addMaterial(currentMaterialName, currentMaterial);
+				if (currentMaterialName.size() > 0) matlib.addMaterial(currentMaterialName, currentMaterial);
 			}
 		}
 	}
   objFile.close();
-  return true;
 }
 
 const std::vector<unsigned int>& Geometry::getIndice(int group)

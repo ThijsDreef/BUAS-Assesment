@@ -51,7 +51,7 @@ int main(int argc, char const *argv[])
 
 
   Object * player = new Object({});
-  player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 180, 0), "pinguin", {}, player));
+  player->addComponent(new Transform(Vec3<float>(0, 1, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "p", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
 
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
 
   for (unsigned int i = 0; i < 1000; i++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"lightBlue"}, o));
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "bunny", {"lightBlue"}, o));
     objects.push_back(o);
     particleComponet->addToInstance(o->getComponent<Transform>());
   }

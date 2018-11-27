@@ -22,7 +22,6 @@ public:
     virtual void prepareBuffer(Matrix<float> & view, Matrix<float> & p);
     unsigned int getBufferId();
     unsigned int getTransformSize();
-
 };
 
 #endif

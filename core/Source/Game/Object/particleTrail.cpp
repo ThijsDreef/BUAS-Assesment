@@ -14,14 +14,17 @@ ParticleTrail::~ParticleTrail()
 void ParticleTrail::update()
 {
   Matrix<float> rotation;
+  rotation = rotation.rotation(*rot);
+
   bool moved = false;
   float distance = 0;
   for (int i = 0; i < 3; i++) {
     distance += (*position)[i] - lastPosition[i];
   }
   if (std::abs(distance) > 0.005) moved = true;
-  rotation = rotation.rotation(*rot);
+
   while (particleInformation.size() < instances.size()) particleInformation.push_back(ParticleInfo());
+  
   for (unsigned int i = 0; i < instances.size(); i++) {
     instances[i]->getPos() += particleInformation[i].force;
     instances[i]->getScale() = Vec3<float>(0.2, 0.2, 0.2) * ((0 < particleInformation[i].lifeTime) ? particleInformation[i].lifeTime : 0);
