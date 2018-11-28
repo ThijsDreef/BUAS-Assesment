@@ -131,6 +131,22 @@ public:
 
     return normal;
   }
+  Vec3<T> abs() 
+  {
+    Vec3<T> absolute;
+    for (unsigned int i = 0; i < 3; i++) {
+      absolute[i] = std::abs(components[i]);
+    }
+    return absolute;
+  }
+  Vec3<T> sign() 
+  {
+    Vec3<T> sign;
+    for (unsigned int i = 0; i < 3; i++) {
+      sign[i] = (components[i] > 0) ? 1 : (components[i] < 0) ? -1 : 0;
+    }
+    return sign;
+  }
   T dot(Vec3<T> other)
   {
     T result = 0;

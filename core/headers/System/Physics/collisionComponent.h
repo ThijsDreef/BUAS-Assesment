@@ -10,7 +10,7 @@ private:
   Collider * coll;
   Transform * transform;
 public:
-  CollisionComponent (bool isStatic, Collider * collider, Transform * transform, Object * object);
+  CollisionComponent (bool isStatic, Collider * collider, Transform * transform, Object * object, std::string tag = "none");
   Collider * getCollider();
   virtual ~CollisionComponent ();
   bool getStatic();

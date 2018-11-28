@@ -1,11 +1,12 @@
 #include "System/Physics/collisionComponent.h"
 
-CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Transform * t, Object * object) : Component(object)
+CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Transform * t, Object * object, std::string tag) : Component(object)
 {
   coll = collider;
   collider->isStatic = isStatic;
   transform = t;
   collider->setCollisionComponent(this);
+  coll->tag = tag;
   if (transform)
     coll->syncPos(&transform->getPos());
 }

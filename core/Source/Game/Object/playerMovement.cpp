@@ -5,6 +5,7 @@ PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targe
   this->input = input;
   posPointer = targetPosition;
   rotPointer = targetRotation;
+  object->subscribe("collision", this);
 }
 
 void PlayerMovement::update()
@@ -24,6 +25,10 @@ void PlayerMovement::update()
     frameForce[0] += 0.02f;
   }
 
+  if (input->getKeyDown(32) && grounded) {
+    frameForce[1] += 0.65;
+
+  frameForce[1] -= 0.025;
   Matrix<float> rotationMatrix;
   rotationMatrix = rotationMatrix.rotation(*rotPointer);
 
@@ -32,11 +37,23 @@ void PlayerMovement::update()
   force += frameForce;
 
   force *= 0.95;
-  
   *posPointer += force;
+  grounded = false;
+
 }
 
 PlayerMovement::~PlayerMovement()
 {
 
+}
+
+void PlayerMovement::receiveMessage(const std::string & name, void* data)
+{
+  if (name == "collision") {
+    Collider * coll = (Collider*)data;
+    if (coll->tag == "ground") {
+      grounded = true;
+      force[1] = 0;
+    }
+  }
 }

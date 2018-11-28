@@ -69,8 +69,11 @@ void Engine::run()
       window.handleMessages();
       scene.top()->update();
       elapsedTime -= frameCap;
-      currentFrames ++;
-      window.updateFrameBuffer();
+      if (elapsedTime < frameCap) {
+        window.updateFrameBuffer();
+        currentFrames ++;
+
+      }
       if (fpsTimer > 1000) {
         // log frames here or update them
         frames = currentFrames;

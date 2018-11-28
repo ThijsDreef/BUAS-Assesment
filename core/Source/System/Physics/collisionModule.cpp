@@ -15,17 +15,19 @@ void CollisionModule::update()
   {
     // reall dirty way to resolve collisions needs some better way eventually
     int tries = 0;
-    while (collisions[i].hit->intersectB(collisions[i].other) && tries < 200) {
-      Vec3<float> resolve = collisions[i].other->intersectA(collisions[i].hit);
+    while (collisions[i].hit->intersectB(collisions[i].other) && tries < 1000) {
+      Vec3<float> otherResolve = collisions[i].other->intersectA(collisions[i].hit);
+      Vec3<float> resolve = collisions[i].hit->intersectA(collisions[i].other);
+
       if (!collisions[i].other->isStatic)
-        collisions[i].other->getPos() += resolve;
+        collisions[i].other->getPos() += otherResolve;
       if (!collisions[i].hit->isStatic)
-        collisions[i].hit->getPos() -= resolve;
+        collisions[i].hit->getPos() += resolve;
 
       tries ++;
     }
-    collisions[i].hit->getCollisionComponent()->getObject()->sendMessage("collision", &collisions[i].other);
-    collisions[i].other->getCollisionComponent()->getObject()->sendMessage("collision", &collisions[i].hit);
+    collisions[i].hit->getCollisionComponent()->getObject()->sendMessage("collision", collisions[i].other);
+    collisions[i].other->getCollisionComponent()->getObject()->sendMessage("collision", collisions[i].hit);
 
   }
   // set debug count here
