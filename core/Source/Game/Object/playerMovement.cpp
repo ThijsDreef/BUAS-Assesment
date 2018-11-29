@@ -25,7 +25,7 @@ void PlayerMovement::update()
     frameForce[0] += 0.02f;
   }
 
-  if (input->getKeyDown(32) && grounded) {
+  if (input->getKeyDown(32) && grounded) 
     frameForce[1] += 0.65;
 
   frameForce[1] -= 0.025;

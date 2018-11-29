@@ -43,11 +43,10 @@ int main(int argc, char const *argv[])
   cube->addComponent(new Transform(Vec3<float>(3, 3, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, cube));
   cube->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 2.5, 1.5)), cube->getComponent<Transform>(), cube));
 
-  for (int x = -1; x < 2; x++) {
-    for (int z = -1; z < 2; z++) {
-      if (z == 0 || x == 0) continue;
+  for (int x = -3; x < 3; x++) {
+    for (int z = -3; z < 3; z++) {
       Object * o = new Object({});
-      o->addComponent(new Transform(Vec3<float>(x * 10, 0, z * 10), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"red"}, o));
+      o->addComponent(new Transform(Vec3<float>(x * 20, 0, z * 20), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"red"}, o));
       o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(10, 1, 10)), o->getComponent<Transform>(), o, "ground"));
       objects.push_back(o);
     }
@@ -93,7 +92,7 @@ int main(int argc, char const *argv[])
   Object * particles = new Object({});
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), particles, Vec3<float>(0, -0.9, 0.5));
 
-  for (unsigned int i = 0; i < 1000; i++) {
+  for (unsigned int i = 0; i < 500; i++) {
     Object * o = new Object({});
     o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"red"}, o));
     objects.push_back(o);
