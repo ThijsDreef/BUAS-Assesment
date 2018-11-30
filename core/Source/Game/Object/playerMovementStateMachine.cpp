@@ -60,7 +60,6 @@ void PlayerMoveStateMachine::airTimeState()
   if (grounded) {
     currentState = DEFAULT;
     rotationComponent->setEnabled();
-
   }
 }
 
