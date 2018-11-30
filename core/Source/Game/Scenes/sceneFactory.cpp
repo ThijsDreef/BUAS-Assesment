@@ -28,12 +28,12 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   for (int x = -10; x < 10; x ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(19, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, o));
+    o->addComponent(new Transform(Vec3<float>(19, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(-20, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(-20, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), ot->getComponent<Transform>(), ot, "none"));
 
 
@@ -43,12 +43,12 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   for (int z = -10; z < 10; z ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 19.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, o));
+    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 19.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "cube", {}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -19.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -19.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "cube", {}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), ot->getComponent<Transform>(), ot, "none"));
 
 
@@ -58,7 +58,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   Object * player = new Object({});
   player->addComponent(new Transform(Vec3<float>(0, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "pinguin", {}, player));
-  player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
+  player->addComponent(new PlayerMoveStateMachine(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 1.45, 1.5)), player->getComponent<Transform>(), player));
 
@@ -87,7 +87,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   objects.push_back(particles);
 
   CollisionModule * collisionModule = new CollisionModule(200, 4);
-  player->addComponent(new TextDebug<unsigned int>("collisionCount: ", Vec2<float>(-1, 0.8), &collisionModule->collisionCount, player));
+  player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
 
   DefferedRenderModule * renderModule = new DefferedRenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);

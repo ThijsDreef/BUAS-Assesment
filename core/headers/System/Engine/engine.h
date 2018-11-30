@@ -26,6 +26,7 @@ private:
   int width, height;
   void loadResources();
 public:
+  double deltaTime;
   unsigned int frames;
   int getWidth();
   int getHeight();

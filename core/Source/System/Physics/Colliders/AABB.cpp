@@ -25,9 +25,9 @@ Vec3<float> AABB::intersectA(Collider * other)
     resolution[1] = (std::fabs(resolution[1]) > std::fabs(resolution[0])) ? (std::fabs(resolution[1]) > std::fabs(resolution[2])) ? resolution[1] : 0 : 0;
     resolution[2] = (std::fabs(resolution[2]) > std::fabs(resolution[0])) ? (std::fabs(resolution[2]) > std::fabs(resolution[1])) ? resolution[2] : 0 : 0;
 
-    resolution[0] = (resolution[0]) * 0.02;
-    resolution[1] = (resolution[1]) * 0.02;
-    resolution[2] = (resolution[2]) * 0.02;
+    resolution[0] = (resolution[0]) * 0.002;
+    resolution[1] = (resolution[1]) * 0.002;
+    resolution[2] = (resolution[2]) * 0.002;
 
     return resolution;
   }

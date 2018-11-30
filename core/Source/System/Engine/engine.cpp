@@ -64,26 +64,26 @@ void Engine::run()
   while (!window.done && running)
   {
     auto start = std::chrono::system_clock::now();
-    if (elapsedTime > frameCap)
+    if (elapsedTime >= frameCap)
     {
+      deltaTime = elapsedTime;
       window.handleMessages();
       scene.top()->update();
-      elapsedTime -= frameCap;
       window.updateFrameBuffer();
       currentFrames ++;
       if (fpsTimer > 1000) {
-        // log frames here or update them
         frames = currentFrames;
         currentFrames = 0;
         fpsTimer = 0;
       }
+      elapsedTime = 0;
     }
     else
       std::this_thread::sleep_for(std::chrono::milliseconds((int)((frameCap - elapsedTime) * 1000)));
-    if (inputResetTimer > 1.0 / 4.0)
+    if (inputResetTimer > 1.0 / 60.0)
     {
       window.updateInput();
-      inputResetTimer -= 1.0 / 4.0;
+      inputResetTimer -= 1.0 / 60.0;
     }
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed = end - start;
