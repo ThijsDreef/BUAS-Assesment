@@ -12,12 +12,13 @@ class RotateToMouse : public Component
 private:
   Input * input;
   Vec3<float> * rotation;
+  bool disabled = false;
 public:
-  float deltaX;
-  float deltaY;
   RotateToMouse(Vec3<float> * target, Input * input, Object * objecct);
   virtual ~RotateToMouse();
   void update();
+  void setEnabled();
+  void setDisabled();
 };
 
 #endif

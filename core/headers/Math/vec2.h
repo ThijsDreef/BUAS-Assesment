@@ -49,6 +49,13 @@ public:
     return vec2;
   }
 
+  T dot(Vec3<T> other)
+  {
+    T result = 0;
+    for (unsigned int i = 0; i < 2; i++)
+      result += components[i] * other[i];
+    return result;
+  }
   ~Vec2 ()
   {
 

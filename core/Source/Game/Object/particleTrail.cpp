@@ -1,6 +1,6 @@
 #include "Game/Object/particleTrail.h"
 
-ParticleTrail::ParticleTrail(Vec3<float> * rotation, Vec3<float> * pos, Object * object, Vec3<float> offset) : ParticleSystem(object) 
+ParticleTrail::ParticleTrail(Vec3<float> * rotation, Vec3<float> * pos, double & doubleTime, Object * object, Vec3<float> offset) : ParticleSystem(object), dt(doubleTime)
 {
   rot = rotation;
   position = pos;
@@ -31,10 +31,10 @@ void ParticleTrail::update()
 
   while (particleInformation.size() < instances.size()) particleInformation.push_back(ParticleInfo());
   for (unsigned int i = 0; i < instances.size(); i++) {
-    instances[i]->getPos() += particleInformation[i].force;
+    instances[i]->getPos() += particleInformation[i].force * dt;
     instances[i]->getScale() = Vec3<float>(0.15, 0.15, 0.15) * ((0 < particleInformation[i].lifeTime) ? particleInformation[i].lifeTime : 0);
 
-    instances[i]->getRot() += particleInformation[i].force * 25;
+    instances[i]->getRot() += particleInformation[i].force * 25 * dt;
 
     particleInformation[i].force *= 0.99999f;
     particleInformation[i].lifeTime -= decreaseTime;
@@ -45,7 +45,7 @@ void ParticleTrail::update()
       particleInformation[i].force = rotation.multiplyByVector(particleInformation[i].force);
       particleInformation[i].force.normalize();
 
-      particleInformation[i].force *= std::abs(distance) * 0.15;
+      particleInformation[i].force *= std::abs(distance) * 5;
   }
   lastPosition = *position;
 }

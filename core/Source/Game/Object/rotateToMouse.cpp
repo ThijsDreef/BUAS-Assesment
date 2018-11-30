@@ -14,21 +14,30 @@ RotateToMouse::~RotateToMouse()
 
 void RotateToMouse::update()
 {
-  float dx = input->getNx();
-  float dy = input->getNy();
+  if (disabled)  return;
+  float nx = input->getNx();
+  float ny = input->getNy();
 
-  // dx -= 0.5;
-  // dy -= 0.5;
+  ny = -ny;
 
-  // dx *= 2;
-  // dy *= 2;
-
-  dy = -dy;
-
-  float length = sqrtf(dx * dx + dy * dy);
-  dy /= length;
-
-  float angle = acosf(dy) * 180 / M_PI;
+  float length = sqrtf(nx * nx + ny * ny);
+  ny /= length;
   
-  (*rotation)[1] = ((dx > 0) ? angle : -angle) + 45;
+  float angle = acosf(ny) * 180 / M_PI;
+
+  
+  float targetAngle = ((nx > 0) ? angle : -angle);
+  float currentAngle = (*rotation)[1];
+  //interpolate here please
+  (*rotation)[1] = targetAngle;
+}
+
+void RotateToMouse::setEnabled() 
+{
+  disabled = false;
+}
+
+void RotateToMouse::setDisabled()
+{
+  disabled = true;
 }
