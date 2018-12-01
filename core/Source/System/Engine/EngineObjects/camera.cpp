@@ -14,3 +14,8 @@ Matrix<float> & Camera::getMatrix()
 {
   return camera;
 }
+
+Vec3<float> & Camera::getPosition()
+{
+  return position;
+}

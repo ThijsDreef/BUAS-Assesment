@@ -15,6 +15,11 @@ UIText::~UIText()
 
 Matrix<float> & UIText::getMatrix()
 {
+    Matrix<float> temp;
+    temp.translateMatrix(Vec3<float>(pos[0], pos[1] * inverseAspect, 0));
+    // might need to fix this shit
+    mv.scaleMatrix(Vec3<float>(scale, scale, 1));
+    mv = temp.multiplyByMatrix(mv);
     return mv;
 }
 
@@ -51,6 +56,7 @@ void UIText::buildBuffer(Font * font, float inverseAspect)
         offset[0] += character.xAdvance;
         indiceOffset += 4;
     }
+    this->inverseAspect = inverseAspect;
     Matrix<float> temp;
     temp.translateMatrix(Vec3<float>(pos[0], pos[1] * inverseAspect, 0));
     // might need to fix this shit
@@ -78,7 +84,6 @@ void UIText::setText(std::string newText)
 void UIText::setPos(Vec2<float> position)
 {
     pos = position;
-    dirty = true;
 }
 
 void UIText::setScale(float s)

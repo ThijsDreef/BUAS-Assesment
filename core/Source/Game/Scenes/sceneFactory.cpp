@@ -28,12 +28,12 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   for (int x = -10; x < 10; x ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(19, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {}, o));
+    o->addComponent(new Transform(Vec3<float>(19, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(-20, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "cube", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(-20, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), ot->getComponent<Transform>(), ot, "none"));
 
 
@@ -43,12 +43,12 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   for (int z = -10; z < 10; z ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 19.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "cube", {}, o));
+    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 19.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -19.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "cube", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -19.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 5, 1)), ot->getComponent<Transform>(), ot, "none"));
 
 

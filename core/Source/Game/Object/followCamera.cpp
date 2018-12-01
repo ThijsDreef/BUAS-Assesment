@@ -13,6 +13,11 @@ FollowCamera::~FollowCamera()
 
 }
 
+Vec3<float> & FollowCamera::getPosition()
+{
+  return *posPointer;
+}
+
 Matrix<float> & FollowCamera::getMatrix()
 {
   matrix.setAxisrotation(-rotation[0], X);

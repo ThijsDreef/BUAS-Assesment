@@ -61,6 +61,8 @@ void PlayerMoveStateMachine::airTimeState()
     currentState = DEFAULT;
     rotationComponent->setEnabled();
   }
+  // add points here for airtime
+  // update score Text here
 }
 
 void PlayerMoveStateMachine::defaultState()
@@ -68,21 +70,13 @@ void PlayerMoveStateMachine::defaultState()
   Vec3<float> frameForce;
 
   if (input->getKeyDown(87)) {
-    frameForce[2] -= 2.0f;
-  } else if (input->getKeyDown(83)) {
-    frameForce[2] += 2.0f;
-  }
-
-  if (input->getKeyDown(65)) {
-    frameForce[0] -= 2.0f;    
-  } else if (input->getKeyDown(68)) {
-    frameForce[0] += 2.0f;
+    frameForce[2] -= 1.5f;
   }
 
   if (input->getKeyDown(32) && grounded) {
     currentState = AIRTIME;
     rotationComponent->setDisabled();
-    frameForce[1] += 28.5;
+    frameForce[1] += 10.5 + std::abs(force[0] + force[2]);
   }
 
   frameForce[1] -= 1.25;
@@ -105,5 +99,6 @@ void PlayerMoveStateMachine::speedingState()
 
 void PlayerMoveStateMachine::pirouteState()
 {
+  // add a full rotation here
 
 }

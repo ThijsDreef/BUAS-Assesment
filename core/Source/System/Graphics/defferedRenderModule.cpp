@@ -200,7 +200,8 @@ void DefferedRenderModule::update()
   Matrix<float> lightViewMatrix;
   lightPerspective.orthographicView(35, 35, -30, 30);
   lightViewMatrix.lookAt(directionalLight, Vec3<float>(), Vec3<float>(0, 1, 0));
-  lightMatrix = lightPerspective.multiplyByMatrix(lightViewMatrix);
+  lightMatrix.translateMatrix(-camObject->getPosition());
+  lightMatrix = lightPerspective.multiplyByMatrix(lightViewMatrix.multiplyByMatrix(lightMatrix));
 
   //draw shadow map
   shadowFbo.bind();

@@ -31,6 +31,7 @@ private:
   bool dirty;
   std::vector<unsigned int> indices;
   Buffer fontBuffer;
+  float inverseAspect;
 public:
   bool outLine = true;
   Matrix<float> & getMatrix();
