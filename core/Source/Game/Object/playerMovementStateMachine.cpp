@@ -1,8 +1,9 @@
 #include "Game/Object/playerMovementStateMachine.h"
 
-PlayerMoveStateMachine::PlayerMoveStateMachine(Vec3<float> * targetPosition, Vec3<float> * targetRotation, Input * input, double & deltaTime, Object * object) : Component(object), dt(deltaTime)
+PlayerMoveStateMachine::PlayerMoveStateMachine(Vec3<float> * targetPosition, Vec3<float> * targetRotation, Input * input, Trick * trick, double & deltaTime, Object * object) : Component(object), dt(deltaTime)
 {
   this->input = input;
+  trickObject = trick;
   posPointer = targetPosition;
   rotPointer = targetRotation;
   rotationComponent = object->getComponent<RotateToMouse>();
@@ -55,9 +56,11 @@ void PlayerMoveStateMachine::airTimeState()
   rotationMatrix = rotationMatrix.rotation(*rotPointer);
 
   frameForce = rotationMatrix.multiplyByVector(frameForce);
+  trickObject->addToScore(1);
 
   force += frameForce;
   if (grounded) {
+    trickObject->clearTrick();
     currentState = DEFAULT;
     rotationComponent->setEnabled();
   }
@@ -75,6 +78,7 @@ void PlayerMoveStateMachine::defaultState()
 
   if (input->getKeyDown(32) && grounded) {
     currentState = AIRTIME;
+    trickObject->setTrick("AIRTIME");
     rotationComponent->setDisabled();
     frameForce[1] += 10.5 + std::abs(force[0] + force[2]);
   }

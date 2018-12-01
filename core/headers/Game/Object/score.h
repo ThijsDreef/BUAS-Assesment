@@ -10,7 +10,7 @@ private:
   int scoreDelta = 0;
 public:
   Score(Vec2<float> position, Object * object);
-  ~Score();
+  virtual ~Score();
   void update();
   void addScore(int addToScore);
 };

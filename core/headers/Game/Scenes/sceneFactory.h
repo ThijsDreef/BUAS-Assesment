@@ -1,7 +1,6 @@
 #ifndef SCENEFACTORY__
 #define SCENEFACTORY__
 
-#include "Game/Object/rotateTransform.h"
 #include "System/Engine/scene.h"
 #include "System/Engine/engine.h"
 #include "System/Engine/EngineObjects/orbitalCamera.h"
@@ -18,7 +17,9 @@
 #include "Game/Object/playerMovement.h"
 #include "Game/Object/followCamera.h"
 #include "Game/Object/particleTrail.h"
-
+#include "Game/Object/rotateTransform.h"
+#include "Game/Object/trick.h"
+#include "Game/Object/score.h"
 #include "Game/Object/rotateToMouse.h"
 
 #include "System/Engine/scene.h"
