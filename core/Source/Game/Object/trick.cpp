@@ -23,17 +23,24 @@ void Trick::addToScore(int scoreToAdd)
 
 void Trick::clearTrick()
 {
-  currentTrick = "";
+  setText(currentTrick + ": " + std::to_string(score + scoreDelta));
   scoreObject->addScore(score + scoreDelta);
   score = 0;
-  setText(currentTrick);
   enabled = false;
   scoreDelta = 0;
 }
 
 void Trick::update()
 {
-  if (!enabled) return;
+  // ugly ass hell needs cleaning
+  if (!enabled)
+  {
+    alpha -= alpha * 0.25;
+    return;
+  } else 
+  {
+    alpha += (1 - alpha) * 0.15;
+  }
   int sd = scoreDelta * 0.15f;
   scoreDelta -= sd;
   score += sd;

@@ -27,6 +27,7 @@ protected:
   Vec2<float> pos;
   Matrix<float> mv;
   float scale = 1.f;
+  float alpha = 1.f;
 private:
   bool dirty;
   std::vector<unsigned int> indices;
@@ -41,6 +42,7 @@ public:
   void setPos(Vec2<float> position);
   Vec2<float> & getPos();
   void setClean();
+  float getAlpha();
   void setScale(float s);
   float getScale();
   bool isDirty();

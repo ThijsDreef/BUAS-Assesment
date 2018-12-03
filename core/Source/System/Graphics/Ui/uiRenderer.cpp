@@ -54,6 +54,8 @@ void UiRenderer::renderText()
         mvp.orthographicView(1, (float)w / h, -10, 10);
         mvp = mvp.multiplyByMatrix(textObjects[i]->getMatrix());
         glUniformMatrix4fv(shaderManager->uniformLocation("font", "mvp"), 1, false, &mvp.matrix[0]);
+        glUniform1f(shaderManager->uniformLocation("font", "uAlpha"), textObjects[i]->getAlpha());
+
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 
     }

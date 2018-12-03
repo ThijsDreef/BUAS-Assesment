@@ -28,6 +28,11 @@ std::vector<unsigned int> & UIText::getIndices()
     return indices;
 }
 
+float UIText::getAlpha()
+{
+    return alpha;
+}
+
 void UIText::buildBuffer(Font * font, float inverseAspect)
 {   
     indices.clear();

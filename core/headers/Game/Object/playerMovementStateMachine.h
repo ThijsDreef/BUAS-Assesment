@@ -17,6 +17,7 @@ enum PlayerMoveState {
 class PlayerMoveStateMachine : public Component
 {
 private:
+    double passedTime = 0.0;
     bool grounded = false;
     Input * input;
     Vec3<float> * posPointer;

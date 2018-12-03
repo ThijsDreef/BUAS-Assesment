@@ -36,8 +36,8 @@ Bucket * Octree::getLowestBucket(Collider * coll)
 Bucket * Octree::getLowerBucket(Bucket * b, Collider * coll)
 {
   std::vector<Bucket*> buckets = b->queryLowestBucket(coll);
-  if (buckets.size() > 1 || buckets.size() == 0) return b;
-  else return buckets[0];
+  if (buckets.size() == 1) return buckets[0];
+  else return b;
 }
 
 void Octree::checkBucketCollision(Bucket * b, std::vector<Collision> & collisions)

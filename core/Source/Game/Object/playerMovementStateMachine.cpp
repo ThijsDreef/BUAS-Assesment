@@ -53,19 +53,18 @@ void PlayerMoveStateMachine::airTimeState()
 
   frameForce[1] -= 1.25;
   Matrix<float> rotationMatrix;
-  rotationMatrix = rotationMatrix.rotation(*rotPointer);
 
+  rotationMatrix = rotationMatrix.rotation(*rotPointer);
   frameForce = rotationMatrix.multiplyByVector(frameForce);
-  trickObject->addToScore(1);
 
   force += frameForce;
   if (grounded) {
     trickObject->clearTrick();
-    currentState = DEFAULT;
     rotationComponent->setEnabled();
+    currentState = DEFAULT;
   }
   // add points here for airtime
-  // update score Text here
+  trickObject->addToScore(std::abs(force[1]));
 }
 
 void PlayerMoveStateMachine::defaultState()
@@ -80,7 +79,15 @@ void PlayerMoveStateMachine::defaultState()
     currentState = AIRTIME;
     trickObject->setTrick("AIRTIME");
     rotationComponent->setDisabled();
-    frameForce[1] += 10.5 + std::abs(force[0] + force[2]);
+    frameForce[1] += 35;
+  }
+  if (input->getKeyDown(68) || input->getKeyDown(65)) {
+    force[0] += (input->getKeyDown(68)) ? 25.0f : -25.0f;
+    passedTime = 0;
+    rotationComponent->setDisabled();
+    trickObject->setTrick("PIROUTE");
+    currentState = PIROUTE;
+
   }
 
   frameForce[1] -= 1.25;
@@ -91,7 +98,7 @@ void PlayerMoveStateMachine::defaultState()
 
   force += frameForce;
 
-  force *= 0.95;
+  force -= force * dt * 3.25f;
 
   grounded = false;
 }
@@ -104,5 +111,15 @@ void PlayerMoveStateMachine::speedingState()
 void PlayerMoveStateMachine::pirouteState()
 {
   // add a full rotation here
+  passedTime += dt;
+  (*rotPointer)[1] += 360 * dt;
+  if (passedTime >= 1.0) {
+    trickObject->clearTrick();
+    rotationComponent->setEnabled();
+    currentState = DEFAULT;
+  }
+  trickObject->addToScore(20);
+  force -= force * dt * 2.25f;
 
+  
 }
