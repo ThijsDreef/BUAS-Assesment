@@ -43,7 +43,9 @@ void Object::updateComponents()
   {
     if (components[i]->isRemoved())
     {
+      delete components[i];
       components.erase(components.begin() + i);
+
       i--;
     }
     if (components[i]->isDead())
