@@ -9,11 +9,17 @@ layout(std140, binding = 1) buffer MatrixBuffer
   mat4 normal;
   mat4 model;
 };
+
+out vec2 out_uv;
 out vec3 out_normal;
 out vec4 eye;
+out vec4 out_pos;
+
 void main()
 {
+  out_uv = in_uv;
   out_normal = mat3(normal) * in_normal;
+  out_pos = model * vec4(in_position, 1);
   eye = (modelView * vec4(in_position, 1));
   gl_Position = mvp * vec4(in_position, 1);
 }

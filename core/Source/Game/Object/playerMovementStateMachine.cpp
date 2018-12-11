@@ -12,6 +12,7 @@ PlayerMoveStateMachine::PlayerMoveStateMachine(Vec3<float> * targetPosition, Vec
 
 void PlayerMoveStateMachine::update()
 {
+  frameForce = Vec3<float>();
   switch (currentState) {
     case DEFAULT:
       defaultState();
@@ -19,8 +20,8 @@ void PlayerMoveStateMachine::update()
     case AIRTIME:
       airTimeState();
       break;
-    case PIROUTE:
-      pirouteState();
+    case PIROUETTE:
+      pirouetteState();
       break;
     case SPEEDING:
       speedingState();
@@ -28,6 +29,8 @@ void PlayerMoveStateMachine::update()
     default:
       break;
   }
+  rotationMatrix = rotationMatrix.rotation(*rotPointer);
+  force += rotationMatrix.multiplyByVector(frameForce);
   *posPointer += force * dt;
 }
 
@@ -36,20 +39,9 @@ PlayerMoveStateMachine::~PlayerMoveStateMachine()
 
 }
 
-void PlayerMoveStateMachine::receiveMessage(const std::string & name, void* data)
-{
-  if (name == "collision") {
-    Collider * coll = (Collider*)data;
-    if (coll->tag == "ground") {
-      grounded = true;
-      force[1] = 0;
-    }
-  }
-}
 
 void PlayerMoveStateMachine::airTimeState()
 {
-  Vec3<float> frameForce;
 
   frameForce[1] -= 1.25;
   Matrix<float> rotationMatrix;
@@ -69,35 +61,31 @@ void PlayerMoveStateMachine::airTimeState()
 
 void PlayerMoveStateMachine::defaultState()
 {
-  Vec3<float> frameForce;
+  frameForce[2] -= 1.25f;
+  if (input->getKeyDown(16)) {
+    currentState = SPEEDING;
+    trickObject->setTrick("SPEEDING");
+    rotationComponent->setDisabled();
 
-  if (input->getKeyDown(87)) {
-    frameForce[2] -= 1.5f;
   }
 
   if (input->getKeyDown(32) && grounded) {
     currentState = AIRTIME;
     trickObject->setTrick("AIRTIME");
     rotationComponent->setDisabled();
-    frameForce[1] += 35;
+    frameForce[1] += 40;
   }
+  
   if (input->getKeyDown(68) || input->getKeyDown(65)) {
-    force[0] += (input->getKeyDown(68)) ? 25.0f : -25.0f;
+    frameForce += Vec3<float>((input->getKeyDown(68) && std::abs((int)(*rotPointer)[1]) % 360 < 180) ? 20.0f : -20.0f, 0, 0);
     passedTime = 0;
     rotationComponent->setDisabled();
-    trickObject->setTrick("PIROUTE");
-    currentState = PIROUTE;
+    trickObject->setTrick("PIROUETTE");
+    currentState = PIROUETTE;
 
   }
 
   frameForce[1] -= 1.25;
-  Matrix<float> rotationMatrix;
-  rotationMatrix = rotationMatrix.rotation(*rotPointer);
-
-  frameForce = rotationMatrix.multiplyByVector(frameForce);
-
-  force += frameForce;
-
   force -= force * dt * 3.25f;
 
   grounded = false;
@@ -105,21 +93,41 @@ void PlayerMoveStateMachine::defaultState()
 
 void PlayerMoveStateMachine::speedingState()
 {
+  if (!input->getKeyDown(16)) {
+    currentState = DEFAULT;
+    rotationComponent->setEnabled();
+    trickObject->clearTrick();
+  }
+  trickObject->addToScore(2);
+  frameForce[2] -= 2.f;
+  force -= force * dt * 3.25f;
 
 }
 
-void PlayerMoveStateMachine::pirouteState()
+void PlayerMoveStateMachine::pirouetteState()
 {
   // add a full rotation here
   passedTime += dt;
   (*rotPointer)[1] += 360 * dt;
+  
   if (passedTime >= 1.0) {
     trickObject->clearTrick();
     rotationComponent->setEnabled();
     currentState = DEFAULT;
   }
   trickObject->addToScore(20);
-  force -= force * dt * 2.25f;
+  force -= force * dt * 0.5f;
 
   
+}
+
+void PlayerMoveStateMachine::receiveMessage(const std::string & name, void* data)
+{
+  if (name == "collision") {
+    Collider * coll = (Collider*)data;
+    if (coll->tag == "ground") {
+      grounded = true;
+      force[1] = 0;
+    }
+  }
 }

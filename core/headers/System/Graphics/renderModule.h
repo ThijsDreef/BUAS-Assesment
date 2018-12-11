@@ -8,33 +8,45 @@
 #include "Math/matrix.h"
 #include "System/Graphics/Geometry/MatrixBufferObject.h"
 #include "System/Graphics/Resources/buffer.h"
+#include "System/Graphics/Resources/fbo.h"
+
 #include "Util/util.h"
+#include "System/Engine/EngineObjects/InstancedTransform.h"
 #include "System/Engine/EngineObjects/transform.h"
-#include "System/Window/wglew.h"
 #include "System/Engine/EngineObjects/object.h"
 #include "System/Engine/EngineObjects/camera.h"
 #include <iostream>
 #include <math.h>
-#include <utility>
 
 class RenderModule : public Module
 {
 private:
+  unsigned int defaultVao;
+  unsigned int instancedVao;
   GeometryLib * geoLib;
   MaterialLib * matLib;
-  MatrixBufferer bufferer;
+  MatrixBufferer matBufferer;
   ShaderManager * shaderManager;
   Camera * camObject;
-  std::vector<Transform*> renderObjects;
+  int width, height;
+  std::vector<Transform*> transforms;
+  std::vector<InstancedTransform*> instancedTransforms;
   Matrix<float> projection;
   Matrix<float> camera;
   void setUpFormat();
+  void setUpInstancedFormat();
+  void bindInstance();
+  void bindDefault();
+  Fbo shadowFbo;
 public:
-  void update();
-  Matrix<float> * getCameraMatrix();
   void updatePerspective(int width, int height, int fov, float near, float far);
+  void updateOrthoGraphic(int width, int height, float near, float far);
+  void update();
+  void drawInstanced();
+  void drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials);
+  Matrix<float> * getCameraMatrix();
   void addObject(Object * transform);
-  RenderModule (GeometryLib * geo, MaterialLib * mat, ShaderManager * shader);
+  RenderModule (GeometryLib * geo, MaterialLib * mat, ShaderManager * shader, int w, int h);
   virtual ~RenderModule ();
 };
 #endif

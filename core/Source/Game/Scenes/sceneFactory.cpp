@@ -28,17 +28,22 @@ Scene * SceneFactory::createMainScene(Engine & engine)
       objects.push_back(o);
     }
   }
+  Object * instancedFence = new Object({});
+  InstancedTransform * it = new InstancedTransform(instancedFence);
+  instancedFence->addComponent(it);
   //for loop for INSERT AREA TARGET HERE
   for (int x = -20; x < 20; x ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(39, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, o));
+    o->addComponent(new Transform(Vec3<float>(39, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(-40, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(-40, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
 
+    it->addToInstance(o->getComponent<Transform>());
+    it->addToInstance(ot->getComponent<Transform>());
 
     objects.push_back(o);
     objects.push_back(ot);
@@ -46,15 +51,16 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   //for loop for INSERT AREA TARGET HERE
   for (int z = -20; z < 20; z ++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 39.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, o));
+    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 39.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, o));
     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
 
 
     Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -39.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {}, ot));
+    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -39.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, ot));
     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
 
-
+    it->addToInstance(o->getComponent<Transform>());
+    it->addToInstance(ot->getComponent<Transform>());
     objects.push_back(o);
     objects.push_back(ot);
   }
@@ -71,7 +77,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   player->addComponent(new Transform(Vec3<float>(0, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "pinguin", {}, player));
   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new PlayerMoveStateMachine(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), trickObject->getComponent<Trick>(), engine.deltaTime, player));
-  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(4, 1.45, 4)), player->getComponent<Transform>(), player));
+  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2.25f, 1.45, 2.25f)), player->getComponent<Transform>(), player));
 
   //create particle trail
   Object * particles = new Object({});
@@ -90,6 +96,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
 
   objects.push_back(camera);
+  objects.push_back(instancedFence);
   objects.push_back(snowMan);
   objects.push_back(player);
   objects.push_back(particles);
@@ -99,10 +106,10 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   CollisionModule * collisionModule = new CollisionModule(200, 0);
   // player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
 
-  player->addComponent(new TextDebug<float>("dt: ", Vec2<float>(-1, 0.8), &player->getComponent<Transform>()->getPos()[1], player));
+  player->addComponent(new TextDebug<float>("->", Vec2<float>(-1, 0.8), &player->getComponent<Transform>()->getPos()[1], player));
 
 
-  DefferedRenderModule * renderModule = new DefferedRenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
   return new Scene(objects, {{collisionModule}, {renderModule}, {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
 }

@@ -10,13 +10,15 @@
 enum PlayerMoveState {
     DEFAULT,
     AIRTIME,
-    PIROUTE,
+    PIROUETTE,
     SPEEDING
 };
 
 class PlayerMoveStateMachine : public Component
 {
 private:
+    Vec3<float> frameForce;
+    Matrix<float> rotationMatrix;
     double passedTime = 0.0;
     bool grounded = false;
     Input * input;
@@ -27,7 +29,7 @@ private:
     PlayerMoveState currentState = DEFAULT;
     void defaultState();
     void airTimeState();
-    void pirouteState();
+    void pirouetteState();
     void speedingState();
     RotateToMouse * rotationComponent;
     double & dt;
