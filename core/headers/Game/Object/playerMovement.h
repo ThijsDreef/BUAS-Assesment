@@ -4,7 +4,7 @@
 #include "System/Engine/EngineObjects/object.h"
 #include "Math/vec3.h"
 #include "Math/matrix.h"
-#include "System/Physics/Colliders/collider.h"
+#include "System/Physics/collisionModule.h"
 
 #include "System/Input/input.h"
 

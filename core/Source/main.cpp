@@ -19,6 +19,6 @@ int main(int argc, char const *argv[])
   engine.getMatLib()->addMaterial("lightBlue", Material(Vec4<float>(0.37, 0.61, 1, 1)));
   engine.getMatLib()->addMaterial("red", mat);
 
-  engine.start(sceneFactory.createMainScene(engine));
+  engine.start(sceneFactory.createEndlessRunnerScene(engine));
   return 0;
 }

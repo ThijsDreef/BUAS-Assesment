@@ -50,10 +50,12 @@ PlayerMovement::~PlayerMovement()
 void PlayerMovement::receiveMessage(const std::string & name, void* data)
 {
   if (name == "collision") {
-    Collider * coll = static_cast<Collider*>(data);
-    if (coll->tag == "ground") {
-      grounded = true;
-      force[1] = 0;
+    CollisionData * coll = static_cast<CollisionData*>(data);
+    if (coll->other->tag == "ground") {
+      if (coll->firstResolution[1] != 0) {
+        grounded = true;
+        force[1] = 0;
+      }
     }
   }
 }

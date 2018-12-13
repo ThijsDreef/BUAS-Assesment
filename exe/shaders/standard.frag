@@ -61,7 +61,7 @@ vec4 getExposure(vec3 eye, vec3 normal, vec3 ldir, vec4 color)
 
 void main(void)
 {
-  vec4 diffuse = (textureId < 1000) ? texture(texture10, out_uv) : color;
+  vec4 diffuse = (textureId < 1000) ? texture(texture10, out_uv) + 0.2: color;
   out_color = getExposure(eye.xyz, out_normal, normalize(directionalLight), diffuse);
   out_color *= vec4(1.0) - vec4(ShadowCalculation(uLightVP * out_pos, out_normal));
   out_color += diffuse * 0.2;

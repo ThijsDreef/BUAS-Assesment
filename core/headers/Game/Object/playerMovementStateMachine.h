@@ -2,7 +2,7 @@
 #define PLAYERMOVEMENTSTATEMACHINE__
 
 #include "System/Engine/EngineObjects/object.h"
-#include "System/Physics/Colliders/collider.h"
+#include "System/Physics/collisionModule.h"
 #include "Game/Object/rotateToMouse.h"
 #include "Game/Object/trick.h"
 #include "Math/Vec3.h"

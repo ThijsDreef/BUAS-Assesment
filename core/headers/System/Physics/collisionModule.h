@@ -7,6 +7,17 @@
 #include "System/Engine/EngineObjects/object.h"
 #include "System/Physics/collisionComponent.h"
 
+struct CollisionData
+{
+  Collider * other;
+  Vec3<float> firstResolution;
+  CollisionData(Collider * o, Vec3<float> r)
+  {
+    other = o;
+    firstResolution = r;
+  }
+};
+
 class CollisionModule : public Module
 {
 private:

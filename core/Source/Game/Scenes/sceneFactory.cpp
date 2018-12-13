@@ -10,6 +10,38 @@ SceneFactory::~SceneFactory()
 
 }
 
+Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
+{
+  std::vector<Object*> objects;
+
+  Object * player = new Object({});
+  player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
+  player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
+  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
+
+  objects.push_back(player);
+
+  Object * camera = new Object({});
+  camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+  objects.push_back(camera);
+
+  for (int i = 0; i < 3; i++) {
+    Object * platform = new Object({});
+    platform->addComponent(new Transform(Vec3<float>(30 * i, 0, 0), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {}, platform));
+    platform->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 1, 10)), platform->getComponent<Transform>(), platform, "ground"));
+    objects.push_back(platform);
+  }
+
+  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
+
+  return new Scene(objects, {
+    {new CollisionModule(200, 4)},
+    {renderModule},
+    {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
+  });
+}
+
 Scene * SceneFactory::createMainScene(Engine & engine)
 {
   std::vector<Object*> objects;
@@ -103,7 +135,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   objects.push_back(trickObject);
   objects.push_back(scoreObject);
 
-  CollisionModule * collisionModule = new CollisionModule(200, 0);
+  CollisionModule * collisionModule = new CollisionModule(200, 4);
   // player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
 
   player->addComponent(new TextDebug<float>("->", Vec2<float>(-1, 0.8), &player->getComponent<Transform>()->getPos()[1], player));

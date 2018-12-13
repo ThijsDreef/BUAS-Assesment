@@ -32,6 +32,7 @@
 class SceneFactory {
 public:
   SceneFactory();
+  Scene * createEndlessRunnerScene(Engine & engine);
   Scene * createMainScene(Engine & engine);
   virtual ~SceneFactory();
 };
