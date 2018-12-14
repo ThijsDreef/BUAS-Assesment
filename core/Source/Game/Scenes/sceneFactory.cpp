@@ -19,10 +19,12 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
 
+
   objects.push_back(player);
 
   Object * camera = new Object({});
   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+  camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   objects.push_back(camera);
 
   for (int i = 0; i < 3; i++) {
@@ -36,7 +38,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
 
   return new Scene(objects, {
-    {new CollisionModule(200, 4)},
+    {new CollisionModule(200, 0)},
     {renderModule},
     {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
   });

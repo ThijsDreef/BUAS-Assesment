@@ -1,7 +1,4 @@
 #include "System/Window/glew.h"
-#include <string>
-#include <vector>
-#include <fstream>
 #include <iostream>
 #include "Util/picoPNG.h"
 #include "Util/util.h"

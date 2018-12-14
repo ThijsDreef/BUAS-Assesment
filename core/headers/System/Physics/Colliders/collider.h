@@ -8,7 +8,9 @@ class Collider {
 protected:
   Vec3<float> p;
 public:
-  bool isStatic;
+  bool isStatic = false;
+  bool isMoveAble = true;
+  bool isTrigger = false;
   std::string tag = "none";
   Collider ();
   virtual ~Collider ();

@@ -34,6 +34,7 @@ public:
 	void lightBias();
 };
 
+//stolen from the GML implemntation
 template<class T>
 inline void Matrix<T>::lookAt(Vec3<float> eye, Vec3<float> center, Vec3<float> up)
 {
@@ -111,7 +112,7 @@ inline void Matrix<T>::lookAt(Vec3<float> eye, Vec3<float> center, Vec3<float> u
     matrix[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
     matrix[15] = 1;
 }
-
+//stolen from the GLM implentation
 template<class T>
 inline Matrix<T> Matrix<T>::inverse()
 {

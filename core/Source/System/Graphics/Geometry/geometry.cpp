@@ -56,9 +56,9 @@ void Geometry::parseDaeGeometry(rapidxml::xml_node<> * geometryNode)
 				std::string nSource;
 				std::string uvSource;
 
-				unsigned int vOffset;
-				unsigned int nOffset;
-				unsigned int uvOffset;
+				unsigned int vOffset = 0;
+				unsigned int nOffset = 0;
+				unsigned int uvOffset = 0;
 				// read all input tags
 				for (rapidxml::xml_node<>* input = triangles->first_node("input"); input; input = input->next_sibling("input")) 
 				{

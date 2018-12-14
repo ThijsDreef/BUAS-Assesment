@@ -58,9 +58,9 @@ void Engine::run()
 {
   double elapsedTime = 0;
   double inputResetTimer = 0;
-  double fpsTimer;
+  double fpsTimer = 0;
   frames = 0;
-  unsigned int currentFrames;
+  unsigned int currentFrames = 0;
   while (!window.done && running)
   {
     auto start = std::chrono::system_clock::now();

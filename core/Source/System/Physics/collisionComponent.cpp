@@ -4,6 +4,9 @@ CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Trans
 {
   coll = collider;
   collider->isStatic = isStatic;
+  if (isStatic) {
+    coll->isMoveAble = false;
+  }
   transform = t;
   collider->setCollisionComponent(this);
   coll->tag = tag;

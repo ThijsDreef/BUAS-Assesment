@@ -16,23 +16,24 @@ void CollisionModule::update()
     // reall dirty way to resolve collisions needs some better way eventually
     int tries = 0;
 
-    Vec3<float> r = collisions[i].other->intersectA(collisions[i].hit);
-    Vec3<float> ro = collisions[i].other->intersectA(collisions[i].hit);
+    Vec3<float> hit = collisions[i].other->intersectA(collisions[i].hit);
+    Vec3<float> other = collisions[i].hit->intersectA(collisions[i].other);
+    if (!(collisions[i].other->isTrigger || collisions[i].hit->isTrigger)) {
+      while (collisions[i].hit->intersectB(collisions[i].other) && tries < 1000) {
+        Vec3<float> otherResolve = collisions[i].other->intersectA(collisions[i].hit);
+        Vec3<float> resolve = collisions[i].hit->intersectA(collisions[i].other);
 
-    while (collisions[i].hit->intersectB(collisions[i].other) && tries < 1000) {
-      Vec3<float> otherResolve = collisions[i].other->intersectA(collisions[i].hit);
-      Vec3<float> resolve = collisions[i].hit->intersectA(collisions[i].other);
+        if (!collisions[i].other->isStatic && collisions[i].other->isMoveAble)
+          collisions[i].other->getPos() += otherResolve;
+        if (!collisions[i].hit->isStatic && collisions[i].hit->isMoveAble)
+          collisions[i].hit->getPos() += resolve;
 
-      if (!collisions[i].other->isStatic)
-        collisions[i].other->getPos() += otherResolve;
-      if (!collisions[i].hit->isStatic)
-        collisions[i].hit->getPos() += resolve;
-
-      tries ++;
+        tries ++;
+      }
     }
-    CollisionData data = CollisionData(collisions[i].other, r);
+    CollisionData data = CollisionData(collisions[i].other, hit);
     collisions[i].hit->getCollisionComponent()->getObject()->sendMessage("collision", &data);
-    data = CollisionData(collisions[i].hit, ro);
+    data = CollisionData(collisions[i].hit, other);
     collisions[i].other->getCollisionComponent()->getObject()->sendMessage("collision", &data);
 
   }
