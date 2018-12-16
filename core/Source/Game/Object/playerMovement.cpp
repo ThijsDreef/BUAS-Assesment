@@ -1,6 +1,6 @@
 #include "Game/Object/playerMovement.h"
 
-PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targetRotation, Input * input, Object * object) : Component(object)
+PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targetRotation, Input * input, double & deltaTime, Object * object) : Component(object), dt(deltaTime)
 {
   this->input = input;
   posPointer = targetPosition;
@@ -14,21 +14,28 @@ void PlayerMovement::update()
   Vec3<float> frameForce;
 
   if (input->getKeyDown(87)) {
-    frameForce[2] -= 0.02f;
+    frameForce[2] -= 2;
   } else if (input->getKeyDown(83)) {
-    frameForce[2] += 0.02f;
+    frameForce[2] += 2;
   }
 
   if (input->getKeyDown(65)) {
-    frameForce[0] -= 0.02f;    
+    frameForce[0] -= 2;    
   } else if (input->getKeyDown(68)) {
-    frameForce[0] += 0.02f;
+    frameForce[0] += 2;
+  }
+ 
+  if (input->getKeyDown(32) && grounded) {
+    frameForce[1] += 45;
+    boosted = false;
+  }
+  if (input->getKeyDown(16) && !boosted) {
+    boosted = true;
+    force[0] *= 2;
+    force[1] += 20;
   }
 
-  if (input->getKeyDown(32) && grounded) 
-    frameForce[1] += 0.65;
-
-  frameForce[1] -= 0.025;
+  frameForce[1] -= 2;
   Matrix<float> rotationMatrix;
   rotationMatrix = rotationMatrix.rotation(*rotPointer);
 
@@ -36,8 +43,8 @@ void PlayerMovement::update()
 
   force += frameForce;
 
-  force *= 0.95;
-  *posPointer += force;
+  force *= 0.93;
+  *posPointer += force * dt;
   grounded = false;
 
 }

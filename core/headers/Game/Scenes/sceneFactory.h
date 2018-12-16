@@ -4,7 +4,7 @@
 #include "System/Engine/scene.h"
 #include "System/Engine/engine.h"
 #include "System/Engine/EngineObjects/orbitalCamera.h"
-
+#include "System/Graphics/defferedRenderModule.h"
 #include "System/Graphics/renderModule.h"
 #include "System/Physics/collisionModule.h"
 #include "System/Physics/octree.h"
@@ -22,6 +22,9 @@
 #include "Game/Object/trick.h"
 #include "Game/Object/score.h"
 #include "Game/Object/rotateToMouse.h"
+#include "Game/Object/chunkSpawner.h"
+#include "Game/Object/autoScroller.h"
+
 
 #include "System/Engine/scene.h"
 

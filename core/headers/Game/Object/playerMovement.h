@@ -12,13 +12,14 @@ class PlayerMovement : public Component
 {
 private:
   bool grounded = false;
+  bool boosted = false;
   Input * input;
   Vec3<float> * posPointer;
   Vec3<float> * rotPointer;
   Vec3<float> force;
-
+  double & dt;
 public:
-  PlayerMovement(Vec3<float> * target, Vec3<float> * rotationTarget, Input * input, Object * object);
+  PlayerMovement(Vec3<float> * target, Vec3<float> * rotationTarget, Input * input, double & deltaTime, Object * object);
   virtual ~PlayerMovement();
   void receiveMessage(const std::string & message, void* data);
   void update();

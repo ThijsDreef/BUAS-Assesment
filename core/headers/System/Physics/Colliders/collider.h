@@ -7,6 +7,7 @@ class CollisionComponent;
 class Collider {
 protected:
   Vec3<float> p;
+  Vec3<float> scale;
 public:
   bool isStatic = false;
   bool isMoveAble = true;
@@ -20,6 +21,7 @@ public:
   std::string & getResolver();
   Vec3<float> & getPos();
   void syncPos(Vec3<float> * pos);
+  void setScale(Vec3<float> s);
   void setCollisionComponent(CollisionComponent * component);
   CollisionComponent * getCollisionComponent();
 private:

@@ -1,3 +1,6 @@
+#ifndef FBO__
+#define FBO__
+
 #include "System/Graphics/Resources/texture.h"
 #include <vector>
 #include "System/Window/glew.h"
@@ -23,3 +26,5 @@ public:
   unsigned int getTextureIndex(unsigned int attachment);
   virtual ~Fbo ();
 };
+
+#endif 

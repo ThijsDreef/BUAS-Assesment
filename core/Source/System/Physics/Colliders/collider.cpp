@@ -10,6 +10,11 @@ Collider::~Collider()
 
 }
 
+void Collider::setScale(Vec3<float> s)
+{
+  scale = s;
+}
+
 bool Collider::intersectB(Collider * other)
 {
   return false;

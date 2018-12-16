@@ -79,7 +79,7 @@ void Engine::run()
       elapsedTime = 0;
     }
     else
-      std::this_thread::sleep_for(std::chrono::milliseconds((int)((frameCap - elapsedTime) * 1000)));
+      std::this_thread::sleep_for(std::chrono::milliseconds((int)((frameCap - elapsedTime) * 1000.0)));
     if (inputResetTimer > 1.0 / 60.0)
     {
       window.updateInput();
