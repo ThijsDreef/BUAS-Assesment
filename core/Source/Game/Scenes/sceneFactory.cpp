@@ -14,8 +14,8 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 {
   std::vector<Object*> objects;
 
-  Object * autoScroller = new Object({});
-  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, 0, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-7.5, 0, 0), engine.deltaTime, autoScroller));
+  Object* autoScroller = new Object({});
+  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, 0, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-15, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);
 

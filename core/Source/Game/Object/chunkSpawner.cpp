@@ -17,7 +17,7 @@ void ChunkSpawner::update()
     float random = (float)rand() / RAND_MAX;
     Vec3<float> scale = Vec3<float>(random * 10 + 4, 1, random * 10 + 4);
     transform->getScale() = scale;
-    transform->getPos()[2] += ((float)rand() / RAND_MAX) * 10 - 5;
+    transform->getPos()[2] += ((float)rand() / (float)RAND_MAX) * 30.0f - 15.0f;
     transform->getObject()->getComponent<CollisionComponent>()->getCollider()->setScale(scale);
     autoScrollerObject->addTransform(transform);
   }

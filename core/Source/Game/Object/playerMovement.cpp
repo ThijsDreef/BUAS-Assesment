@@ -26,12 +26,12 @@ void PlayerMovement::update()
   }
  
   if (input->getKeyDown(32) && grounded) {
-    frameForce[1] += 45;
+    frameForce[1] += 55;
     boosted = false;
   }
   if (input->getKeyDown(16) && !boosted) {
     boosted = true;
-    force[0] *= 2;
+    force[0] *= 1.5;
     force[1] += 20;
   }
 
@@ -43,7 +43,8 @@ void PlayerMovement::update()
 
   force += frameForce;
 
-  force *= 0.93;
+  force.lerp(Vec3<float>(0, 0, 0), 1 - powf(0.05, dt));
+  
   *posPointer += force * dt;
   grounded = false;
 

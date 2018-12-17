@@ -42,6 +42,7 @@ void AutoScroller::update()
     float dist = std::fabs(distance.length());
     if (dist < 2.5) {
       // add to freeTransforms
+      activeTransforms[i]->shouldRender = false;
       freeTransforms.push(activeTransforms[i]);
       // remove here
       activeTransforms.erase(activeTransforms.begin() + i);

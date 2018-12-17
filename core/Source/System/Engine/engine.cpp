@@ -64,7 +64,7 @@ void Engine::run()
   while (!window.done && running)
   {
     auto start = std::chrono::system_clock::now();
-    if (elapsedTime >= frameCap)
+    if (elapsedTime > frameCap)
     {
       deltaTime = elapsedTime;
       window.handleMessages();
@@ -90,7 +90,7 @@ void Engine::run()
     elapsedTime += elapsed.count();
     fpsTimer += elapsed.count();
     inputResetTimer += elapsedTime;
-  }
+  } 
   if (!window.done)
     window.killWindow();
 }

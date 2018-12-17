@@ -6,7 +6,7 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0f);
+  Engine engine("pingu on a mission", 2560, 1440, 32, true, 1/30.0f);
   Texture * texture = new Texture("models/textures/iceTexture.png");
   engine.getMatLib()->addTexture("iceTexture", texture);
   Material mat;
