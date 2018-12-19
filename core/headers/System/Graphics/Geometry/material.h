@@ -2,11 +2,12 @@
 #define MATERIAL__
 #define BIGNUMBER 99999
 #include "Math/vec4.h"
+#include <cstdint>
 struct Material
 {
   Vec4<float> color;
-  unsigned int texture = BIGNUMBER;
-  char chars[235];
+  std::uint64_t texture = BIGNUMBER;
+  char chars[231];
 
   Material(const Vec4<float>& color)
   {

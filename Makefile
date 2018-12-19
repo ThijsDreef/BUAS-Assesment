@@ -3,7 +3,7 @@ SOURCE=core/source/
 BUILD=build/
 EXE=exe/
 TARGET=run.exe
-OPTIMALIZATIONLEVEL=
+OPTIMALIZATIONLEVEL=-O3
 #lazy multiple directories solution
 objects =  $(patsubst $(SOURCE)%.cpp,$(BUILD)%.o, $(wildcard $(SOURCE)*.cpp))
 objects += $(patsubst $(SOURCE)%.cpp,$(BUILD)%.o, $(wildcard $(SOURCE)*/*.cpp))

@@ -1,9 +1,12 @@
-#version 430 core
+#version 450 core
+#extension GL_NV_gpu_shader5 : require
+#extension GL_ARB_bindless_texture : enable
+
 layout (location = 0) out vec4 out_color;
 layout (std140,binding = 0) uniform materialBuffer
 {
   vec4 color;
-  uint textureId;
+  sampler2D textureId;
 };
 
 in vec4 out_pos;
@@ -60,7 +63,7 @@ vec4 getExposure(vec3 eye, vec3 normal, vec3 ldir, vec4 color)
 
 void main(void)
 {
-  vec4 diffuse = (textureId < 1000) ? texture(texture10, out_uv) : color;
+  vec4 diffuse = texture(textureId, out_uv) + color;
   out_color = getExposure(out_pos.xyz, out_normal, normalize(directionalLight), diffuse);
   out_color *= vec4(1.0) - vec4(ShadowCalculation(uLightVP * out_pos, out_normal));
   out_color += diffuse * 0.2;

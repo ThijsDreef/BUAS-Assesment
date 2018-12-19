@@ -1,4 +1,8 @@
-#version 430 core
+#version 450 core
+#extension GL_NV_gpu_shader5 : require
+#extension GL_ARB_bindless_texture : enable
+
+
 layout (location = 0) out vec4 rPosition;
 layout (location = 1) out vec3 rNormal;
 layout (location = 2) out vec4 rColor;
@@ -6,7 +10,7 @@ layout (location = 2) out vec4 rColor;
 layout(std140, binding = 0) uniform MaterialBuffer
 {
   vec4 color;
-  uint textureId;
+  sampler2D textureId;
 };
 
 uniform sampler2D texture10;
@@ -19,5 +23,5 @@ void main(void)
 {
   rPosition = out_position;
   rNormal = out_normal;
-  rColor = (textureId < 1000) ? texture(texture10, out_uv) + 0.2 : color;
+  rColor = texture(textureId, out_uv) + color;
 }

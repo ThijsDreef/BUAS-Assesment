@@ -68,7 +68,7 @@ void RenderModule::update()
   //draw shadow map
   shadowFbo.bind();
   glViewport(0, 0, 4096, 4096);
-  glCullFace(GL_NONE);
+  glDisable(GL_CULL_FACE);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glUseProgram(shaderManager->getShader("directionalLight"));
   glUniformMatrix4fv(shaderManager->uniformLocation("directionalLight", "uLightVP"), 1, false, &lightMatrix.matrix[0]);
@@ -83,6 +83,7 @@ void RenderModule::update()
   drawInstanced();
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glEnable(GL_CULL_FACE);
   glViewport(0, 0, width, height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -139,8 +140,8 @@ void RenderModule::drawInstanced()
     for (unsigned int j = 0; j < geoLib->getTotalGroups(instancedTransforms[i]->getModel()); j++) {
       unsigned int materialId = matLib->getMaterialId(instancedTransforms[i]->getMaterial(j));
       glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), materialId * sizeof(Material), sizeof(Material));
-      unsigned int texture = matLib->getMaterial(materialId).texture;
-      if (texture < 1000) glBindTexture(GL_TEXTURE_2D, texture);
+      // unsigned int texture = matLib->getMaterial(materialId).texture;
+      // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, texture);
       std::vector<unsigned int> indice = geoLib->getIndice(instancedTransforms[i]->getModel(), j);
       glDrawElementsInstanced(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0], instancedTransforms[0]->getTransformSize());
     }
@@ -150,13 +151,13 @@ void RenderModule::drawInstanced()
 void RenderModule::drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials)
 {
   glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
-  glActiveTexture(GL_TEXTURE0 + (unsigned int)10);
+  // glActiveTexture(GL_TEXTURE0 + (unsigned int)10);
   for (unsigned int i = 0; i < renderList.size(); i++)
   {
     if (materials) glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), i * sizeof(Material), sizeof(Material));
     unsigned int bufferIndex = -1;
-    unsigned int texture = matLib->getMaterial(i).texture;
-    if (texture < 1000) glBindTexture(GL_TEXTURE_2D, matLib->getMaterial(i).texture);
+    // unsigned int texture = matLib->getMaterial(i).texture;
+    // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, matLib->getMaterial(i).texture);
     
     for (unsigned int j = 0; j < renderList[i].size(); j++)
     {

@@ -260,8 +260,10 @@ void Geometry::parseObj(const std::string& name, MaterialLib& matlib)
 						//add texture here
 						std::string textureName = name.substr(0, name.rfind("/") + 1) + mtlLine.substr(7, mtlLine.size());
 						Texture * texture = new Texture(textureName);
+						texture->makeResident();
 						matlib.addTexture(textureName, texture);
-						currentMaterial.texture = texture->getId();
+						currentMaterial.color = Vec4<float>(0.2, 0.2, 0.2, 1);
+						currentMaterial.texture = texture->getResidentHandle();
 						std::cout << textureName << " id" << currentMaterial.texture << "\n";
 						
 					}

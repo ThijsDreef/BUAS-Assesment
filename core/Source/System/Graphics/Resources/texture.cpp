@@ -75,17 +75,21 @@ Texture::Texture(int width, int height, void* data, std::string textureName)
 
 Texture::~Texture()
 {
-
+  if (isResident)
+    makeNonResident();
+  glDeleteTextures(1, &id);
 }
 
 void Texture::bufferData(int width, int height, std::string textureName, void* data)
 {
+  if (isResident) return;
   name = textureName;
   bufferData(width, height, data);
 }
 
 void Texture::bufferData(int width, int height, unsigned int internal, unsigned int format, void* data)
 {
+  if (isResident) return;
   iFormat = internal;
   this->format = format;
   bufferData(width, height, data);
@@ -93,11 +97,13 @@ void Texture::bufferData(int width, int height, unsigned int internal, unsigned 
 
 void Texture::bufferData(int width, int height, unsigned int internal, unsigned int format, std::string textureName, void* data)
 {
+  if (isResident) return;
   name = textureName;
   bufferData(width, height, internal, format, data);
 }
 void Texture::bufferData(int width, int height, void* data)
 {
+  if (isResident) return;
   w = width;
   h = height;
   glBindTexture(GL_TEXTURE_2D, id);
@@ -106,6 +112,7 @@ void Texture::bufferData(int width, int height, void* data)
 
 void Texture::setFilter(unsigned int filter)
 {
+  if (isResident) return;
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 }
@@ -129,4 +136,22 @@ unsigned long Texture::getHeight()
 unsigned int Texture::getId()
 {
   return id;
+}
+
+void Texture::makeResident()
+{
+  residentId = glGetTextureHandleARB(id);
+  glMakeTextureHandleResidentARB(residentId);
+  isResident = true;
+}
+
+void Texture::makeNonResident()
+{
+  glMakeTextureHandleNonResidentARB(residentId);
+  isResident = false;
+}
+
+std::uint64_t Texture::getResidentHandle()
+{
+  return residentId;
 }
