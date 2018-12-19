@@ -30,7 +30,7 @@ DefferedRenderModule::DefferedRenderModule(GeometryLib * geo, MaterialLib * mat,
   renderFbo.attach(GL_RGBA16F, GL_RGBA, GL_FLOAT, 0);
   renderFbo.attach(GL_RGB16F, GL_RGB, GL_FLOAT, 1);
   renderFbo.attach(GL_RGB16F, GL_RGB, GL_FLOAT, 2);
-  // renderFbo.attachDepth(w, h);
+  renderFbo.attachDepth(w, h);
   shadowFbo.bind();
   shadowFbo.attachDepth(4096, 4096);
 }
@@ -205,7 +205,7 @@ void DefferedRenderModule::update()
   //draw shadow map
   shadowFbo.bind();
   glViewport(0, 0, 4096, 4096);
-  // glCullFace(GL_NONE);
+  glDisable(GL_CULL_FACE);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glUseProgram(shaderManager->getShader("directionalLight"));
   glUniformMatrix4fv(shaderManager->uniformLocation("directionalLight", "uLightVP"), 1, false, &lightMatrix.matrix[0]);
@@ -221,7 +221,7 @@ void DefferedRenderModule::update()
 
   // draw one screen aligned quad
   bindDefault();
-  glCullFace(GL_BACK);
+  glEnable(GL_CULL_FACE);
   glViewport(0, 0, w, h);
 
   glUseProgram(shaderManager->getShader("deffered-finish"));

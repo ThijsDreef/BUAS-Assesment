@@ -1,5 +1,4 @@
 #version 450 core
-#extension GL_NV_gpu_shader5 : require
 #extension GL_ARB_bindless_texture : enable
 
 layout (location = 0) out vec4 out_color;

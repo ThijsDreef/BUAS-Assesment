@@ -1,5 +1,4 @@
 #version 450 core
-#extension GL_NV_gpu_shader5 : require
 #extension GL_ARB_bindless_texture : enable
 layout (location = 0) out vec4 out_color;
 
@@ -62,5 +61,4 @@ void main(void)
   out_color = getExposure(pos.xyz, normal, normalize(directionalLight), diffuse);
   out_color *= vec4(1.0) - vec4(ShadowCalculation(uLightVP * pos, normal));
   out_color += diffuse * 0.2;
-  out_color = texture(texture0, out_uv);
 }

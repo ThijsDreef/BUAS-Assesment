@@ -12,7 +12,7 @@ private:
   int h;
   unsigned int renderBufferId;
   unsigned int id;
-  std::vector<Texture> textures;
+  std::vector<Texture*> textures;
   std::vector<unsigned int> attachments;
   std::vector<unsigned int> bindingPoints;
 public:
