@@ -42,7 +42,7 @@ void PlayerMovement::update()
   frameForce = rotationMatrix.multiplyByVector(frameForce);
 
   force += frameForce;
-
+  //semi correct way to slow based on passed time
   force.lerp(Vec3<float>(0, 0, 0), 1 - powf(0.05, dt));
   
   *posPointer += force * dt;
@@ -60,7 +60,7 @@ void PlayerMovement::receiveMessage(const std::string & name, void* data)
   if (name == "collision") {
     CollisionData * coll = static_cast<CollisionData*>(data);
     if (coll->other->tag == "ground") {
-      if (coll->firstResolution[1] != 0) {
+      if (coll->firstResolution[1] < 0) {
         grounded = true;
         force[1] = 0;
       }

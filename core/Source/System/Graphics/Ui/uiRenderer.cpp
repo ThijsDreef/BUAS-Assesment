@@ -3,8 +3,8 @@
 UiRenderer::UiRenderer(std::string fontFileName, ShaderManager * shader, unsigned int width, unsigned int height, int padding) : font(fontFileName, padding)
 {
     shaderManager = shader;
-    shader->createShaderProgram("shaders/font.vert", "shaders/font.frag", "font");
-    shader->createShaderProgram("shaders/font.vert", "shaders/fontOutline.frag", "outLine");
+    shader->createShaderProgram("shaders/font/font.vert", "shaders/font/font.frag", "font");
+    shader->createShaderProgram("shaders/font/font.vert", "shaders/font/fontOutline.frag", "outLine");
     w = width;
     h = height;
     setupFormat();

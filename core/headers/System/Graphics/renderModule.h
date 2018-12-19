@@ -11,6 +11,7 @@
 #include "System/Graphics/Resources/fbo.h"
 
 #include "Util/util.h"
+#include "System/Engine/EngineObjects/customShaderTransform.h"
 #include "System/Engine/EngineObjects/InstancedTransform.h"
 #include "System/Engine/EngineObjects/transform.h"
 #include "System/Engine/EngineObjects/object.h"
@@ -26,11 +27,14 @@ private:
   GeometryLib * geoLib;
   MaterialLib * matLib;
   MatrixBufferer matBufferer;
+  MatrixBufferer matCustomBufferer;
   ShaderManager * shaderManager;
   Camera * camObject;
   int width, height;
   std::vector<Transform*> transforms;
   std::vector<InstancedTransform*> instancedTransforms;
+  std::vector<CustomShaderTransform*> customShaderTransforms;
+
   Matrix<float> projection;
   Matrix<float> camera;
   void setUpFormat();
@@ -42,6 +46,7 @@ public:
   void updatePerspective(int width, int height, int fov, float near, float far);
   void updateOrthoGraphic(int width, int height, float near, float far);
   void update();
+  void drawCustom(Matrix<float> & lightMatrix, Vec3<float> & directionalLight);
   void drawInstanced();
   void drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials);
   Matrix<float> * getCameraMatrix();

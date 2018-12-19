@@ -15,6 +15,8 @@ protected:
   Vec3<float> rot;
 public:
   bool shouldRender = true;
+  bool castShadow = true;
+  bool shouldRenderDefault = true;
   std::vector<std::string> materials;
   std::string model;
   unsigned int bufferIndex;
@@ -23,7 +25,6 @@ public:
   Vec3<float> & getPos();
   Vec3<float> & getScale();
   Vec3<float> & getRot();
-  bool castShadow = true;
   MatrixBufferObject getBuffer(Matrix<float>& view, Matrix<float>& p);
   Matrix<float> getModelMatrix();
   virtual ~Transform ();

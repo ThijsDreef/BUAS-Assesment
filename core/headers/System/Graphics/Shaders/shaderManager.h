@@ -15,7 +15,7 @@ private:
   std::map<const std::string, unsigned int> shaderlist;
   std::string readShader(const char* fileName);
   unsigned int createShader(GLenum shadertype, std::string source, const char* shaderName);
-  std::string textureHandles[16] = {
+  const std::string textureHandles[16] = {
     "texture0",
     "texture1",
     "texture2",

@@ -17,10 +17,10 @@ RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager *
   shadowFbo.attachDepth(4096, 4096);
   setUpFormat();
   setUpInstancedFormat();
-  shaderManager->createShaderProgram("shaders/standard.vert", "shaders/standard.frag", "standard");
-  shaderManager->createShaderProgram("shaders/instanced.vert", "shaders/instanced.frag", "instanced");
-  shaderManager->createShaderProgram("shaders/directionalLightInstanced.vert", "shaders/directionalLightInstanced.frag", "directionalLightInstanced");
-  shaderManager->createShaderProgram("shaders/directionalLight.vert", "shaders/directionalLight.frag", "directionalLight");
+  shaderManager->createShaderProgram("shaders/forward/standard.vert", "shaders/forward/standard.frag", "standard");
+  shaderManager->createShaderProgram("shaders/forward/instanced.vert", "shaders/forward/instanced.frag", "instanced");
+  shaderManager->createShaderProgram("shaders/shadow/directionalLightInstanced.vert", "shaders/shadow/directionalLightInstanced.frag", "directionalLightInstanced");
+  shaderManager->createShaderProgram("shaders/shadow/directionalLight.vert", "shaders/shadow/directionalLight.frag", "directionalLight");
 }
 
 RenderModule::~RenderModule()
@@ -96,6 +96,7 @@ void RenderModule::update()
   glUniform3f(shaderManager->uniformLocation("standard", "directionalLight"), directionalLight[0], directionalLight[1], directionalLight[2]);
 
   drawGeometry(renderList, true);
+  drawCustom(lightMatrix, directionalLight);
   glUseProgram(shaderManager->getShader("instanced"));
   glUniformMatrix4fv(shaderManager->uniformLocation("instanced", "p"), 1, false, &projection.multiplyByMatrix(camera).matrix[0]);
   glUniformMatrix4fv(shaderManager->uniformLocation("instanced", "uLightVP"), 1, false, &lightMatrix.matrix[0]);
@@ -113,6 +114,8 @@ void RenderModule::addObject(Object * object)
   Transform *  transObj = object->getComponent<Transform>();
   if (transObj && transObj->shouldRender)
   {
+
+    
     transObj->added();
     transforms.push_back(transObj);
 
@@ -126,10 +129,51 @@ void RenderModule::addObject(Object * object)
   Camera * cam = object->getComponent<Camera>();
   if (cam) camObject = cam;
 
+  CustomShaderTransform * shObj = object->getComponent<CustomShaderTransform>();
+  if (shObj) customShaderTransforms.push_back(shObj);
+
   InstancedTransform * itObj = object->getComponent<InstancedTransform>();
   if (itObj) instancedTransforms.push_back(itObj);
 }
 
+void RenderModule::drawCustom(Matrix<float> & lightMatrix, Vec3<float> & directionalLight)
+{
+
+  // sorting
+
+  // std::map<std::string, std::vector<std::pair<unsigned int, CustomShaderTransform>>> dict;
+  // for (unsigned int i = 0; i < customShaderTransforms.size(); i++) {
+  //   if (customShaderTransforms[i]->shouldRender) {
+  //     for (unsigned int j = 0; j < customShaderTransforms[i]->materials.size(); j++) {
+  //       dict[customShaderTransforms[i]].push_back(std::pair<unsigned int, CustomShaderTransform>(customShaderTransforms[i]->materials[j], customShaderTransforms[i]));
+  //     }
+  //   }
+  // }
+  glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
+  for (unsigned int i = 0; i < customShaderTransforms.size(); i++) {
+    if (customShaderTransforms[i]->shouldRender) {
+      std::string shader = customShaderTransforms[i]->getShader();
+      glUseProgram(shaderManager->getShader(shader));
+      glUniformMatrix4fv(shaderManager->uniformLocation(shader, "uLightVP"), 1, false, &lightMatrix.matrix[0]);
+      glUniform3f(shaderManager->uniformLocation(shader, "directionalLight"), directionalLight[0], directionalLight[1], directionalLight[2]);
+      glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, matBufferer.getBufferId(), customShaderTransforms[i]->bufferIndex * sizeof(MatrixBufferObject), sizeof(MatrixBufferObject));
+
+      customShaderTransforms[i]->onDraw(shaderManager);
+
+      for (unsigned int j = 0; j < geoLib->getTotalGroups(customShaderTransforms[i]->model); j++) 
+      {
+
+        unsigned int materialId = matLib->getMaterialId(customShaderTransforms[i]->materials[j]);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), materialId * sizeof(Material), sizeof(Material));
+        std::vector<unsigned int> indice = geoLib->getIndice(customShaderTransforms[i]->model, j);
+
+        glDrawElements(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0]);      
+      }
+
+      customShaderTransforms[i]->onDrawExit(shaderManager);
+    }
+  }
+}
 
 void RenderModule::drawInstanced()
 {
@@ -140,8 +184,6 @@ void RenderModule::drawInstanced()
     for (unsigned int j = 0; j < geoLib->getTotalGroups(instancedTransforms[i]->getModel()); j++) {
       unsigned int materialId = matLib->getMaterialId(instancedTransforms[i]->getMaterial(j));
       glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), materialId * sizeof(Material), sizeof(Material));
-      // unsigned int texture = matLib->getMaterial(materialId).texture;
-      // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, texture);
       std::vector<unsigned int> indice = geoLib->getIndice(instancedTransforms[i]->getModel(), j);
       glDrawElementsInstanced(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0], instancedTransforms[0]->getTransformSize());
     }
@@ -151,16 +193,13 @@ void RenderModule::drawInstanced()
 void RenderModule::drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials)
 {
   glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
-  // glActiveTexture(GL_TEXTURE0 + (unsigned int)10);
   for (unsigned int i = 0; i < renderList.size(); i++)
   {
     if (materials) glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), i * sizeof(Material), sizeof(Material));
     unsigned int bufferIndex = -1;
-    // unsigned int texture = matLib->getMaterial(i).texture;
-    // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, matLib->getMaterial(i).texture);
-    
     for (unsigned int j = 0; j < renderList[i].size(); j++)
     {
+      if (!renderList[i][j].second->shouldRenderDefault && materials) continue;
       if (bufferIndex != renderList[i][j].second->bufferIndex)
       {
         if (!materials && !renderList[i][j].second->castShadow) break; 

@@ -12,6 +12,8 @@ SceneFactory::~SceneFactory()
 
 Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 {
+  engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "redStandard");
+
   std::vector<Object*> objects;
 
   Object* autoScroller = new Object({});
@@ -20,7 +22,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   objects.push_back(autoScroller);
 
   Object * player = new Object({});
-  player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
+  player->addComponent(new CustomShaderTransform("redStandard", Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
   player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
@@ -42,7 +44,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     objects.push_back(platform);
   }
 
-  DefferedRenderModule * renderModule = new DefferedRenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
 
   return new Scene(objects, {

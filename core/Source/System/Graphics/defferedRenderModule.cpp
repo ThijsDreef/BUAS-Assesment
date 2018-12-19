@@ -12,11 +12,11 @@ DefferedRenderModule::DefferedRenderModule(GeometryLib * geo, MaterialLib * mat,
   geoLib = geo;
   matLib = mat;
   shaderManager = shader;
-  shaderManager->createShaderProgram("shaders/defferedStandard.vert", "shaders/defferedStandard.frag", "deffered");
-  shaderManager->createShaderProgram("shaders/defferedFinish.vert", "shaders/defferedFinish.frag", "deffered-finish");
-  shaderManager->createShaderProgram("shaders/directionalLight.vert", "shaders/directionalLight.frag", "directionalLight");
-  shaderManager->createShaderProgram("shaders/defferedInstanced.vert", "shaders/defferedInstanced.frag", "defferedInstanced");
-  shaderManager->createShaderProgram("shaders/directionalLightInstanced.vert", "shaders/directionalLightInstanced.frag", "directionalLightInstanced");
+  shaderManager->createShaderProgram("shaders/deffered/defferedStandard.vert", "shaders/deffered/defferedStandard.frag", "deffered");
+  shaderManager->createShaderProgram("shaders/deffered/defferedFinish.vert", "shaders/deffered/defferedFinish.frag", "deffered-finish");
+  shaderManager->createShaderProgram("shaders/shadow/directionalLight.vert", "shaders/shadow/directionalLight.frag", "directionalLight");
+  shaderManager->createShaderProgram("shaders/deffered/defferedInstanced.vert", "shaders/deffered/defferedInstanced.frag", "defferedInstanced");
+  shaderManager->createShaderProgram("shaders/shadow/directionalLightInstanced.vert", "shaders/shadow/directionalLightInstanced.frag", "directionalLightInstanced");
 
 
   glEnable(GL_CULL_FACE);
@@ -245,8 +245,6 @@ void DefferedRenderModule::drawInstanced()
     for (unsigned int j = 0; j < geoLib->getTotalGroups(instancedTransforms[i]->getModel()); j++) {
       unsigned int materialId = matLib->getMaterialId(instancedTransforms[i]->getMaterial(j));
       glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), materialId * sizeof(Material), sizeof(Material));
-      // unsigned int texture = matLib->getMaterial(materialId).texture;
-      // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, texture);
       std::vector<unsigned int> indice = geoLib->getIndice(instancedTransforms[i]->getModel(), j);
       glDrawElementsInstanced(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0], instancedTransforms[0]->getTransformSize());
     }
@@ -256,14 +254,10 @@ void DefferedRenderModule::drawInstanced()
 void DefferedRenderModule::drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials)
 {
   glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
-  // glActiveTexture(GL_TEXTURE0 + (unsigned int)10);
   for (unsigned int i = 0; i < renderList.size(); i++)
   {
     if (materials) glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), i * sizeof(Material), sizeof(Material));
     unsigned int bufferIndex = -1;
-    // unsigned int texture = matLib->getMaterial(i).texture;
-    // if (texture < 1000) glBindTexture(GL_TEXTURE_2D, matLib->getMaterial(i).texture);
-    
     for (unsigned int j = 0; j < renderList[i].size(); j++)
     {
       if (bufferIndex != renderList[i][j].second->bufferIndex)

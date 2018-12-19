@@ -42,6 +42,7 @@ unsigned int ShaderManager::createShader(GLenum shaderType, std::string source, 
 
 unsigned int ShaderManager::createShaderProgram(const char* vertex, const char* fragment, std::string shader)
 {
+  if (shaderlist[shader]) return 0;
   std::string vertexShaderCode = readShader(vertex);
 	std::string fragmentShaderCode = readShader(fragment);
 	unsigned int vertexShader = createShader(GL_VERTEX_SHADER, vertexShaderCode, "vertex shader");
