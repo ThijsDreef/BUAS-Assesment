@@ -41,7 +41,7 @@ float noise (in vec2 st) {
 }
 
 float bump(vec3 pos) {
-    return noise((pos.xz - uTime) / 2) * noise((pos.xz + uTime) / 2);
+    return noise((pos.xz - uTime) / 2) * noise((pos.xz + uTime) / 2) * 0.5;
 }
 vec3 filterNormal() 
 { 

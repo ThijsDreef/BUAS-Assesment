@@ -9,7 +9,7 @@ window(title.c_str(), iWidth, iHeight, bitDepth, fullScreen)
   this->frameCap = frameCap;
   loadResources();
   input = window.getInput();
-  window.vsync(true);
+  window.vsync(false);
 }
 
 Engine::Engine(double frameCap, int iWidth, int iHeight)
@@ -21,7 +21,7 @@ window("default", iWidth, iHeight, 32, true)
   this->frameCap = frameCap;
   loadResources();
   input = window.getInput();
-  window.vsync(true);
+  window.vsync(false);
 
 }
 
@@ -79,7 +79,7 @@ void Engine::run()
       elapsedTime = 0;
     }
     else
-      std::this_thread::sleep_for(std::chrono::milliseconds((int)((frameCap - elapsedTime) * 1000.0)));
+      std::this_thread::sleep_for(std::chrono::milliseconds((int)((frameCap - elapsedTime) * 100.0)));
     if (inputResetTimer > 1.0 / 60.0)
     {
       window.updateInput();

@@ -12,19 +12,37 @@ void PlayerMovement::update()
 {
   
   Vec3<float> frameForce;
-
+  int targetAngle = -1;
   if (input->getKeyDown(87)) {
-    frameForce[2] -= 2;
+    frameForce[0] += 1.5;
+    targetAngle = 0;
+    if (input->getKeyDown(65)) {
+      targetAngle = 315;
+    }
+    if (input->getKeyDown(68)) {
+      targetAngle = 45;
+    }
   } else if (input->getKeyDown(83)) {
-    frameForce[2] += 2;
+    frameForce[0] += 1.5;
+    targetAngle = 180;
+    if (input->getKeyDown(65)) {
+      targetAngle = 225;
+    }
+    if (input->getKeyDown(68)) {
+      targetAngle = 135;
+    }
+  } else if (input->getKeyDown(65)) {
+    frameForce[0] += 1.5;
+    targetAngle = 270;
+  } else if (input->getKeyDown(68)) {
+    frameForce[0] += 1.5;
+    targetAngle = 90;
+  }
+  if (targetAngle != -1) {
+    int delta = ((int)targetAngle - (int)(*rotPointer)[1] + 540) % 360 - 180;
+    (*rotPointer)[1] += delta * 0.175;
   }
 
-  if (input->getKeyDown(65)) {
-    frameForce[0] -= 2;    
-  } else if (input->getKeyDown(68)) {
-    frameForce[0] += 2;
-  }
- 
   if (input->getKeyDown(32) && grounded) {
     frameForce[1] += 55;
     boosted = false;
@@ -43,7 +61,7 @@ void PlayerMovement::update()
 
   force += frameForce;
   //semi correct way to slow based on passed time
-  force.lerp(Vec3<float>(0, 0, 0), 1 - powf(0.05, dt));
+  force.lerp(Vec3<float>(0, 0, 0), 1 - powf(0.1, dt));
   
   *posPointer += force * dt;
   grounded = false;
