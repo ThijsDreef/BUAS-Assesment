@@ -13,6 +13,8 @@ in vec3 out_normal;
 in vec4 eye;
 in vec2 out_uv;
 
+uniform float uTexScroll;
+
 uniform sampler2D texture0;
 uniform sampler2D texture10;
 
@@ -63,8 +65,11 @@ vec4 getExposure(vec3 eye, vec3 normal, vec3 ldir, vec4 color)
 
 void main(void)
 {
-  vec4 diffuse = texture(textureId, out_uv) + color;
-  out_color = getExposure(eye.xyz, out_normal, normalize(directionalLight), diffuse);
+  vec2 uv = out_uv;
+  uv.y += uTexScroll;
+  uv *= 4;
+  out_color = texture(textureId, uv);
+  out_color.xyz *= max(dot(out_normal, directionalLight), 0.);
   out_color *= vec4(1.0) - vec4(ShadowCalculation(uLightVP * out_pos, out_normal));
-  out_color += diffuse * 0.2;
+  out_color *= 0.8;
 }

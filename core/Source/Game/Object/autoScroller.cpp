@@ -39,6 +39,7 @@ void AutoScroller::update()
     if (!activeTransforms[i]) activeTransforms.erase(activeTransforms.begin() + i);
     Vec3<float> distance =  activeTransforms[i]->getPos() - resetLocation;
     distance[2] = 0;
+    distance[1] = 0;
     float dist = std::fabs(distance.length());
     if (dist < 2.5) {
       // add to freeTransforms

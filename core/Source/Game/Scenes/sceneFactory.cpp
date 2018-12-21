@@ -17,12 +17,12 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   std::vector<Object*> objects;
 
   Object* autoScroller = new Object({});
-  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, 0, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-4, 0, 0), engine.deltaTime, autoScroller));
+  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-4, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);
 
   Object * player = new Object({});
-  player->addComponent(new CustomShaderTransform("redStandard", Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
+  player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
   player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
@@ -38,11 +38,15 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
-    platform->addComponent(new Transform(Vec3<float>(30 * i, 0, 0), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"red"}, platform));
-    platform->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 1, 10)), platform->getComponent<Transform>(), platform, "ground"));
+    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "cube", {"red"}, platform));
+    platform->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     objects.push_back(platform);
   }
+
+  Object * sea = new Object({});
+  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(4, 4, 4), Vec3<float>(), "sea", {"water"}, sea));
+  objects.push_back(sea);
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);

@@ -33,6 +33,8 @@ void RenderModule::update()
   camera = camObject->getMatrix();
   matBufferer.setBuffer(transforms, camera, projection);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, matBufferer.getBufferId());
+
+  //TODO REFRACTOR THIS
   std::vector<std::vector<std::pair<unsigned int, Transform*>>> renderList;
   for (unsigned int i = 0; i < transforms.size(); i++)
   {
@@ -114,8 +116,6 @@ void RenderModule::addObject(Object * object)
   Transform *  transObj = object->getComponent<Transform>();
   if (transObj && transObj->shouldRender)
   {
-
-    
     transObj->added();
     transforms.push_back(transObj);
 
@@ -136,41 +136,48 @@ void RenderModule::addObject(Object * object)
   if (itObj) instancedTransforms.push_back(itObj);
 }
 
+//TODO REFRACTOR THIS
 void RenderModule::drawCustom(Matrix<float> & lightMatrix, Vec3<float> & directionalLight)
 {
-
-  // sorting
-
-  // std::map<std::string, std::vector<std::pair<unsigned int, CustomShaderTransform>>> dict;
-  // for (unsigned int i = 0; i < customShaderTransforms.size(); i++) {
-  //   if (customShaderTransforms[i]->shouldRender) {
-  //     for (unsigned int j = 0; j < customShaderTransforms[i]->materials.size(); j++) {
-  //       dict[customShaderTransforms[i]].push_back(std::pair<unsigned int, CustomShaderTransform>(customShaderTransforms[i]->materials[j], customShaderTransforms[i]));
-  //     }
-  //   }
-  // }
   glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
+
+  // sorting please dont look at this code its really bad
+  //okay this is bad
+  std::map<std::string, std::vector<std::vector<std::pair<unsigned int, CustomShaderTransform*>>>> dict;
   for (unsigned int i = 0; i < customShaderTransforms.size(); i++) {
     if (customShaderTransforms[i]->shouldRender) {
-      std::string shader = customShaderTransforms[i]->getShader();
-      glUseProgram(shaderManager->getShader(shader));
-      glUniformMatrix4fv(shaderManager->uniformLocation(shader, "uLightVP"), 1, false, &lightMatrix.matrix[0]);
-      glUniform3f(shaderManager->uniformLocation(shader, "directionalLight"), directionalLight[0], directionalLight[1], directionalLight[2]);
-      glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, matBufferer.getBufferId(), customShaderTransforms[i]->bufferIndex * sizeof(MatrixBufferObject), sizeof(MatrixBufferObject));
-
-      customShaderTransforms[i]->onDraw(shaderManager);
-
-      for (unsigned int j = 0; j < geoLib->getTotalGroups(customShaderTransforms[i]->model); j++) 
+      for (unsigned int j = 0; j < customShaderTransforms[i]->materials.size(); j++) 
       {
-
         unsigned int materialId = matLib->getMaterialId(customShaderTransforms[i]->materials[j]);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), materialId * sizeof(Material), sizeof(Material));
-        std::vector<unsigned int> indice = geoLib->getIndice(customShaderTransforms[i]->model, j);
+        if (materialId >= dict[customShaderTransforms[i]->getShader()].size()) for (unsigned int t = dict[customShaderTransforms[i]->getShader()].size(); t <= materialId; t++) dict[customShaderTransforms[i]->getShader()].push_back(std::vector<std::pair<unsigned int, CustomShaderTransform*>>());
+        dict[customShaderTransforms[i]->getShader()][materialId].push_back(std::pair<unsigned int, CustomShaderTransform*>(j, customShaderTransforms[i]));
+      }
+    }
+  }
 
-        glDrawElements(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0]);      
+  //but this is even worse but you know it works
+  for (auto const & x : dict) {
+    std::string shader = x.first;
+    glUseProgram(shaderManager->getShader(shader));
+    glUniformMatrix4fv(shaderManager->uniformLocation(shader, "uLightVP"), 1, false, &lightMatrix.matrix[0]);
+    glUniform3f(shaderManager->uniformLocation(shader, "directionalLight"), directionalLight[0], directionalLight[1], directionalLight[2]);
+    for (unsigned int i = 0; i < x.second.size(); i++) 
+    {
+      glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), i * sizeof(Material), sizeof(Material));
+      unsigned int bufferIndex = -1;
+      for (unsigned int j = 0; j < x.second[i].size(); j++)
+      {
+        x.second[i][j].second->onDraw(shaderManager);
+        if (bufferIndex != x.second[i][j].second->bufferIndex)
+        {
+          bufferIndex = x.second[i][j].second->bufferIndex;
+          glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, matBufferer.getBufferId(), bufferIndex * sizeof(MatrixBufferObject), sizeof(MatrixBufferObject));
+        }
+        std::vector<unsigned int> indice = geoLib->getIndice(x.second[i][j].second->model, x.second[i][j].first);
+        glDrawElements(GL_TRIANGLES, indice.size(), GL_UNSIGNED_INT, &indice[0]);
+        x.second[i][j].second->onDrawExit(shaderManager);
       }
 
-      customShaderTransforms[i]->onDrawExit(shaderManager);
     }
   }
 }
@@ -190,6 +197,7 @@ void RenderModule::drawInstanced()
   }
 }
 
+//TODO REFRACTOR THIS
 void RenderModule::drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials)
 {
   glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
