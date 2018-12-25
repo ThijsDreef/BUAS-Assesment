@@ -11,8 +11,6 @@ RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager *
   width = w;
   height = h;
   shaderManager = shader;
-  geoLib->setUpBuffer();
-  matLib->setUpBuffer();
   shadowFbo.bind();
   shadowFbo.attachDepth(4096, 4096);
   setUpFormat();

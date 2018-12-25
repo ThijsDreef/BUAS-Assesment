@@ -18,7 +18,8 @@ private:
   MaterialLib materialLib;
   ShaderManager shaderManager;
   Input * input;
-  std::stack<Scene*> scene;
+  std::stack<Scene*> sceneStack;
+  std::vector<Scene*> toBeDeletedScenes;
   void run();
   void stop();
   bool running;
@@ -33,6 +34,8 @@ public:
   Engine (std::string title, int iWidth, int iHeight, int bitDepth, bool fullScreen, double frameCap);
   Engine (double frameCap, int iWidth, int iHeight);
   void start(Scene * start);
+  void pushScene(Scene * scene);
+  Scene * popScene(bool clean);
   void quit();
   GeometryLib * getGeoLib();
   MaterialLib * getMatLib();

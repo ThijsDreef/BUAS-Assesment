@@ -10,6 +10,14 @@ SceneFactory::~SceneFactory()
 
 }
 
+Scene * SceneFactory::createScene(const std::string & sceneName, Engine & engine)
+{
+  if (sceneName == "endlessRunnerScene") {
+    return createEndlessRunnerScene(engine);
+  } 
+  else return 0;
+}
+
 Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 {
   engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "redStandard");
@@ -26,6 +34,8 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
   player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
+  player->addComponent(new DeathWall(-50, player));
+  player->addComponent(new LoadSceneEvent("dead", "endlessRunnerScene", player, this, engine, player));
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
 
 
@@ -35,8 +45,9 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
     platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "cube", {"red"}, platform));
-    platform->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
+    platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 1.5, engine.deltaTime, platform));
+    platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     objects.push_back(platform);
   }
@@ -44,11 +55,10 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
   objects.push_back(sea);
-
-  Vec3<float>* memoryLeak = new Vec3<float>(0, 0, 0);
   
   Object * camera = new Object({});
-  camera->addComponent(new FollowCamera(memoryLeak, camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+  //this needs refractoring this is a memory leak
+  camera->addComponent(new FollowCamera(new Vec3<float>(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
   camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   objects.push_back(camera);
 

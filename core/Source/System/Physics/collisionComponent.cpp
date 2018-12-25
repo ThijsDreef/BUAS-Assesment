@@ -3,12 +3,12 @@
 CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Transform * t, Object * object, std::string tag) : Component(object)
 {
   coll = collider;
-  collider->isStatic = isStatic;
+  coll->isStatic = isStatic;
   if (isStatic) {
     coll->isMoveAble = false;
   }
   transform = t;
-  collider->setCollisionComponent(this);
+  coll->setCollisionComponent(this);
   coll->tag = tag;
   if (transform)
     coll->syncPos(&transform->getPos());
@@ -16,7 +16,7 @@ CollisionComponent::CollisionComponent(bool isStatic, Collider * collider, Trans
 
 CollisionComponent::~CollisionComponent()
 {
-
+  delete coll;
 }
 
 void CollisionComponent::update()

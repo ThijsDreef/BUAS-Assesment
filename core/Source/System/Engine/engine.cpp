@@ -49,7 +49,9 @@ void Engine::loadResources()
 void Engine::start(Scene * start)
 {
   running = true;
-  scene.push(start);
+  geometryLib.setUpBuffer();
+  materialLib.setUpBuffer();
+  sceneStack.push(start);
   run();
   stop();
 }
@@ -63,12 +65,16 @@ void Engine::run()
   unsigned int currentFrames = 0;
   while (!window.done && running)
   {
+    for (unsigned int i = 0; i < toBeDeletedScenes.size(); i++) {
+      delete toBeDeletedScenes[i];
+    }
+    toBeDeletedScenes.clear();
     auto start = std::chrono::system_clock::now();
     if (elapsedTime > frameCap)
     {
       deltaTime = elapsedTime;
       window.handleMessages();
-      scene.top()->update();
+      sceneStack.top()->update();
       window.updateFrameBuffer();
       currentFrames ++;
       if (fpsTimer > 1) {
@@ -97,11 +103,24 @@ void Engine::run()
 
 void Engine::stop()
 {
-  for (unsigned int i = 0; i < scene.size(); i++)
+  for (unsigned int i = 0; i < sceneStack.size(); i++)
   {
-    delete scene.top();
-    scene.pop();
+    delete sceneStack.top();
+    sceneStack.pop();
   }
+}
+
+void Engine::pushScene(Scene* scene)
+{
+  sceneStack.push(scene);
+}
+
+Scene * Engine::popScene(bool clean) 
+{
+  Scene * scene = sceneStack.top();
+  sceneStack.pop();
+  if (clean) toBeDeletedScenes.push_back(scene);
+  return scene;
 }
 
 void Engine::quit()

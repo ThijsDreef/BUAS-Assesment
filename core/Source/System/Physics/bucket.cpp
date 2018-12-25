@@ -21,7 +21,8 @@ Bucket::Bucket(AABB aabb, Bucket * top, int recursiveCount)
 
 Bucket::~Bucket()
 {
-
+  for (unsigned int i = 0; i < children.size(); i++)
+    delete children[i];
 }
 
 void Bucket::Bucket::addStaticNode(Collider * coll)
