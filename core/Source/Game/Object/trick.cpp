@@ -24,7 +24,7 @@ void Trick::addToScore(int scoreToAdd)
 void Trick::clearTrick()
 {
   setText(currentTrick + ": " + std::to_string(score + scoreDelta));
-  scoreObject->addScore(score + scoreDelta);
+  scoreObject->addScore((float)score + scoreDelta);
   score = 0;
   enabled = false;
   scoreDelta = 0;

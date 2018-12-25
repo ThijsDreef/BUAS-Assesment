@@ -14,8 +14,10 @@ Scene * SceneFactory::createScene(const std::string & sceneName, Engine & engine
 {
   if (sceneName == "endlessRunnerScene") {
     return createEndlessRunnerScene(engine);
-  } 
-  else return 0;
+  } else if (sceneName == "menu") {
+    return 0;
+  } else 
+    return 0;
 }
 
 Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
@@ -25,6 +27,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   std::vector<Object*> objects;
 
   Object* autoScroller = new Object({});
+  autoScroller->addComponent(new Score(Vec2<float>(-0.2, 1), autoScroller));
   autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-4, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);

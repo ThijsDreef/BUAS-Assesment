@@ -7,12 +7,12 @@ class Score : public UIText
 {
 private:
   int score = 0;
-  int scoreDelta = 0;
+  float scoreDelta = 0;
 public:
   Score(Vec2<float> position, Object * object);
   virtual ~Score();
   void update();
-  void addScore(int addToScore);
+  void addScore(float addToScore);
 };
 
 #endif

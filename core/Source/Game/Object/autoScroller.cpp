@@ -5,6 +5,7 @@ AutoScroller::AutoScroller(Vec3<float> spawn, Vec3<float> respawn, Vec3<float> d
   spawnLocation = spawn;
   resetLocation = respawn;
   moveDirection = direction;
+  score = object->getComponent<Score>();
 }
 
 AutoScroller::~AutoScroller()
@@ -34,6 +35,12 @@ void AutoScroller::addTransform(Transform * transform)
 
 void AutoScroller::update()
 {
+  passedTime += dt;
+  if (passedTime > 10) {
+    passedTime = 0;
+    moveDirection *= 1.1;
+  }
+  score->addScore(std::fabs(moveDirection.length()) * dt);
   for (unsigned int i = 0; i < activeTransforms.size(); i++) 
   {
     if (!activeTransforms[i]) activeTransforms.erase(activeTransforms.begin() + i);

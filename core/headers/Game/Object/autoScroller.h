@@ -2,6 +2,8 @@
 #define AUTOSCROLLER__
 #include "System/Engine/EngineObjects/component.h"
 #include "System/Engine/EngineObjects/transform.h"
+#include "Game/Object/score.h"
+
 #include "Math/vec3.h"
 #include <stack>
 #include <vector>
@@ -12,7 +14,9 @@ private:
   Vec3<float> spawnLocation;
   Vec3<float> resetLocation;
   Vec3<float> moveDirection;
+  Score * score;
   double & dt;
+  double passedTime = 0;
   std::vector<Transform*> activeTransforms;
   std::stack<Transform*> freeTransforms;
 public:
