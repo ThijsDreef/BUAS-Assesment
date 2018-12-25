@@ -23,6 +23,7 @@
 #include "Game/Object/score.h"
 #include "Game/Object/waveCustomTransform.h"
 #include "Game/Object/rotateToMouse.h"
+#include "Game/Object/sinkAble.h"
 #include "Game/Object/chunkSpawner.h"
 #include "Game/Object/autoScroller.h"
 

@@ -289,5 +289,5 @@ void RenderModule::updatePerspective(int width, int height, int fov, float near,
 
 void RenderModule::updateOrthoGraphic(int width, int height, float near, float far)
 {
-  projection.orthographicView((float)width / height * 10, 10, near, far);
+  projection.orthographicView((float)width / height * 12, 12, near, far);
 }

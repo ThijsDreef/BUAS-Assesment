@@ -45,12 +45,12 @@ void PlayerMovement::update()
 
   if (input->getKeyDown(32) && grounded) {
     frameForce[1] += 55;
+    force[1] = 0;
     boosted = false;
   }
   if (input->getKeyDown(16) && !boosted) {
     boosted = true;
-    force[0] *= 1.5;
-    force[1] += 20;
+    force[1] += 40;
   }
 
   frameForce[1] -= 2;
@@ -80,7 +80,7 @@ void PlayerMovement::receiveMessage(const std::string & name, void* data)
     if (coll->other->tag == "ground") {
       if (coll->firstResolution[1] < 0) {
         grounded = true;
-        force[1] = 0;
+        force[1] = -20;
       }
     }
   }
