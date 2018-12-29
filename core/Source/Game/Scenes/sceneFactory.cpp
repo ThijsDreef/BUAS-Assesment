@@ -15,30 +15,89 @@ Scene * SceneFactory::createScene(const std::string & sceneName, Engine & engine
   if (sceneName == "endlessRunnerScene") {
     return createEndlessRunnerScene(engine);
   } else if (sceneName == "menu") {
-    return 0;
+    return createMainMenuScene(engine);
   } else 
     return 0;
 }
 
+Scene * SceneFactory::createMainMenuScene(Engine & engine)
+{
+  std::vector<Object*> objects;
+  Object * sea = new Object({});
+  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  objects.push_back(sea);
+
+  Object * pinguin = new Object({});
+  pinguin->addComponent(new Transform(Vec3<float>(0, 2, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "pinguin", {}, pinguin));
+  objects.push_back(pinguin);
+
+  Object * ice = new Object({});
+  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "cube", {"red"}, ice));
+  objects.push_back(ice);
+
+  Object * camera = new Object({});
+  //this needs refractoring this is a memory leak
+  camera->addComponent(new FollowCamera(new Vec3<float>(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+  objects.push_back(camera);
+
+  Object * title = new Object({});
+  title->addComponent(new UIText("endless runner", Vec2<float>(-1, 0.8), title));
+  title->getComponent<UIText>()->shouldCenter = true;
+  objects.push_back(title);
+
+  Object * spaceToStart = new Object({});
+  spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.6), spaceToStart));
+  spaceToStart->addComponent(new LoadSceneEvent("start", "endlessRunnerScene", spaceToStart, this, engine, spaceToStart));
+  spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start")}, engine.getInput(), spaceToStart));
+  spaceToStart->getComponent<UIText>()->shouldCenter = true;
+  objects.push_back(spaceToStart);
+
+  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
+
+  return new Scene(objects, {
+    {renderModule},
+    {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
+  });
+}
+
+Scene * SceneFactory::createAnimationScene(Engine & engine)
+{
+  std::vector<Object*> objects;
+  engine.getInput()->setMouseLock(true);
+
+  Object * player = new Object({});
+  player->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(1, 1, 1), Vec3<float>(), "tentakel", {"None"}, player));
+  objects.push_back(player);
+
+  Object * camera = new Object({});
+  camera->addComponent(new FpsCamera(engine.getInput(), camera));
+  objects.push_back(camera);
+
+  return new Scene(objects, {
+    {new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight())}
+  });
+
+}
+
 Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 {
-  engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "redStandard");
-
   std::vector<Object*> objects;
 
   Object* autoScroller = new Object({});
   autoScroller->addComponent(new Score(Vec2<float>(-0.2, 1), autoScroller));
+  autoScroller->getComponent<Score>()->shouldCenter = true;
+
   autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-4, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);
 
   Object * player = new Object({});
-  player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(), "snowman", {}, player));
+  player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(1, 1, 1), Vec3<float>(), "pinguin", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
-  player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
   player->addComponent(new DeathWall(-50, player));
-  player->addComponent(new LoadSceneEvent("dead", "endlessRunnerScene", player, this, engine, player));
+  player->addComponent(new LoadSceneEvent("dead", "menu", player, this, engine, player));
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
 
 
@@ -49,7 +108,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     Object * platform = new Object({});
     platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "cube", {"red"}, platform));
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
-    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 1.5, engine.deltaTime, platform));
+    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2.5, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     objects.push_back(platform);
@@ -62,7 +121,6 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   Object * camera = new Object({});
   //this needs refractoring this is a memory leak
   camera->addComponent(new FollowCamera(new Vec3<float>(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
-  camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   objects.push_back(camera);
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
@@ -157,7 +215,6 @@ Scene * SceneFactory::createMainScene(Engine & engine)
 
   //create camera
   Object * camera = new Object({});
-  camera->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, camera));
   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
 
   objects.push_back(camera);
@@ -169,10 +226,6 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   objects.push_back(scoreObject);
 
   CollisionModule * collisionModule = new CollisionModule(200, 4);
-  // player->addComponent(new TextDebug<double>("dt: ", Vec2<float>(-1, 0.8), &engine.deltaTime, player));
-
-  player->addComponent(new TextDebug<float>("->", Vec2<float>(-1, 0.8), &player->getComponent<Transform>()->getPos()[1], player));
-
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);

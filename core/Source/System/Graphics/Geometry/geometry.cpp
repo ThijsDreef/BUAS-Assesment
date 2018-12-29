@@ -50,7 +50,7 @@ void Geometry::parseDaeGeometry(rapidxml::xml_node<> * geometryNode)
 			{
 				verticesAlias = vertices->first_node()->first_attribute("source")->value();
 			}
-			for (rapidxml::xml_node<>* triangles = mesh->first_node("triangles"); triangles; triangles = triangles->next_sibling("triangles"))
+			for (rapidxml::xml_node<>* triangles = mesh->first_node("polylist"); triangles; triangles = triangles->next_sibling("polylist"))
 			{
 				std::string vSource;
 				std::string nSource;

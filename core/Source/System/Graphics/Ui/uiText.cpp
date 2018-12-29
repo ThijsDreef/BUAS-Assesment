@@ -16,7 +16,7 @@ UIText::~UIText()
 Matrix<float> & UIText::getMatrix()
 {
     Matrix<float> temp;
-    temp.translateMatrix(Vec3<float>(pos[0], pos[1] * inverseAspect, 0));
+    temp.translateMatrix(Vec3<float>((shouldCenter) ? centerX : pos[0], pos[1] * inverseAspect, 0));
     // might need to fix this shit
     mv.scaleMatrix(Vec3<float>(scale, scale, 1));
     mv = temp.multiplyByMatrix(mv);
@@ -45,7 +45,7 @@ void UIText::buildBuffer(Font * font, float inverseAspect)
         FontCharacter character = font->getCharacter(text[j]);
         for (unsigned int k = 0; k < character.vertices.size(); k++)
         {
-            float kerning = font->getKerning(text[(j + 1 >= 0 ? j + 1 : 0) ], text[j]).amount;
+            int kerning = font->getKerning(text[(j + 1 >= 0 ? j + 1 : 0) ], text[j]).amount;
             // float kerning = 0;
             Vec2<float> vt = character.vertices[k].vertexPosition;
             vt = vt + offset;
@@ -63,6 +63,7 @@ void UIText::buildBuffer(Font * font, float inverseAspect)
     }
     this->inverseAspect = inverseAspect;
     Matrix<float> temp;
+    centerX = -offset[0] * 0.5;
     temp.translateMatrix(Vec3<float>(pos[0], pos[1] * inverseAspect, 0));
     // might need to fix this shit
     mv.scaleMatrix(Vec3<float>(scale, scale, 1));

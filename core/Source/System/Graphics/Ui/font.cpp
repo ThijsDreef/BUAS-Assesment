@@ -28,7 +28,6 @@ void Font::parseFontFile(std::string fileName)
 {
     std::fstream file(fileName);
     std::string line;
-    std::cout << fileName;
     if (file.is_open()) 
     {
         while (std::getline(file, line))

@@ -1,6 +1,8 @@
 #ifndef SINKABLE__
 #define SINKABLE__
 #include "System/Engine/EngineObjects/object.h"
+#include "System/Physics/collisionModule.h"
+#include "Util/ease.h"
 #include "Math/vec3.h"
 
 class SinkAble : public Component

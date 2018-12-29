@@ -44,7 +44,7 @@ void DefferedRenderModule::setUpFormat()
 {
   glBindVertexArray(defaultVao);
   // stream, buffer, offset, stride
-  glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
+  glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, sizeof(VertexFormat));
   glEnableVertexAttribArray(0);
   glVertexAttribFormat(0, 3, GL_FLOAT, false,  0); // position
   glVertexAttribBinding(0, 0); // position -> stream 0
@@ -240,7 +240,7 @@ void DefferedRenderModule::drawInstanced()
 {
   for (unsigned int i = 0; i < instancedTransforms.size(); i++)
   {
-    glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
+    glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, sizeof(VertexFormat));
     glBindVertexBuffer(1, instancedTransforms[i]->getBufferId(), 0, 64);
     for (unsigned int j = 0; j < geoLib->getTotalGroups(instancedTransforms[i]->getModel()); j++) {
       unsigned int materialId = matLib->getMaterialId(instancedTransforms[i]->getMaterial(j));
@@ -253,7 +253,7 @@ void DefferedRenderModule::drawInstanced()
 
 void DefferedRenderModule::drawGeometry(std::vector<std::vector<std::pair<unsigned int, Transform*>>> & renderList, bool materials)
 {
-  glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, 32);
+  glBindVertexBuffer(0, geoLib->getGeoBufferId(), 0, sizeof(VertexFormat));
   for (unsigned int i = 0; i < renderList.size(); i++)
   {
     if (materials) glBindBufferRange(GL_UNIFORM_BUFFER, 0, matLib->matBuffer.getBufferId(), i * sizeof(Material), sizeof(Material));

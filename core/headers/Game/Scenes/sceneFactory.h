@@ -29,6 +29,7 @@
 #include "Game/Object/chunkSpawner.h"
 #include "Game/Object/autoScroller.h"
 #include "Game/Object/loadSceneEvent.h"
+#include "Game/Object/eventOnKey.h"
 
 
 //WARNING ALL SCENES USED NEED TO BE DELETED BY USER
@@ -39,7 +40,9 @@ class SceneFactory : public AbstractSceneFactory {
 public:
   SceneFactory();
   Scene * createScene(const std::string & sceneName, Engine & engine);
+  Scene * createMainMenuScene(Engine & engine);
   Scene * createEndlessRunnerScene(Engine & engine);
+  Scene * createAnimationScene(Engine & engine);
   Scene * createMainScene(Engine & engine);
   virtual ~SceneFactory();
 };

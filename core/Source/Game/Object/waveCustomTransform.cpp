@@ -13,8 +13,8 @@ WaveCustomTransform::~WaveCustomTransform()
 
 void WaveCustomTransform::onDraw(ShaderManager * shaderManger)
 {
-  glUniform1f(shaderManger->uniformLocation(shader, "uTime"), passedTime * 0.2);
-  glUniform1f(shaderManger->uniformLocation(shader, "uTexScroll"), passedTime * 0.08);
+  glUniform1f(shaderManger->uniformLocation(shader, "uTime"), 0.1 + passedTime * 0.2);
+  glUniform1f(shaderManger->uniformLocation(shader, "uTexScroll"), 0.1 + passedTime * 0.08);
 
   passedTime += dt;
 }

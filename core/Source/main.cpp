@@ -3,7 +3,7 @@
 
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920, 1080, 32, true, 1/60.0);
+  Engine engine("pingu on a mission", 1920 * 0.5, 1080 * 0.5, 32, false, 1/60.0);
   Texture * texture = new Texture("models/textures/iceTexture.png");
   engine.getMatLib()->addTexture("iceTexture", texture);
   Material mat;
@@ -16,6 +16,9 @@ int main(int argc, char const *argv[])
   water->makeResident();
   Material m;
   m.texture = water->getResidentHandle();
+  m.color = Vec4<float>(0.2, 0.2, 0.2, 1);
+
+  engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "redStandard");
 
 
 
@@ -27,6 +30,6 @@ int main(int argc, char const *argv[])
   engine.getMatLib()->addMaterial("water", m);
 
 
-  engine.start(sceneFactory.createEndlessRunnerScene(engine));
+  engine.start(sceneFactory.createMainMenuScene(engine));
   return 0;
 }
