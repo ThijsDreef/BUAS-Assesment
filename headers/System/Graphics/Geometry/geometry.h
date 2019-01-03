@@ -17,11 +17,13 @@
 class Geometry
 {
 private:
+	std::map<std::string, std::vector<float>> float_arrays;
   //sort indices per material
   std::vector<std::vector<unsigned int>> allIndices;
   //set indices with offset for large geo buffer
   std::vector<std::vector<unsigned int>> offsetIndices;
   int offset;
+  void parseDaeControllers(rapidxml::xml_node<> * controllersNode);
   void parseDaeImages(rapidxml::xml_node<> * imageNode);
   void parseDaeMaterials(rapidxml::xml_node<> * materialNode);
   void parseDaeGeometry(rapidxml::xml_node<> * geometryNode);

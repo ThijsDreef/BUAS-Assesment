@@ -25,121 +25,120 @@ void Geometry::setIndiceOffset(int offset)
 
 void Geometry::parseDaeGeometry(rapidxml::xml_node<> * geometryNode)
 {
-	std::map<std::string, std::vector<float>> float_arrays;
 	// for all geomtries in library_geometries
-		for (rapidxml::xml_node<>* mesh = geometryNode->first_node("mesh"); mesh; mesh = mesh->next_sibling("mesh"))
+	for (rapidxml::xml_node<>* mesh = geometryNode->first_node("mesh"); mesh; mesh = mesh->next_sibling("mesh"))
+	{
+		std::string verticesAlias;
+		// for all meshes in geomtries
+		for (rapidxml::xml_node<>* source = mesh->first_node("source"); source; source = source->next_sibling("source"))
 		{
-			std::string verticesAlias;
-			// for all meshes in geomtries
-			for (rapidxml::xml_node<>* source = mesh->first_node("source"); source; source = source->next_sibling("source"))
+			// for all sources in mesh
+			std::string temp = source->name();
+			std::string id = source->first_attribute()->value();
+			std::string tokens = source->first_node()->value();
+			char* token = strtok(&tokens[0], " ");
+			while (token != 0) 
 			{
-				// for all sources in mesh
-				std::string temp = source->name();
-				std::string id = source->first_attribute()->value();
-				std::cout << id << "\n";
-				std::string tokens = source->first_node()->value();
-				char* token = strtok(&tokens[0], " ");
-				while (token != 0) 
-				{
-					float_arrays[id].push_back((float)atof(token));
-					token = std::strtok(0, " ");
-				}
-				std::cout << float_arrays[id].size() << "\n"; 
-			}
-			for (rapidxml::xml_node<>* vertices = mesh->first_node("vertices"); vertices; vertices = vertices->next_sibling("vertices"))
-			{
-				verticesAlias = vertices->first_node()->first_attribute("source")->value();
-			}
-			for (rapidxml::xml_node<>* triangles = mesh->first_node("polylist"); triangles; triangles = triangles->next_sibling("polylist"))
-			{
-				std::string vSource;
-				std::string nSource;
-				std::string uvSource;
-
-				unsigned int vOffset = 0;
-				unsigned int nOffset = 0;
-				unsigned int uvOffset = 0;
-				// read all input tags
-				for (rapidxml::xml_node<>* input = triangles->first_node("input"); input; input = input->next_sibling("input")) 
-				{
-					std::string semantic = input->first_attribute("semantic")->value();
-					// set the offset for this polyList
-					if (semantic == "VERTEX") {
-						vSource = input->first_attribute("source")->value();
-						vOffset = atoi(input->first_attribute("offset")->value());
-					} else if (semantic == "NORMAL") {
-						nSource = input->first_attribute("source")->value();
-						nOffset = atoi(input->first_attribute("offset")->value());
-					} else if (semantic == "TEXCOORD") {
-						uvSource = input->first_attribute("source")->value();
-						uvOffset = atoi(input->first_attribute("offset")->value());
-					}
-				}
-
-				vSource = (verticesAlias.size() != 0) ? verticesAlias.substr(1, verticesAlias.length()) : vSource.substr(1, vSource.length());
-				nSource = nSource.substr(1, nSource.length());
-				uvSource = uvSource.substr(1, uvSource.length());
-
-				//build polyList now
-				//push back the material for the polylist
-				materials.push_back(triangles->first_attribute("material")->value());
-				std::map<std::string, int> uniqueIndices;
-				allIndices.push_back(std::vector<unsigned int>());
-				offsetIndices.push_back(std::vector<unsigned int>());
-				// always expect a polylist in triangles so vcount = 3 everywhere
-				std::string indices = triangles->first_node("p")->value();
-				char* token  = strtok(&indices[0], " ");
-
-				Vec3<float> currentVertex;
-				Vec3<float> currentNormal;
-				Vec2<float> currentUv;
-
-				std::string unique;
-
-				unsigned int count = 0;
-				//how hacky can my parsers get D:
-				unsigned int largestOffset = (vOffset > nOffset) ? ((vOffset > uvOffset) ? vOffset : uvOffset) : (nOffset > uvOffset) ? nOffset : uvOffset;
-
-				while (token != 0) 
-				{
-					int indiceToken = atoi(token);
-					if (count == vOffset) {
-							std::vector<float> array = float_arrays[vSource];
-							currentVertex = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
-							unique += token;
-							unique += "/";
-					} 
-					if (count == nOffset) {
-							std::vector<float> array = float_arrays[nSource];
-							currentNormal = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
-							unique += token;
-							unique += "/";
-					}
-					if (count == uvOffset) {
-							std::vector<float> array = float_arrays[uvSource];
-							currentUv = Vec2<float>(array[indiceToken * 2], array[indiceToken * 2 + 1]);
-							unique += token;
-							unique += "/";
-					}
-					if (count == largestOffset + 1) {
-							auto it = uniqueIndices.find(unique);
-							if (it == uniqueIndices.end()) {
-								storedVertices.push_back(VertexFormat(currentVertex, currentNormal, currentUv));
-								uniqueIndices[unique] = storedVertices.size() - 1;
-							}
-							int indicePos = uniqueIndices[unique];
-							allIndices[allIndices.size() - 1].push_back(indicePos);
-							offsetIndices[offsetIndices.size() - 1].push_back(indicePos);
-							unique.clear();
-					}
-					//make unique string for all indices
-					count++;
-					count %= (largestOffset + 2);
-					if (count != largestOffset + 1)
-						token = strtok(0, " ");
-				}
+				float_arrays[id].push_back((float)atof(token));
+				token = std::strtok(0, " ");
 			}
 		}
+		for (rapidxml::xml_node<>* vertices = mesh->first_node("vertices"); vertices; vertices = vertices->next_sibling("vertices"))
+		{
+			verticesAlias = vertices->first_node()->first_attribute("source")->value();
+		}
+		for (rapidxml::xml_node<>* triangles = mesh->first_node("polylist"); triangles; triangles = triangles->next_sibling("polylist"))
+		{
+			std::string vSource;
+			std::string nSource;
+			std::string uvSource;
+
+			unsigned int vOffset = 0;
+			unsigned int nOffset = 0;
+			unsigned int uvOffset = 0;
+			// read all input tags
+			for (rapidxml::xml_node<>* input = triangles->first_node("input"); input; input = input->next_sibling("input")) 
+			{
+				std::string semantic = input->first_attribute("semantic")->value();
+				// set the offset for this polyList
+				if (semantic == "VERTEX") {
+					vSource = input->first_attribute("source")->value();
+					vOffset = atoi(input->first_attribute("offset")->value());
+				} else if (semantic == "NORMAL") {
+					nSource = input->first_attribute("source")->value();
+					nOffset = atoi(input->first_attribute("offset")->value());
+				} else if (semantic == "TEXCOORD") {
+					uvSource = input->first_attribute("source")->value();
+					uvOffset = atoi(input->first_attribute("offset")->value());
+				}
+			}
+
+			vSource = (verticesAlias.size() != 0) ? verticesAlias.substr(1, verticesAlias.length()) : vSource.substr(1, vSource.length());
+			nSource = nSource.substr(1, nSource.length());
+			uvSource = uvSource.substr(1, uvSource.length());
+
+			//build polyList now
+			//push back the material for the polylist
+			materials.push_back(triangles->first_attribute("material")->value());
+			std::map<std::string, int> uniqueIndices;
+			allIndices.push_back(std::vector<unsigned int>());
+			offsetIndices.push_back(std::vector<unsigned int>());
+			// always expect a polylist in triangles so vcount = 3 everywhere
+			std::string indices = triangles->first_node("p")->value();
+			char* token  = strtok(&indices[0], " ");
+
+			Vec3<float> currentVertex;
+			Vec3<float> currentNormal;
+			Vec2<float> currentUv;
+			Vec3<int> boneIdices;
+			Vec3<float> boneWeights;
+
+			std::string unique;
+
+			unsigned int count = 0;
+			//how hacky can my parsers get D:
+			unsigned int largestOffset = (vOffset > nOffset) ? ((vOffset > uvOffset) ? vOffset : uvOffset) : (nOffset > uvOffset) ? nOffset : uvOffset;
+
+			while (token != 0) 
+			{
+				int indiceToken = atoi(token);
+				if (count == vOffset) {
+						std::vector<float> array = float_arrays[vSource];
+						currentVertex = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
+						unique += token;
+						unique += "/";
+				} 
+				if (count == nOffset) {
+						std::vector<float> array = float_arrays[nSource];
+						currentNormal = Vec3<float>(array[indiceToken * 3], array[indiceToken * 3 + 1], array[indiceToken * 3 + 2]);
+						unique += token;
+						unique += "/";
+				}
+				if (count == uvOffset) {
+						std::vector<float> array = float_arrays[uvSource];
+						currentUv = Vec2<float>(array[indiceToken * 2], array[indiceToken * 2 + 1]);
+						unique += token;
+						unique += "/";
+				}
+				if (count == largestOffset + 1) {
+						auto it = uniqueIndices.find(unique);
+						if (it == uniqueIndices.end()) {
+							storedVertices.push_back(VertexFormat(currentVertex, currentNormal, currentUv));
+							uniqueIndices[unique] = storedVertices.size() - 1;
+						}
+						int indicePos = uniqueIndices[unique];
+						allIndices[allIndices.size() - 1].push_back(indicePos);
+						offsetIndices[offsetIndices.size() - 1].push_back(indicePos);
+						unique.clear();
+				}
+				//make unique string for all indices
+				count++;
+				count %= (largestOffset + 2);
+				if (count != largestOffset + 1)
+					token = strtok(0, " ");
+			}
+		}
+	}
 }
 
 void Geometry::parseDaeMaterials(rapidxml::xml_node<> * materialNode) 
@@ -162,16 +161,18 @@ void Geometry::parseDae(const std::string& fileName, MaterialLib& matLib)
 
 
 	rapidxml::xml_node<> *rootNode = doc.first_node("COLLADA");
-	rapidxml::xml_node<> *library_images = rootNode->first_node("library_images");
-	rapidxml::xml_node<> *library_effects = rootNode->first_node("library_effects");
-	rapidxml::xml_node<> *library_materials = rootNode->first_node("library_materials");
+	// rapidxml::xml_node<> *library_images = rootNode->first_node("library_images");
+	// rapidxml::xml_node<> *library_effects = rootNode->first_node("library_effects");
+	// rapidxml::xml_node<> *library_materials = rootNode->first_node("library_materials");
 	rapidxml::xml_node<> *library_geometry = rootNode->first_node("library_geometries");
+	// rapidxml::xml_node<> *library_geometry = rootNode->first_node("library_controllers");
+
 
 	for (rapidxml::xml_node<>* geometry = library_geometry->first_node("geometry"); geometry; geometry = geometry->next_sibling("geometry"))
 	{	
 		parseDaeGeometry(geometry);
 	}
-
+	std::cout << this->storedVertices.size() << "\n";
 }
 
 void Geometry::parseObj(const std::string& name, MaterialLib& matlib)
@@ -259,6 +260,11 @@ void Geometry::parseObj(const std::string& name, MaterialLib& matlib)
 					{
 						//add texture here
 						std::string textureName = name.substr(0, name.rfind("/") + 1) + mtlLine.substr(7, mtlLine.size());
+						size_t pos = textureName.find("\\");
+						while (pos < textureName.size()) {
+							textureName.replace(pos, 1, "/");
+							pos = textureName.find("\\", pos);
+						}
 						Texture * texture = new Texture(textureName);
 						texture->makeResident();
 						matlib.addTexture(textureName, texture);

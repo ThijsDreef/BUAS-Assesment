@@ -1,4 +1,7 @@
 .vscode
+
+.vs
+visual-studio
+exe/models
+exe/run.exe
 build
-exe/*
-!exe/shaders/*

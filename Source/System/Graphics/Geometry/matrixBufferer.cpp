@@ -9,9 +9,10 @@ MatrixBufferer::MatrixBufferer() : matrixBuffer("matrix", GL_SHADER_STORAGE_BUFF
 void MatrixBufferer::setBuffer(std::vector<Transform*> & transforms, Matrix<float>& view, Matrix<float>& perspective)
 {
   bool resized = false;
-  if (transforms.size() > maxSize)
+  if (transforms.size() > bufferObjects.size())
   {
-    bufferObjects.reserve(transforms.size());
+		bufferObjects.reserve(transforms.size());
+		while (transforms.size() > bufferObjects.size()) bufferObjects.push_back(MatrixBufferObject(Matrix<float>(), Matrix<float>(), Matrix<float>(), Matrix<float>()));
     maxSize = transforms.size();
     resized = true;
   }

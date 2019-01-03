@@ -1,5 +1,5 @@
 CC=g++
-SOURCE=core/source/
+SOURCE=Source/
 BUILD=build/
 EXE=exe/
 TARGET=run.exe
@@ -13,11 +13,11 @@ objects += $(patsubst $(SOURCE)%.cpp,$(BUILD)%.o, $(wildcard $(SOURCE)*/*/*/*/*.
 
 
 #again lazy multiple directories solution
-TOINCLUDE =  $(sort $(dir $(wildcard core/headers/)))
+TOINCLUDE =  $(sort $(dir $(wildcard headers/)))
 
 #warning make files make you lazy
 #warning dont write lazy code
-INCLUDE = $(sort $(TOINCLUDE))
+INCLUDE = $(sort -I$(TOINCLUDE))
 
 LDFLAGS=$(subst co,-Ico, $(INCLUDE))
 
@@ -25,7 +25,7 @@ LDFLAGS=$(subst co,-Ico, $(INCLUDE))
 
 
 $(EXE) : $(objects)
-	$(CC) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -g -o $(EXE)$(TARGET) $(objects) $(LDFLAGS) -Lcore/libs/ -lglew32 -lgdi32 -lopengl32  -m64
+	$(CC) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -g -o $(EXE)$(TARGET) $(objects) $(LDFLAGS) -Llibs/ -lglew32 -lgdi32 -lopengl32  -m64
 $(BUILD)%.o : $(SOURCE)%.cpp
 	$(CC)$(LDFLAGS) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -g -c $< -o $@ -m64 
 
@@ -35,7 +35,7 @@ $(EXE):
 
 init :
 	md build
-	robocopy core/source build /e /xf * >nul
+	robocopy source build /e /xf * >nul
 
 clean:
 	rmdir build /S /Q
