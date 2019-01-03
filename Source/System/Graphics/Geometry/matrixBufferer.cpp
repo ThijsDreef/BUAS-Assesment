@@ -12,7 +12,9 @@ void MatrixBufferer::setBuffer(std::vector<Transform*> & transforms, Matrix<floa
   if (transforms.size() > bufferObjects.size())
   {
 		bufferObjects.reserve(transforms.size());
-		while (transforms.size() > bufferObjects.size()) bufferObjects.push_back(MatrixBufferObject(Matrix<float>(), Matrix<float>(), Matrix<float>(), Matrix<float>()));
+    //add dummy data because g++ requires actual data instead of constructor
+    Matrix<float> dummyData;
+		while (transforms.size() > bufferObjects.size()) bufferObjects.push_back(MatrixBufferObject(dummyData, dummyData, dummyData, dummyData));
     maxSize = transforms.size();
     resized = true;
   }
