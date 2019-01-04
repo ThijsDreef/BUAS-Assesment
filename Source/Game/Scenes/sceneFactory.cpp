@@ -32,7 +32,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   objects.push_back(pinguin);
 
   Object * ice = new Object({});
-  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "cube", {"red"}, ice));
+  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "ice", {"red"}, ice));
   objects.push_back(ice);
 
   Object * camera = new Object({});
@@ -98,15 +98,21 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "None"));
   player->addComponent(new DeathWall(-50, player));
   player->addComponent(new LoadSceneEvent("dead", "menu", player, this, engine, player));
+  player->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, player));
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
-
-
   objects.push_back(player);
+
+  Object * pause = new Object({});
+  pause->addComponent(new EventOnKey({KeyEvent(27, "pause"), KeyEvent(32, "unPause"), KeyEvent(68, "unPause"), KeyEvent(87, "unPause"), KeyEvent(65, "unPause"), KeyEvent(83, "unPause")}, engine.getInput(), pause));
+  pause->addComponent(new PauseEvent(pause, engine, pause));
+
+  objects.push_back(pause);
+
 
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
-    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "cube", {"red"}, platform));
+    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "ice", {"red"}, platform));
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2.5, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
@@ -116,6 +122,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  sea->getComponent<WaveCustomTransform>()->setTimeScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
   objects.push_back(sea);
   
   Object * camera = new Object({});

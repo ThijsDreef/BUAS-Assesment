@@ -8,10 +8,8 @@ PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targe
   object->subscribe("collision", this);
 }
 
-void PlayerMovement::update()
+float PlayerMovement::getTargetAngle(Vec3<float> & frameForce)
 {
-  
-  Vec3<float> frameForce;
   int targetAngle = -1;
   if (input->getKeyDown(87)) {
     frameForce[0] += 1.5;
@@ -38,6 +36,16 @@ void PlayerMovement::update()
     frameForce[0] += 1.5;
     targetAngle = 90;
   }
+
+  return targetAngle;
+}
+
+void PlayerMovement::update()
+{
+  if (dt == 0) return;
+  Vec3<float> frameForce;
+  float targetAngle = getTargetAngle(frameForce);
+
   if (targetAngle != -1) {
     int delta = ((int)targetAngle - (int)(*rotPointer)[1] + 540) % 360 - 180;
     (*rotPointer)[1] += delta * 0.175;
@@ -47,13 +55,13 @@ void PlayerMovement::update()
     frameForce[1] += 55;
     force[1] = 0;
     boosted = false;
-  }
-  if (input->getKeyDown(16) && !boosted) {
+  } else if (input->getKeyDown(16) && !boosted && !grounded) {
     boosted = true;
     force[1] += 40;
   }
 
   frameForce[1] -= 2;
+
   Matrix<float> rotationMatrix;
   rotationMatrix = rotationMatrix.rotation(*rotPointer);
 
@@ -65,7 +73,6 @@ void PlayerMovement::update()
   
   *posPointer += force * dt;
   grounded = false;
-
 }
 
 PlayerMovement::~PlayerMovement()

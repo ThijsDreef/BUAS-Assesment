@@ -18,6 +18,11 @@ unsigned int AutoScroller::getFreeTransformCount()
   return freeTransforms.size();
 }
 
+float & AutoScroller::getMoveScale()
+{
+  return moveScale;
+}
+
 Transform* AutoScroller::getFreeTransform()
 {
   if (freeTransforms.empty()) return 0;
@@ -38,9 +43,9 @@ void AutoScroller::update()
   passedTime += dt;
   if (passedTime > 10) {
     passedTime = 0;
-    moveDirection *= 1.1;
+    moveScale *= 1.1;
   }
-  score->addScore(std::fabs(moveDirection.length()) * dt);
+  score->addScore(std::fabs(moveDirection.length()) * dt * moveScale);
   for (unsigned int i = 0; i < activeTransforms.size(); i++) 
   {
     if (!activeTransforms[i]) activeTransforms.erase(activeTransforms.begin() + i);
@@ -55,7 +60,7 @@ void AutoScroller::update()
       // remove here
       activeTransforms.erase(activeTransforms.begin() + i);
     } else {
-      activeTransforms[i]->getPos() += moveDirection * dt;
+      activeTransforms[i]->getPos() += moveDirection * dt * moveScale;
     }
   }
 }

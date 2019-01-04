@@ -30,6 +30,8 @@
 #include "Game/Object/autoScroller.h"
 #include "Game/Object/loadSceneEvent.h"
 #include "Game/Object/eventOnKey.h"
+#include "Game/Object/pauseEvent.h"
+
 
 
 //WARNING ALL SCENES USED NEED TO BE DELETED BY USER

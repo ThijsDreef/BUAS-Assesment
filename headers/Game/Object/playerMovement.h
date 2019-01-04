@@ -18,6 +18,7 @@ private:
   Vec3<float> * rotPointer;
   Vec3<float> force;
   double & dt;
+  float getTargetAngle(Vec3<float> & frameForce);
 public:
   PlayerMovement(Vec3<float> * target, Vec3<float> * rotationTarget, Input * input, double & deltaTime, Object * object);
   virtual ~PlayerMovement();

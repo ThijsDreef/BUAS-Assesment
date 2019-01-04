@@ -17,6 +17,7 @@ private:
   Score * score;
   double & dt;
   double passedTime = 0;
+  float moveScale = 1.0f;
   std::vector<Transform*> activeTransforms;
   std::stack<Transform*> freeTransforms;
 public:
@@ -24,6 +25,7 @@ public:
   Transform* getFreeTransform();
   void addTransform(Transform * transform);
   void update();
+  float & getMoveScale();
   AutoScroller(Vec3<float> spawn, Vec3<float> respawn, Vec3<float> direction, double & deltaTime, Object * object);
   ~AutoScroller();
 };

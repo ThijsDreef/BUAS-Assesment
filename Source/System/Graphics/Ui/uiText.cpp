@@ -16,7 +16,7 @@ UIText::~UIText()
 Matrix<float> & UIText::getMatrix()
 {
     Matrix<float> temp;
-    temp.translateMatrix(Vec3<float>((shouldCenter) ? centerX : pos[0], pos[1] * inverseAspect, 0));
+    temp.translateMatrix(Vec3<float>((shouldCenter) ? centerX * scale : pos[0], pos[1] * inverseAspect, 0));
     // might need to fix this shit
     mv.scaleMatrix(Vec3<float>(scale, scale, 1));
     mv = temp.multiplyByMatrix(mv);

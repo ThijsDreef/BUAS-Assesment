@@ -8,11 +8,12 @@
 class SinkAble : public Component
 {
 private:
-  bool hit, lastHit;
+  bool hit = false, loop = false;
   float lowestY;
   float originalY;
   Vec3<float> * targetPos;
   double & dt;
+  double timeScale = 0.5;
   double passedTime = 0;
 public:
   void update();

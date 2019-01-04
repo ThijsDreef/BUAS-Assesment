@@ -16,7 +16,12 @@ void WaveCustomTransform::onDraw(ShaderManager * shaderManger)
   glUniform1f(shaderManger->uniformLocation(shader, "uTime"), 0.1 + passedTime * 0.2);
   glUniform1f(shaderManger->uniformLocation(shader, "uTexScroll"), 0.1 + passedTime * 0.08);
 
-  passedTime += dt;
+  passedTime += dt * 0.5 * ((timeScale) ? *timeScale : 1);
+}
+
+void WaveCustomTransform::setTimeScale(float * scale)
+{
+  timeScale = scale;
 }
 
 void WaveCustomTransform::onDrawExit(ShaderManager * shaderManger)

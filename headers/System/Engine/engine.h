@@ -28,6 +28,7 @@ private:
   void loadResources();
 public:
   double deltaTime;
+  double timeScale = 1;
   unsigned int frames;
   int getWidth();
   int getHeight();

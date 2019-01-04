@@ -6,6 +6,7 @@ SinkAble::SinkAble(Vec3<float> * position, float sinkDistance, double & deltaTim
   lowestY = (*position)[1] - sinkDistance;
   originalY = (*position)[1];
   object->subscribe("collision", this);
+  passedTime = 0.35;
 }
 
 SinkAble::~SinkAble()
@@ -15,13 +16,21 @@ SinkAble::~SinkAble()
 
 void SinkAble::update()
 {
-  passedTime += (dt * 0.25) * ((hit || lastHit) ? -1 : 1);
-  if (hit != lastHit && std::fabs(passedTime) > 0.4) passedTime = 0.4;
-  if (passedTime > 0.4) passedTime = 0.4;
-  if (passedTime < -0.4) passedTime = -0.4;
+  if (hit) {
+    passedTime -= dt * 0.25;
+    if (passedTime < -0.4) {
+      hit = false;
+      loop = false;
+      passedTime = 0.4;
+    }
+  } else {
+    passedTime += dt * 0.25 * ((loop) ? -1 : 1) * timeScale;
+    if (passedTime > 0.4 || passedTime < 0.3) {
+      loop = !loop;
+      timeScale = fmax((float)rand() / RAND_MAX, 0.45);
+    }
+  }
   (*targetPos)[1] = Ease::elasticEaseOut(std::fabs(passedTime)) * originalY + (1.0 - Ease::elasticEaseOut(std::fabs(passedTime))) * lowestY;
-  lastHit = hit;
-  hit = false;
 }
 
 void SinkAble::receiveMessage(const std::string & name, void* data)
