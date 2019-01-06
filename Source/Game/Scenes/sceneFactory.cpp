@@ -102,6 +102,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
   objects.push_back(player);
 
+
   Object * pause = new Object({});
   pause->addComponent(new EventOnKey({KeyEvent(27, "pause"), KeyEvent(32, "unPause"), KeyEvent(68, "unPause"), KeyEvent(87, "unPause"), KeyEvent(65, "unPause"), KeyEvent(83, "unPause")}, engine.getInput(), pause));
   pause->addComponent(new PauseEvent(pause, engine, pause));
@@ -109,6 +110,18 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   objects.push_back(pause);
 
 
+  Object * particleSystem = new Object({});
+  particleSystem->addComponent(new ExplosionEvent(particleSystem, engine.deltaTime, particleSystem));
+
+  for (int i = 0; i < 50; i++) {
+    Object * p = new Object({});
+    p->addComponent(new Transform("coin", {"coin"}, p));
+    autoScroller->getComponent<AutoScroller>()->addTransform(p->getComponent<Transform>());
+    particleSystem->getComponent<ParticleSystem>()->addToInstance(p->getComponent<Transform>());
+    objects.push_back(p);
+  }
+
+  objects.push_back(particleSystem);
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
@@ -116,8 +129,19 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2.5, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
+    platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 5, 4), Vec3<float>(8, 5, 8), platform, platform));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
+    Object * coin = new Object({});
+    coin->addComponent(new Transform(Vec3<float>(30 * i, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
+    coin->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 1, 1)), coin->getComponent<Transform>(), coin));
+    coin->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
+    coin->addComponent(new CoinOnCollision(engine.deltaTime, coin));
+    coin->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
+    autoScroller->getComponent<AutoScroller>()->addTransform(coin->getComponent<Transform>());
+
     objects.push_back(platform);
+    objects.push_back(coin);
+
   }
 
   Object * sea = new Object({});

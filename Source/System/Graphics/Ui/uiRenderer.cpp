@@ -56,7 +56,7 @@ void UiRenderer::renderText()
         glUniformMatrix4fv(shaderManager->uniformLocation("font", "mvp"), 1, false, &mvp.matrix[0]);
         glUniform1f(shaderManager->uniformLocation("font", "uAlpha"), textObjects[i]->getAlpha());
 
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+        if (indices.size() > 0) glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 
     }
     glDisable(GL_BLEND);

@@ -31,6 +31,10 @@
 #include "Game/Object/loadSceneEvent.h"
 #include "Game/Object/eventOnKey.h"
 #include "Game/Object/pauseEvent.h"
+#include "Game/Object/scaleOnRespawn.h"
+#include "Game/Object/coinOnCollision.h"
+#include "Game/Object/explosionEvent.h"
+
 
 
 

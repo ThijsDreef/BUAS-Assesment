@@ -27,7 +27,7 @@ Transform* AutoScroller::getFreeTransform()
 {
   if (freeTransforms.empty()) return 0;
   Transform * top = freeTransforms.top();
-  top->getPos() = spawnLocation;
+  top->getPos() = (top->getPos() * (Vec3<float>(1, 1, 1) - moveDirection.normalize().abs())) + (spawnLocation * moveDirection.normalize().abs());
   freeTransforms.pop();
   return top;
 }
@@ -49,11 +49,12 @@ void AutoScroller::update()
   for (unsigned int i = 0; i < activeTransforms.size(); i++) 
   {
     if (!activeTransforms[i]) activeTransforms.erase(activeTransforms.begin() + i);
-    Vec3<float> distance =  activeTransforms[i]->getPos() - resetLocation;
+    Vec3<float> distance = activeTransforms[i]->getPos() - resetLocation;
     distance[2] = 0;
     distance[1] = 0;
     float dist = std::fabs(distance.length());
-    if (dist < 2.5) {
+		//so we dont replace anything that doesnt want to be rendered "like inactive particles"
+    if (dist < 2.5 && activeTransforms[i]->shouldRender) {
       // add to freeTransforms
       activeTransforms[i]->shouldRender = false;
       freeTransforms.push(activeTransforms[i]);

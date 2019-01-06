@@ -124,7 +124,9 @@
       <Command>robocopy exe $(TargetDir) /E /XF *.exe
 
 set/A errlev="%ERRORLEVEL% &amp; 24"
-exit/B %errlev%</Command>
+exit/B %errlev%
+
+rmdir Debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,76 +137,27 @@ exit/B %errlev%</Command>
       <Command>robocopy exe $(TargetDir) /E /XF *.exe
 
 set/A errlev="%ERRORLEVEL% &amp; 24"
-exit/B %errlev%</Command>
+exit/B %errlev%
+
+rmdir Debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\game\object\autoScroller.cpp" />
-    <ClCompile Include="source\game\object\chunkSpawner.cpp" />
-    <ClCompile Include="source\game\object\deathWall.cpp" />
-    <ClCompile Include="source\game\object\eventOnKey.cpp" />
-    <ClCompile Include="source\game\object\followCamera.cpp" />
-    <ClCompile Include="source\game\object\loadSceneEvent.cpp" />
-    <ClCompile Include="source\game\object\particleTrail.cpp" />
-    <ClCompile Include="source\game\object\playerMovement.cpp" />
-    <ClCompile Include="source\game\object\playerMovementStateMachine.cpp" />
-    <ClCompile Include="source\game\object\rotateToMouse.cpp" />
-    <ClCompile Include="source\game\object\rotateTransform.cpp" />
-    <ClCompile Include="source\game\object\score.cpp" />
-    <ClCompile Include="source\game\object\sinkAble.cpp" />
-    <ClCompile Include="source\game\object\trick.cpp" />
-    <ClCompile Include="source\game\object\waveCustomTransform.cpp" />
-    <ClCompile Include="source\game\scenes\abstractSceneFactory.cpp" />
-    <ClCompile Include="source\game\scenes\sceneFactory.cpp" />
-    <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\system\engine\engine.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\camera.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\component.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\customShaderTransform.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\fpsCamera.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\InstancedTransform.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\object.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\orbitalCamera.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\particleSystem.cpp" />
-    <ClCompile Include="source\system\engine\engineobjects\transform.cpp" />
-    <ClCompile Include="source\system\engine\scene.cpp" />
-    <ClCompile Include="source\system\graphics\defferedRenderModule.cpp" />
-    <ClCompile Include="source\system\graphics\geometry\geometry.cpp" />
-    <ClCompile Include="source\system\graphics\geometry\geometryLib.cpp" />
-    <ClCompile Include="source\system\graphics\geometry\materialLib.cpp" />
-    <ClCompile Include="source\system\graphics\geometry\matrixBufferer.cpp" />
-    <ClCompile Include="source\system\graphics\renderModule.cpp" />
-    <ClCompile Include="source\system\graphics\resources\buffer.cpp" />
-    <ClCompile Include="source\system\graphics\resources\fbo.cpp" />
-    <ClCompile Include="source\system\graphics\resources\texture.cpp" />
-    <ClCompile Include="source\system\graphics\shaders\shaderManager.cpp" />
-    <ClCompile Include="source\system\graphics\ui\font.cpp" />
-    <ClCompile Include="source\system\graphics\ui\uiRenderer.cpp" />
-    <ClCompile Include="source\system\graphics\ui\uiText.cpp" />
-    <ClCompile Include="source\system\input\input.cpp" />
-    <ClCompile Include="source\system\module.cpp" />
-    <ClCompile Include="source\system\physics\bucket.cpp" />
-    <ClCompile Include="source\system\physics\colliders\AABB.cpp" />
-    <ClCompile Include="source\system\physics\colliders\collider.cpp" />
-    <ClCompile Include="source\system\physics\collisionComponent.cpp" />
-    <ClCompile Include="source\system\physics\collisionModule.cpp" />
-    <ClCompile Include="source\system\physics\octree.cpp" />
-    <ClCompile Include="source\system\window\window.cpp" />
-    <ClCompile Include="source\util\ease.cpp" />
-    <ClCompile Include="source\util\util.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="headers\game\object\autoScroller.h" />
     <ClInclude Include="headers\game\object\chunkSpawner.h" />
+    <ClInclude Include="headers\Game\Object\coinOnCollision.h" />
     <ClInclude Include="headers\game\object\deathWall.h" />
     <ClInclude Include="headers\game\object\eventOnKey.h" />
+    <ClInclude Include="headers\Game\Object\explosionEvent.h" />
     <ClInclude Include="headers\game\object\followCamera.h" />
     <ClInclude Include="headers\game\object\loadSceneEvent.h" />
     <ClInclude Include="headers\game\object\particleTrail.h" />
+    <ClInclude Include="headers\Game\Object\pauseEvent.h" />
     <ClInclude Include="headers\game\object\playerMovement.h" />
     <ClInclude Include="headers\game\object\playerMovementStateMachine.h" />
     <ClInclude Include="headers\game\object\rotateToMouse.h" />
     <ClInclude Include="headers\game\object\rotateTransform.h" />
+    <ClInclude Include="headers\Game\Object\scaleOnRespawn.h" />
     <ClInclude Include="headers\game\object\score.h" />
     <ClInclude Include="headers\game\object\sinkAble.h" />
     <ClInclude Include="headers\game\object\trick.h" />
@@ -260,6 +213,65 @@ exit/B %errlev%</Command>
     <ClInclude Include="headers\util\picoPNG.h" />
     <ClInclude Include="headers\util\rapidxml.hpp" />
     <ClInclude Include="headers\util\util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\game\object\autoScroller.cpp" />
+    <ClCompile Include="source\game\object\chunkSpawner.cpp" />
+    <ClCompile Include="Source\Game\Object\coinOnCollision.cpp" />
+    <ClCompile Include="source\game\object\deathWall.cpp" />
+    <ClCompile Include="source\game\object\eventOnKey.cpp" />
+    <ClCompile Include="Source\Game\Object\explosionEvent.cpp" />
+    <ClCompile Include="source\game\object\followCamera.cpp" />
+    <ClCompile Include="source\game\object\loadSceneEvent.cpp" />
+    <ClCompile Include="source\game\object\particleTrail.cpp" />
+    <ClCompile Include="Source\Game\Object\pauseEvent.cpp" />
+    <ClCompile Include="source\game\object\playerMovement.cpp" />
+    <ClCompile Include="source\game\object\playerMovementStateMachine.cpp" />
+    <ClCompile Include="source\game\object\rotateToMouse.cpp" />
+    <ClCompile Include="source\game\object\rotateTransform.cpp" />
+    <ClCompile Include="Source\Game\Object\scaleOnRespawn.cpp" />
+    <ClCompile Include="source\game\object\score.cpp" />
+    <ClCompile Include="source\game\object\sinkAble.cpp" />
+    <ClCompile Include="source\game\object\trick.cpp" />
+    <ClCompile Include="source\game\object\waveCustomTransform.cpp" />
+    <ClCompile Include="source\game\scenes\abstractSceneFactory.cpp" />
+    <ClCompile Include="source\game\scenes\sceneFactory.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\system\engine\engine.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\camera.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\component.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\customShaderTransform.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\fpsCamera.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\InstancedTransform.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\object.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\orbitalCamera.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\particleSystem.cpp" />
+    <ClCompile Include="source\system\engine\engineobjects\transform.cpp" />
+    <ClCompile Include="source\system\engine\scene.cpp" />
+    <ClCompile Include="source\system\graphics\defferedRenderModule.cpp" />
+    <ClCompile Include="source\system\graphics\geometry\geometry.cpp" />
+    <ClCompile Include="source\system\graphics\geometry\geometryLib.cpp" />
+    <ClCompile Include="source\system\graphics\geometry\materialLib.cpp" />
+    <ClCompile Include="source\system\graphics\geometry\matrixBufferer.cpp" />
+    <ClCompile Include="source\system\graphics\renderModule.cpp" />
+    <ClCompile Include="source\system\graphics\resources\buffer.cpp" />
+    <ClCompile Include="source\system\graphics\resources\fbo.cpp" />
+    <ClCompile Include="source\system\graphics\resources\texture.cpp" />
+    <ClCompile Include="source\system\graphics\shaders\shaderManager.cpp" />
+    <ClCompile Include="source\system\graphics\ui\font.cpp" />
+    <ClCompile Include="source\system\graphics\ui\uiRenderer.cpp" />
+    <ClCompile Include="source\system\graphics\ui\uiText.cpp" />
+    <ClCompile Include="source\system\input\input.cpp" />
+    <ClCompile Include="source\system\module.cpp" />
+    <ClCompile Include="source\system\physics\bucket.cpp" />
+    <ClCompile Include="source\system\physics\colliders\AABB.cpp" />
+    <ClCompile Include="source\system\physics\colliders\collider.cpp" />
+    <ClCompile Include="source\system\physics\collisionComponent.cpp" />
+    <ClCompile Include="source\system\physics\collisionModule.cpp" />
+    <ClCompile Include="source\system\physics\octree.cpp" />
+    <ClCompile Include="source\system\window\window.cpp" />
+    <ClCompile Include="source\util\ease.cpp" />
+    <ClCompile Include="source\util\util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

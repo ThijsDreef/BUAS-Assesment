@@ -55,9 +55,11 @@ void PlayerMovement::update()
     frameForce[1] += 55;
     force[1] = 0;
     boosted = false;
-  } else if (input->getKeyDown(16) && !boosted && !grounded) {
+  } else if (input->getKeyDown(16) && !boosted && !grounded && force[1] < 0) {
+    object->sendMessage("explosion", posPointer);
     boosted = true;
-    force[1] += 40;
+		force[1] = 0;
+    frameForce[1] += 40;
   }
 
   frameForce[1] -= 2;

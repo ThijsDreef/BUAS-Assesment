@@ -36,6 +36,7 @@ float UIText::getAlpha()
 void UIText::buildBuffer(Font * font, float inverseAspect)
 {   
     indices.clear();
+		
     std::vector<unsigned int> defaultIndices = {0, 1, 2, 0, 3, 1};
     std::vector<TextGPUData> textGPUData;
     Vec2<float> offset;
@@ -68,7 +69,7 @@ void UIText::buildBuffer(Font * font, float inverseAspect)
     // might need to fix this shit
     mv.scaleMatrix(Vec3<float>(scale, scale, 1));
     mv = temp.multiplyByMatrix(mv);
-    fontBuffer.bufferData(sizeof(TextGPUData) * textGPUData.size(), &textGPUData[0], GL_STATIC_DRAW);
+    if (textGPUData.size() > 0) fontBuffer.bufferData(sizeof(TextGPUData) * textGPUData.size(), &textGPUData[0], GL_STATIC_DRAW);
 }
 
 unsigned int UIText::getBuffer()

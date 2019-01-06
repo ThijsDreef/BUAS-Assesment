@@ -8,3 +8,4 @@ models/tentakel.dae
 models/bunny.obj
 models/railing.obj
 models/sea.obj
+models/coin.obj
