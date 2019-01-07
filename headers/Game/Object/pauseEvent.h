@@ -11,6 +11,8 @@ class PauseEvent : public UIText
 {
 private:
   Engine & engineObject;
+  bool paused;
+  double lastTimeScale = 0;
 public:
   PauseEvent(Object * subscribeObject, Engine & engine, Object * object);
   ~PauseEvent();

@@ -34,6 +34,8 @@
 #include "Game/Object/scaleOnRespawn.h"
 #include "Game/Object/coinOnCollision.h"
 #include "Game/Object/explosionEvent.h"
+#include "Game/Object/rotateComponent.h"
+
 
 
 

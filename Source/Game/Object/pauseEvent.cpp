@@ -20,6 +20,7 @@ void PauseEvent::receiveMessage(const std::string & message, void * data)
     setText("Paused");
     engineObject.timeScale = 0;
   } else if (message == "unPause") {
+    if (!paused) return;
     setText("");
     engineObject.timeScale = 1;
   }

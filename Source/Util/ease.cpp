@@ -35,4 +35,20 @@ namespace Ease
 	  float s=p/4;
     return (a*pow(2,-10*t) * sin( (t*d-s)*(2*M_PI)/p ) + c + b); 
   }
+
+  float quintEaseInOut(float t, float b, float c, float d)
+  {
+	  if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+    return c/2*((t-=2)*t*t*t*t + 2) + b;
+  }
+
+  float quintEaseIn(float t, float b, float c, float d)
+  {
+    return c*(t/=d)*t*t*t*t + b;
+  }
+
+  float quintEaseOut(float t, float b, float c, float d)
+  {
+    return c*((t=t/d-1)*t*t*t*t + 1) + b;
+  }
 } /* ease */

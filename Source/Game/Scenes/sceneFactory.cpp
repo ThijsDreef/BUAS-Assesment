@@ -136,6 +136,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     coin->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 1, 1)), coin->getComponent<Transform>(), coin));
     coin->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
     coin->addComponent(new CoinOnCollision(engine.deltaTime, coin));
+    coin->addComponent(new RotateComponent(coin->getComponent<Transform>()->getRot(), Vec3<float>(0, 360, 0), engine.deltaTime, coin));
     coin->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
     autoScroller->getComponent<AutoScroller>()->addTransform(coin->getComponent<Transform>());
 
