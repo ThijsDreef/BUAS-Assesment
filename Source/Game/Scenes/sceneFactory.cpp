@@ -52,13 +52,13 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
 
-  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
-  renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-
-  return new Scene(objects, {
-    {renderModule},
-    {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
-  });
+  // RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  // renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
+  return new Scene(objects, {{new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
+  // return new Scene(objects, {
+  //   {renderModule},
+  //   {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
+  // });
 }
 
 Scene * SceneFactory::createAnimationScene(Engine & engine)

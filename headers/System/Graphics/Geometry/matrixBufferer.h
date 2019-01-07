@@ -8,7 +8,7 @@
 class MatrixBufferer
 {
 private:
-  unsigned int maxSize = 5120;
+  unsigned int maxSize = 128;
   std::vector<MatrixBufferObject> bufferObjects;
   Buffer matrixBuffer;
 public:

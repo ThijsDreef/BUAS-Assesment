@@ -13,7 +13,7 @@ UiRenderer::UiRenderer(std::string fontFileName, ShaderManager * shader, unsigne
 
 UiRenderer::~UiRenderer()
 {
-
+    glDeleteVertexArrays(1, &vao);
 }
 
 void UiRenderer::setupFormat()

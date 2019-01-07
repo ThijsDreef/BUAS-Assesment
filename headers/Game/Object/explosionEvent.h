@@ -9,7 +9,7 @@ private:
 	double & dt;
 public: 
   ExplosionEvent(Object * subscribeObject, double & deltaTime, Object * object);
-  ~ExplosionEvent();
+  virtual ~ExplosionEvent();
   virtual void update();
   void receiveMessage(const std::string & message, void * data);
 };

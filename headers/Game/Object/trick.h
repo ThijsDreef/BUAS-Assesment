@@ -14,7 +14,7 @@ private:
   bool enabled = false;
 public:
   Trick(Vec2<float> position, Score * score, Object * object);
-  ~Trick();
+  virtual ~Trick();
   void setTrick(std::string trick);
   void addToScore(int scoreToAdd);
   void clearTrick();

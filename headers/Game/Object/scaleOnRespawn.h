@@ -14,7 +14,7 @@ private:
   Transform * transform;
 public:
   ScaleOnRespawn(Vec3<float> minScale, Vec3<float> maxScale, Object * subscribeObject, Object * object);
-  ~ScaleOnRespawn();
+  virtual ~ScaleOnRespawn();
   void receiveMessage(const std::string & message, void * data);
 };
 

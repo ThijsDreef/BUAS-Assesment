@@ -27,7 +27,7 @@ public:
   void update();
   float & getMoveScale();
   AutoScroller(Vec3<float> spawn, Vec3<float> respawn, Vec3<float> direction, double & deltaTime, Object * object);
-  ~AutoScroller();
+  virtual ~AutoScroller();
 };
 
 #endif

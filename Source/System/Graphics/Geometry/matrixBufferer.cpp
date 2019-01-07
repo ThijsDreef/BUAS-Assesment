@@ -36,5 +36,5 @@ int MatrixBufferer::getBufferId()
 
 MatrixBufferer::~MatrixBufferer()
 {
-
+  bufferObjects.clear();
 }

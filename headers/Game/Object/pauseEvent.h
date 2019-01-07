@@ -15,7 +15,7 @@ private:
   double lastTimeScale = 0;
 public:
   PauseEvent(Object * subscribeObject, Engine & engine, Object * object);
-  ~PauseEvent();
+  virtual ~PauseEvent();
   void receiveMessage(const std::string & message, void * data);
 };
 

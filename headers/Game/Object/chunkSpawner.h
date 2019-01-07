@@ -9,7 +9,7 @@ class ChunkSpawner : public Component
 public:
   ChunkSpawner(AutoScroller * scrollObject, Object * object);
   void update();
-  ~ChunkSpawner();
+  virtual ~ChunkSpawner();
 };
 
 #endif

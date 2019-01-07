@@ -14,7 +14,7 @@ private:
   double & dt;
 public:
   RotateComponent(Vec3<float> & rot, Vec3<float> toAddRotation, double & deltaTime, Object * object);
-  ~RotateComponent();
+  virtual ~RotateComponent();
   void update();
 };
 

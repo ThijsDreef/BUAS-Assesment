@@ -1,8 +1,8 @@
 #include "System/Graphics/Resources/buffer.h"
 
-Buffer::Buffer(const char * name, unsigned int target)
+Buffer::Buffer(const std::string & name, unsigned int target)
 {
-  bufferName = *name;
+  bufferName = name;
   glGenBuffers(1, &bufferId);
   this->target = target;
 }

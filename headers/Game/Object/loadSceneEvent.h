@@ -14,7 +14,7 @@ private:
   AbstractSceneFactory * sceneFactory;
 public:
   LoadSceneEvent(const std::string event, const std::string scene, Object * subcribeObject, AbstractSceneFactory * sceneFactory, Engine & engine, Object * object);
-  ~LoadSceneEvent();
+  virtual ~LoadSceneEvent();
   void receiveMessage(const std::string & message, void * data);
 };
 

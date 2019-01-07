@@ -11,7 +11,7 @@ private:
   std::string bufferName;
   unsigned int target;
 public:
-  Buffer (const char * name, unsigned int target);
+  Buffer (const std::string & name, unsigned int target);
   void bufferData(unsigned int size, const GLvoid* data, unsigned int usage);
   void bufferSubData(unsigned int offset, unsigned int dataSize, const void * data);
   void bindBuffer();

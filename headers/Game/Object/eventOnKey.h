@@ -12,7 +12,7 @@ private:
   Input * input;
 public:
   EventOnKey(std::vector<KeyEvent> events, Input * input, Object * object);
-  ~EventOnKey();
+  virtual ~EventOnKey();
   void update();
 };
 

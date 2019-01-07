@@ -16,7 +16,7 @@ protected:
 public:
     std::string & getModel();
     InstancedTransform(Object * object);
-    ~InstancedTransform();
+    virtual ~InstancedTransform();
     std::string getMaterial(unsigned int group);
     void addToInstance(Transform * t);
     virtual void prepareBuffer(Matrix<float> & view, Matrix<float> & p);

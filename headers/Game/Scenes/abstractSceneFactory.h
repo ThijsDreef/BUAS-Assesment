@@ -7,7 +7,7 @@ class AbstractSceneFactory
 {
 public:
   AbstractSceneFactory();
-  ~AbstractSceneFactory();
+  virtual ~AbstractSceneFactory();
   virtual Scene * createScene(const std::string & sceneName, Engine & engine) = 0;
 };
 

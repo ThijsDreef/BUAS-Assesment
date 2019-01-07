@@ -19,7 +19,7 @@ public:
   void update();
   void receiveMessage(const std::string & message, void* data);  
   SinkAble(Vec3<float> * position, float sinkDistance, double & deltaTime, Object * object);
-  ~SinkAble();
+  virtual ~SinkAble();
 };
 
 #endif

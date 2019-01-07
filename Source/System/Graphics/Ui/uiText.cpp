@@ -10,7 +10,7 @@ UIText::UIText(std::string startText, Vec2<float> position, Object * object) : C
 
 UIText::~UIText()
 {
-
+    
 }
 
 Matrix<float> & UIText::getMatrix()

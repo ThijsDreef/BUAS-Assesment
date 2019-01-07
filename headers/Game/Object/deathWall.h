@@ -13,7 +13,7 @@ private:
 public:
   void update();
   DeathWall(float yLimit, Object * object);
-  ~DeathWall();
+  virtual ~DeathWall();
 };
 
 #endif

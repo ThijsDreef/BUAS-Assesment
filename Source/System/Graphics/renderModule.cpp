@@ -23,6 +23,8 @@ RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager *
 
 RenderModule::~RenderModule()
 {
+  glDeleteVertexArrays(1, &defaultVao);
+  glDeleteVertexArrays(1, &instancedVao);
 
 }
 

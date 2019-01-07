@@ -13,7 +13,7 @@ private:
   Transform * transform;
 public:
   CoinOnCollision(double & deltaTime, Object * object);
-  ~CoinOnCollision();
+  virtual ~CoinOnCollision();
   void receiveMessage(const std::string & message, void * data);
 };
 

@@ -7,7 +7,7 @@ InstancedTransform::InstancedTransform(Object * object) : Component(object), mat
 
 InstancedTransform::~InstancedTransform() 
 {
-
+    	
 }
 
 void InstancedTransform::addToInstance(Transform * t) 

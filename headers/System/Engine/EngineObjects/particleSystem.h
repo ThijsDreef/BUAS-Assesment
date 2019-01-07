@@ -15,7 +15,7 @@ protected:
   Vec3<float> * position;
 public: 
   ParticleSystem(Object * object);
-  ~ParticleSystem();
+  virtual ~ParticleSystem();
   virtual void update();
 };
 #endif

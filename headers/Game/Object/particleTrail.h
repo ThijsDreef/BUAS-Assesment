@@ -13,7 +13,7 @@ private:
   double & dt;
 public:
     ParticleTrail(Vec3<float> * rotation, Vec3<float> * position, double & deltaTime, Object * object, Vec3<float> offset = Vec3<float>());
-    ~ParticleTrail();
+    virtual ~ParticleTrail();
     void update();
 };
 
