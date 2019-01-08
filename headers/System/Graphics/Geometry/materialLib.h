@@ -25,6 +25,7 @@ public:
   unsigned int getMaterialId(const std::string& name);
   unsigned int getMaterialLoc(const std::string& name);
   void addTexture(const std::string name, Texture * texture);
+  Texture * getTexture(const std::string name);
   void removeTexture(const std::string name);
   Material& getMaterial(const std::string& name);
   Material& getMaterial(const unsigned int id);

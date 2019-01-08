@@ -35,6 +35,8 @@
 #include "Game/Object/coinOnCollision.h"
 #include "Game/Object/explosionEvent.h"
 #include "Game/Object/rotateComponent.h"
+#include "Game/Graphics/colorGrade.h"
+
 
 //WARNING ALL SCENES USED NEED TO BE DELETED BY USER
 //

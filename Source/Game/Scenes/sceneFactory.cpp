@@ -54,7 +54,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  // return new Scene(objects, {{new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
+  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("defaultLut"), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
   return new Scene(objects, {
     {renderModule},
     {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
@@ -139,7 +139,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  renderModule->addToPostProccesStack(new PostProcces(engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), "redPostShader", engine.getShaderManger(), engine.getGeoLib()));
+  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("defaultLut"), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},

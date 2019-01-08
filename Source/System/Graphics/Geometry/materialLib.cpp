@@ -24,6 +24,11 @@ void MaterialLib::removeMaterial(const std::string& name)
   map.erase(name);
 }
 
+Texture * MaterialLib::getTexture(const std::string name)
+{
+  return textures[name];
+}
+
 Material& MaterialLib::getMaterial(const std::string& name)
 {
   return map[name];
