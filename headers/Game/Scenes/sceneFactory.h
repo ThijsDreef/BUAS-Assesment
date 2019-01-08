@@ -36,10 +36,6 @@
 #include "Game/Object/explosionEvent.h"
 #include "Game/Object/rotateComponent.h"
 
-
-
-
-
 //WARNING ALL SCENES USED NEED TO BE DELETED BY USER
 //
 //UNLESS USED BY ENGINE
@@ -50,7 +46,6 @@ public:
   Scene * createScene(const std::string & sceneName, Engine & engine);
   Scene * createMainMenuScene(Engine & engine);
   Scene * createEndlessRunnerScene(Engine & engine);
-  Scene * createAnimationScene(Engine & engine);
   Scene * createMainScene(Engine & engine);
   virtual ~SceneFactory();
 };

@@ -1,6 +1,7 @@
 #ifndef SCORE__
 #define SCORE__
 #include "System/Graphics/Ui/uiText.h"
+#include "System/Engine/EngineObjects/object.h"
 
 
 class Score : public UIText
@@ -13,6 +14,7 @@ public:
   virtual ~Score();
   void update();
   void addScore(float addToScore);
+  void receiveMessage(const std::string & message, void* data);
 };
 
 #endif

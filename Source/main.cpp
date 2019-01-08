@@ -18,15 +18,11 @@ int main(int argc, char const *argv[])
   m.texture = water->getResidentHandle();
   m.color = Vec4<float>(0.2, 0.2, 0.2, 1);
 
-  engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "redStandard");
-
-
+  engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "seaShader");
 
   SceneFactory sceneFactory;
   
-  engine.getMatLib()->addMaterial("blue", Material(Vec4<float>(0, 0, 1, 1)));
-  engine.getMatLib()->addMaterial("lightBlue", Material(Vec4<float>(0.37, 0.61, 1, 1)));
-  engine.getMatLib()->addMaterial("red", mat);
+  engine.getMatLib()->addMaterial("ice", mat);
   engine.getMatLib()->addMaterial("water", m);
 
 

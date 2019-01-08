@@ -11,6 +11,7 @@ private:
   double & dt;
   bool hit = false;
   Transform * transform;
+  float toAddScore = 50.0f;
 public:
   CoinOnCollision(double & deltaTime, Object * object);
   virtual ~CoinOnCollision();

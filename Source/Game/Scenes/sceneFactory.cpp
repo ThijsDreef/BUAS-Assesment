@@ -24,7 +24,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
 {
   std::vector<Object*> objects;
   Object * sea = new Object({});
-  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
   objects.push_back(sea);
 
   Object * pinguin = new Object({});
@@ -32,7 +32,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   objects.push_back(pinguin);
 
   Object * ice = new Object({});
-  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "ice", {"red"}, ice));
+  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "ice", {"ice"}, ice));
   objects.push_back(ice);
 
   Object * camera = new Object({});
@@ -52,32 +52,13 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
 
-  // RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
-  // renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  return new Scene(objects, {{new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
-  // return new Scene(objects, {
-  //   {renderModule},
-  //   {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
-  // });
-}
-
-Scene * SceneFactory::createAnimationScene(Engine & engine)
-{
-  std::vector<Object*> objects;
-  engine.getInput()->setMouseLock(true);
-
-  Object * player = new Object({});
-  player->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(1, 1, 1), Vec3<float>(), "tentakel", {"None"}, player));
-  objects.push_back(player);
-
-  Object * camera = new Object({});
-  camera->addComponent(new FpsCamera(engine.getInput(), camera));
-  objects.push_back(camera);
-
+  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+  renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
+  // return new Scene(objects, {{new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
   return new Scene(objects, {
-    {new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight())}
+    {renderModule},
+    {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
   });
-
 }
 
 Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
@@ -125,19 +106,20 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
-    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "ice", {"red"}, platform));
+    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "ice", {"ice"}, platform));
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2.5, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
     platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 5, 4), Vec3<float>(8, 5, 8), platform, platform));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     Object * coin = new Object({});
-    coin->addComponent(new Transform(Vec3<float>(30 * i, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
+    coin->addComponent(new Transform(Vec3<float>(15 + 30 * i, 7.5f, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
     coin->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 1, 1)), coin->getComponent<Transform>(), coin));
     coin->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
     coin->addComponent(new CoinOnCollision(engine.deltaTime, coin));
     coin->addComponent(new RotateComponent(coin->getComponent<Transform>()->getRot(), Vec3<float>(0, 360, 0), engine.deltaTime, coin));
     coin->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
+	coin->subscribe("addScore", autoScroller->getComponent<Score>());
     autoScroller->getComponent<AutoScroller>()->addTransform(coin->getComponent<Transform>());
 
     objects.push_back(platform);
@@ -146,7 +128,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   }
 
   Object * sea = new Object({});
-  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "redStandard", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
   sea->getComponent<WaveCustomTransform>()->setTimeScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
   objects.push_back(sea);
   
@@ -178,7 +160,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   for (int x = -3; x < 3; x++) {
     for (int z = -3; z < 3; z++) {
       Object * o = new Object({});
-      o->addComponent(new Transform(Vec3<float>(x * 20, 0, z * 20), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"red"}, o));
+      o->addComponent(new Transform(Vec3<float>(x * 20, 0, z * 20), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"ice"}, o));
       o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(10, 1, 10)), o->getComponent<Transform>(), o, "ground"));
       objects.push_back(o);
     }
@@ -239,7 +221,7 @@ Scene * SceneFactory::createMainScene(Engine & engine)
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
   for (unsigned int i = 0; i < 500; i++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"red"}, o));
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"ice"}, o));
     objects.push_back(o);
     particleComponet->addToInstance(o->getComponent<Transform>());
   }

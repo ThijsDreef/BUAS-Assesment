@@ -4,8 +4,6 @@ models/cube.obj
 models/icoSphere.obj
 models/pinguin.obj
 models/snowman.obj
-models/tentakel.dae
-models/bunny.obj
 models/railing.obj
 models/sea.obj
 models/coin.obj

@@ -3,6 +3,7 @@
 Score::Score(Vec2<float> position, Object * object) : UIText("Score: ", position, object)
 {
   alpha = 0.5;
+  object->subscribe("addScore", this);
 }
 
 Score::~Score()
@@ -21,4 +22,11 @@ void Score::update()
 void Score::addScore(float addToScore)
 {
   scoreDelta += addToScore;
+}
+
+void Score::receiveMessage(const std::string & message, void* data)
+{
+	if (message == "addScore") {
+		addScore(*static_cast<float*>(data));
+	}
 }

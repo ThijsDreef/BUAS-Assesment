@@ -13,5 +13,5 @@ RotateComponent::~RotateComponent()
 void RotateComponent::update()
 {
   passedTime += dt * 0.5;
-  rotation = (rotation * (Vec3<float>(1, 1, 1) - toAdd.normalize().abs())) + toAdd.normalize().abs() * toAdd * Ease::quintEaseInOut(passedTime - (int)passedTime);
+  rotation = (rotation * (Vec3<float>(1, 1, 1) - toAdd.sign().abs())) + toAdd.sign().abs() * toAdd * Ease::quintEaseInOut(passedTime - (int)passedTime);
 }
