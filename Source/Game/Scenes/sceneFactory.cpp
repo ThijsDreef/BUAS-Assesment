@@ -119,7 +119,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     coin->addComponent(new CoinOnCollision(engine.deltaTime, coin));
     coin->addComponent(new RotateComponent(coin->getComponent<Transform>()->getRot(), Vec3<float>(0, 360, 0), engine.deltaTime, coin));
     coin->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
-	coin->subscribe("addScore", autoScroller->getComponent<Score>());
+	  coin->subscribe("addScore", autoScroller->getComponent<Score>());
     autoScroller->getComponent<AutoScroller>()->addTransform(coin->getComponent<Transform>());
 
     objects.push_back(platform);
@@ -139,7 +139,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-
+  renderModule->addToPostProccesStack(new PostProcces(engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), "redPostShader", engine.getShaderManger(), engine.getGeoLib()));
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},

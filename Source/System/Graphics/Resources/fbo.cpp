@@ -12,8 +12,10 @@ Fbo::~Fbo()
 {
   for (unsigned int i = 0; i < textures.size(); i++)
     delete textures[i];
-  if (renderBufferId)
+  if (renderBufferId) {
     glDeleteTextures(1, &renderBufferId);
+  }
+  glDeleteFramebuffers(1, &id);
 }
 
 void Fbo::attachDepth(int width, int height)

@@ -15,6 +15,8 @@ private:
   int updateMouse = 0;
   Input input;
   HINSTANCE hInstance;
+  bool showCursor = true;
+  bool lastCursor = true;
   bool fullscreen = false;
   HGLRC hRC = NULL;
   HDC hDC = NULL;

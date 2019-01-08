@@ -10,7 +10,7 @@ class Fbo
 private:
   int w;
   int h;
-  unsigned int renderBufferId;
+  unsigned int renderBufferId = -1;
   unsigned int id;
   std::vector<Texture*> textures;
   std::vector<unsigned int> attachments;

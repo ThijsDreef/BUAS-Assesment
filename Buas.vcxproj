@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A762509B-02C2-4848-AEF8-5575DFA3B733}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -192,6 +192,7 @@ rmdir Debug</Command>
     <ClInclude Include="headers\system\graphics\renderModule.h" />
     <ClInclude Include="headers\system\graphics\resources\buffer.h" />
     <ClInclude Include="headers\system\graphics\resources\fbo.h" />
+    <ClInclude Include="headers\System\Graphics\Resources\postProcces.h" />
     <ClInclude Include="headers\system\graphics\resources\texture.h" />
     <ClInclude Include="headers\system\graphics\shaders\shaderManager.h" />
     <ClInclude Include="headers\system\graphics\ui\font.h" />
@@ -258,6 +259,7 @@ rmdir Debug</Command>
     <ClCompile Include="source\system\graphics\renderModule.cpp" />
     <ClCompile Include="source\system\graphics\resources\buffer.cpp" />
     <ClCompile Include="source\system\graphics\resources\fbo.cpp" />
+    <ClCompile Include="Source\System\Graphics\Resources\postProcces.cpp" />
     <ClCompile Include="source\system\graphics\resources\texture.cpp" />
     <ClCompile Include="source\system\graphics\shaders\shaderManager.cpp" />
     <ClCompile Include="source\system\graphics\ui\font.cpp" />

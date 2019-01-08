@@ -8,6 +8,7 @@
 #include "Math/matrix.h"
 #include "System/Graphics/Geometry/MatrixBufferObject.h"
 #include "System/Graphics/Resources/buffer.h"
+#include "System/Graphics/Resources/postProcces.h"
 #include "System/Graphics/Resources/fbo.h"
 
 #include "Util/util.h"
@@ -34,15 +35,17 @@ private:
   std::vector<Transform*> transforms;
   std::vector<InstancedTransform*> instancedTransforms;
   std::vector<CustomShaderTransform*> customShaderTransforms;
-
+  std::vector<PostProcces*> postProccesStack;
   Matrix<float> projection;
   Matrix<float> camera;
   void setUpFormat();
   void setUpInstancedFormat();
   void bindInstance();
   void bindDefault();
+  Fbo storage;
   Fbo shadowFbo;
 public:
+  void addToPostProccesStack(PostProcces * post);
   void updatePerspective(int width, int height, int fov, float near, float far);
   void updateOrthoGraphic(int width, int height, float near, float far);
   void update();

@@ -17,6 +17,11 @@ void Window::vsync(bool vsync)
 
 void Window::updateInput()
 {
+  lastCursor = showCursor;
+  showCursor = !input.getMouseLock();
+  if (showCursor != lastCursor) {
+    ShowCursor(showCursor);
+  }
   if (input.getMouseLock())
   {
     RECT windowRect;
@@ -24,10 +29,7 @@ void Window::updateInput()
     input.setLockCoords((int)(windowRect.left + windowRect.right) / 2, (int)(windowRect.top + windowRect.bottom) / 2);
     SetCursorPos(input.getLockX(), input.getLockY());
     input.resetDelta();
-    ShowCursor(false);
   }
-  else
-    ShowCursor(true);
 }
 void Window::updateFrameBuffer()
 {

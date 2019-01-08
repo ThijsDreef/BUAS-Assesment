@@ -1,6 +1,6 @@
 #include "System/Graphics/renderModule.h"
 
-RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager * shader, int w, int h) : shadowFbo(4096, 4096)
+RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager * shader, int w, int h) : shadowFbo(4096, 4096), storage(w, h)
 {
   glGenVertexArrays(1, &defaultVao);
   glGenVertexArrays(1, &instancedVao);
@@ -15,16 +15,26 @@ RenderModule::RenderModule(GeometryLib * geo, MaterialLib * mat, ShaderManager *
   shadowFbo.attachDepth(4096, 4096);
   setUpFormat();
   setUpInstancedFormat();
+  storage.attach(GL_RGBA16F, GL_RGBA, GL_FLOAT, 0);
+  storage.attachDepth(w, h);
+
   shaderManager->createShaderProgram("shaders/forward/standard.vert", "shaders/forward/standard.frag", "standard");
   shaderManager->createShaderProgram("shaders/forward/instanced.vert", "shaders/forward/instanced.frag", "instanced");
   shaderManager->createShaderProgram("shaders/shadow/directionalLightInstanced.vert", "shaders/shadow/directionalLightInstanced.frag", "directionalLightInstanced");
   shaderManager->createShaderProgram("shaders/shadow/directionalLight.vert", "shaders/shadow/directionalLight.frag", "directionalLight");
 }
 
+void RenderModule::addToPostProccesStack(PostProcces * post)
+{
+  postProccesStack.push_back(post);
+}
+
 RenderModule::~RenderModule()
 {
   glDeleteVertexArrays(1, &defaultVao);
   glDeleteVertexArrays(1, &instancedVao);
+  for (unsigned int i = 0; i < postProccesStack.size(); i++)
+    delete postProccesStack[i];
 
 }
 
@@ -84,7 +94,10 @@ void RenderModule::update()
   bindInstance();
   drawInstanced();
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  //if post proccesing is enabled bind the correct frame buffer
+  if (postProccesStack.size() == 0) glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  else storage.bind();
+
   glEnable(GL_CULL_FACE);
   glViewport(0, 0, width, height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -104,6 +117,11 @@ void RenderModule::update()
   glUniformMatrix4fv(shaderManager->uniformLocation("instanced", "uLightVP"), 1, false, &lightMatrix.matrix[0]);
   glUniform3f(shaderManager->uniformLocation("instanced", "directionalLight"), directionalLight[0], directionalLight[1], directionalLight[2]);
   drawInstanced();
+
+  //post procces here
+  for (unsigned int j = 0; j < postProccesStack.size(); j++) {
+    postProccesStack[j]->draw((j == 0) ? &storage : postProccesStack[j - 1]->getFbo(), ((j + 1) >= postProccesStack.size()));
+  }
 }
 
 Matrix<float> * RenderModule::getCameraMatrix()

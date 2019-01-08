@@ -19,6 +19,8 @@ int main(int argc, char const *argv[])
   m.color = Vec4<float>(0.2, 0.2, 0.2, 1);
 
   engine.getShaderManger()->createShaderProgram("shaders/forward/custom/standard.vert", "shaders/forward/custom/standard.frag", "seaShader");
+  engine.getShaderManger()->createShaderProgram("shaders/postProccesing/default.vert", "shaders/postProccesing/red.frag", "redPostShader");
+
 
   SceneFactory sceneFactory;
   
