@@ -231,6 +231,15 @@
     <ClInclude Include="headers\System\Graphics\Resources\postProcces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\System\Engine\options.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Game\Graphics\colorGrade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Game\Object\changeLutEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\game\object\autoScroller.cpp">
@@ -408,6 +417,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\Graphics\Resources\postProcces.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Engine\options.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Graphics\colorGrade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\changeLutEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

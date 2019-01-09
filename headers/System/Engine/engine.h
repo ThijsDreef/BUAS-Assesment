@@ -10,6 +10,7 @@
 #include "Util/util.h"
 #include "System/Graphics/Geometry/materialLib.h"
 #include "System/Input/input.h"
+#include "System/Engine/options.h"
 
 class Engine {
 private:
@@ -27,6 +28,7 @@ private:
   int width, height;
   void loadResources();
 public:
+  Options options;
   double deltaTime;
   double timeScale = 1;
   unsigned int frames;
@@ -34,6 +36,7 @@ public:
   int getHeight();
   Engine (std::string title, int iWidth, int iHeight, int bitDepth, bool fullScreen, double frameCap);
   Engine (double frameCap, int iWidth, int iHeight);
+  Engine (Options opts);
   void start(Scene * start);
   void pushScene(Scene * scene);
   Scene * popScene(bool clean);

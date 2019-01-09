@@ -2,7 +2,7 @@
 
 Engine::Engine(std::string title, int iWidth, int iHeight, int bitDepth, bool fullScreen, double frameCap)
 :
-window(title.c_str(), iWidth, iHeight, bitDepth, fullScreen)
+window(title.c_str(), iWidth, iHeight, bitDepth, fullScreen), options({})
 {
   width = iWidth;
   height = iHeight;
@@ -14,7 +14,7 @@ window(title.c_str(), iWidth, iHeight, bitDepth, fullScreen)
 
 Engine::Engine(double frameCap, int iWidth, int iHeight)
 :
-window("default", iWidth, iHeight, 32, true)
+window("default", iWidth, iHeight, 32, true), options({})
 {
   width = iWidth;
   height = iHeight;
@@ -23,6 +23,17 @@ window("default", iWidth, iHeight, 32, true)
   input = window.getInput();
   window.vsync(false);
 
+}
+
+Engine::Engine(Options opts) :
+window(opts.getOption("title").c_str(), opts.getOptionI("width"), opts.getOptionI("height"), 32, opts.getOptionB("fullScreen")), options(opts)
+{
+  width = opts.getOptionI("width");
+  height = opts.getOptionI("height");
+  frameCap = 1.0 / opts.getOptionI("fpsLimit");
+  loadResources();
+  input = window.getInput();
+  window.vsync(opts.getOptionB("vsync"));
 }
 
 void Engine::loadResources()

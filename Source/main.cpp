@@ -1,9 +1,47 @@
 #include "System/Engine/engine.h"
 #include "Game/Scenes/sceneFactory.h"
 
+void read_directory(const std::string& name, std::vector<std::string> & vector)
+{
+    std::string pattern(name);
+    pattern.append("\\*");
+    WIN32_FIND_DATA data;
+    HANDLE hFind;
+    if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+        do {
+            vector.push_back(std::string(data.cFileName));
+        } while (FindNextFile(hFind, &data) != 0);
+        FindClose(hFind);
+    }
+}
+
 int main(int argc, char const *argv[])
 {
-  Engine engine("pingu on a mission", 1920 * 0.5, 1080 * 0.5, 32, false, 1/60.0);
+  Options opts = Options({
+    OptionData("title", "pingu On a Mission"),
+    OptionData("width", "1920"),
+    OptionData("height", "1080"),
+    OptionData("fullScreen", "0"),
+    OptionData("fpsLimit", "60"),
+    OptionData("vsync", "true"),  
+  });
+
+
+  opts.loadOptions("options.txt");
+  Engine engine(opts);
+
+  std::vector<std::string> files;
+  read_directory("shaders/postProccesing/luts", files);
+  int lutNumber = 0;
+  for (unsigned int i = 0; i < files.size(); i++) {
+    if (files[i].length() > 4 && files[i].substr(files[i].length() - 4, files[i].length()) == ".png") {
+      engine.getMatLib()->addTexture("lut" + std::to_string(lutNumber), new Texture("shaders/postProccesing/luts/" + files[i]));
+      lutNumber++;
+    }
+  }
+  engine.options.setOption(OptionData("lutNumber", std::to_string(lutNumber)));
+  engine.options.setOption(OptionData("currentLut", "lut1"));
+
   Texture * lut = new Texture("shaders/postProccesing/luts/sepia.png");
   engine.getMatLib()->addTexture("defaultLut", lut);
 

@@ -8,10 +8,10 @@
 class RotateComponent : public Component
 {
 private:
+  double & dt;
   Vec3<float> & rotation;
   Vec3<float> toAdd;
   double passedTime = 0;
-  double & dt;
 public:
   RotateComponent(Vec3<float> & rot, Vec3<float> toAddRotation, double & deltaTime, Object * object);
   virtual ~RotateComponent();

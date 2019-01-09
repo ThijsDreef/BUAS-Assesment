@@ -1,6 +1,6 @@
 #include "Game/Object/rotateComponent.h"
 
-RotateComponent::RotateComponent(Vec3<float> & rot, Vec3<float> toAddRotation, double & deltaTime, Object * object) : dt(deltaTime), rotation(rot), Component(object)
+RotateComponent::RotateComponent(Vec3<float> & rot, Vec3<float> toAddRotation, double & deltaTime, Object * object) : Component(object), dt(deltaTime), rotation(rot)
 {
   toAdd = toAddRotation;
 }

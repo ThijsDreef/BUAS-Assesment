@@ -143,7 +143,9 @@ rmdir Debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\Game\Graphics\colorGrade.h" />
     <ClInclude Include="headers\game\object\autoScroller.h" />
+    <ClInclude Include="headers\Game\Object\changeLutEvent.h" />
     <ClInclude Include="headers\game\object\chunkSpawner.h" />
     <ClInclude Include="headers\Game\Object\coinOnCollision.h" />
     <ClInclude Include="headers\game\object\deathWall.h" />
@@ -180,6 +182,7 @@ rmdir Debug</Command>
     <ClInclude Include="headers\system\engine\engineobjects\particleSystem.h" />
     <ClInclude Include="headers\system\engine\engineobjects\textDebug.h" />
     <ClInclude Include="headers\system\engine\engineobjects\transform.h" />
+    <ClInclude Include="headers\System\Engine\options.h" />
     <ClInclude Include="headers\system\engine\scene.h" />
     <ClInclude Include="headers\system\graphics\defferedRenderModule.h" />
     <ClInclude Include="headers\system\graphics\geometry\geometry.h" />
@@ -217,7 +220,9 @@ rmdir Debug</Command>
     <ClInclude Include="headers\util\util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Graphics\colorGrade.cpp" />
     <ClCompile Include="source\game\object\autoScroller.cpp" />
+    <ClCompile Include="Source\Game\Object\changeLutEvent.cpp" />
     <ClCompile Include="source\game\object\chunkSpawner.cpp" />
     <ClCompile Include="Source\Game\Object\coinOnCollision.cpp" />
     <ClCompile Include="source\game\object\deathWall.cpp" />
@@ -250,6 +255,7 @@ rmdir Debug</Command>
     <ClCompile Include="source\system\engine\engineobjects\orbitalCamera.cpp" />
     <ClCompile Include="source\system\engine\engineobjects\particleSystem.cpp" />
     <ClCompile Include="source\system\engine\engineobjects\transform.cpp" />
+    <ClCompile Include="Source\System\Engine\options.cpp" />
     <ClCompile Include="source\system\engine\scene.cpp" />
     <ClCompile Include="source\system\graphics\defferedRenderModule.cpp" />
     <ClCompile Include="source\system\graphics\geometry\geometry.cpp" />

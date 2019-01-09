@@ -22,6 +22,8 @@ Scene * SceneFactory::createScene(const std::string & sceneName, Engine & engine
 
 Scene * SceneFactory::createMainMenuScene(Engine & engine)
 {
+  ColorGrade * colorGrade = new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib());
+
   std::vector<Object*> objects;
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
@@ -48,13 +50,15 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   Object * spaceToStart = new Object({});
   spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.6), spaceToStart));
   spaceToStart->addComponent(new LoadSceneEvent("start", "endlessRunnerScene", spaceToStart, this, engine, spaceToStart));
-  spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start")}, engine.getInput(), spaceToStart));
+  spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start"), KeyEvent(65, "incrementLut")}, engine.getInput(), spaceToStart));
+  spaceToStart->addComponent(new ChangeLutEvent(*colorGrade, engine, spaceToStart));
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("defaultLut"), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
+
+  renderModule->addToPostProccesStack(colorGrade);
   return new Scene(objects, {
     {renderModule},
     {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
@@ -139,7 +143,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("defaultLut"), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
+  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},

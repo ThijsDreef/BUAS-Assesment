@@ -35,6 +35,7 @@
 #include "Game/Object/coinOnCollision.h"
 #include "Game/Object/explosionEvent.h"
 #include "Game/Object/rotateComponent.h"
+#include "Game/Object/changeLutEvent.h"
 #include "Game/Graphics/colorGrade.h"
 
 

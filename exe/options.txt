@@ -1,0 +1,6 @@
+fpsLimit=60
+fullScreen=0
+height=540
+title=tietel
+vsync=true
+width=960

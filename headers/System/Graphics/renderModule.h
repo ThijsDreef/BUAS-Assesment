@@ -42,8 +42,8 @@ private:
   void setUpInstancedFormat();
   void bindInstance();
   void bindDefault();
-  Fbo storage;
   Fbo shadowFbo;
+  Fbo storage;
 public:
   void addToPostProccesStack(PostProcces * post);
   void updatePerspective(int width, int height, int fov, float near, float far);
