@@ -11,7 +11,7 @@
 #include "System/Graphics/Resources/postProcces.h"
 #include "System/Graphics/Resources/fbo.h"
 
-#include "Util/util.h"
+#include "Util/loadingUtils.h"
 #include "System/Engine/EngineObjects/customShaderTransform.h"
 #include "System/Engine/EngineObjects/InstancedTransform.h"
 #include "System/Engine/EngineObjects/transform.h"

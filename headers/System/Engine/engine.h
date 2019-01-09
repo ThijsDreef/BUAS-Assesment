@@ -7,7 +7,7 @@
 #include "System/Graphics/Geometry/geometryLib.h"
 #include "System/Graphics/Shaders/shaderManager.h"
 #include "System/Engine/scene.h"
-#include "Util/util.h"
+#include "Util/loadingUtils.h"
 #include "System/Graphics/Geometry/materialLib.h"
 #include "System/Input/input.h"
 #include "System/Engine/options.h"

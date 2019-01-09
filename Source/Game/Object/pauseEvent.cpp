@@ -18,11 +18,11 @@ void PauseEvent::receiveMessage(const std::string & message, void * data)
 {
   if (message == "pause") {
     setText("Paused");
-	paused = true;
+	  paused = true;
     engineObject.timeScale = 0;
   } else if (message == "unPause") {
     if (!paused) return;
-	paused = false;
+	  paused = false;
     setText("");
     engineObject.timeScale = 1;
   }

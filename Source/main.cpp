@@ -1,19 +1,10 @@
+
 #include "System/Engine/engine.h"
 #include "Game/Scenes/sceneFactory.h"
+#include "Util/loadingUtils.h"
+#include "Util/platformUtils.h"
 
-void read_directory(const std::string& name, std::vector<std::string> & vector)
-{
-    std::string pattern(name);
-    pattern.append("\\*");
-    WIN32_FIND_DATA data;
-    HANDLE hFind;
-    if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
-        do {
-            vector.push_back(std::string(data.cFileName));
-        } while (FindNextFile(hFind, &data) != 0);
-        FindClose(hFind);
-    }
-}
+
 
 int main(int argc, char const *argv[])
 {
@@ -31,7 +22,7 @@ int main(int argc, char const *argv[])
   Engine engine(opts);
 
   std::vector<std::string> files;
-  read_directory("shaders/postProccesing/luts", files);
+  PlatformUtils::readDirectory("shaders/postProccesing/luts", files);
   int lutNumber = 0;
   for (unsigned int i = 0; i < files.size(); i++) {
     if (files[i].length() > 4 && files[i].substr(files[i].length() - 4, files[i].length()) == ".png") {

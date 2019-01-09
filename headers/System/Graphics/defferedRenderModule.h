@@ -8,7 +8,7 @@
 #include "System/Graphics/Geometry/MatrixBufferObject.h"
 #include "Math/matrix.h"
 #include "System/Graphics/Resources/buffer.h"
-#include "Util/util.h"
+#include "Util/loadingUtils.h"
 #include "System/Engine/EngineObjects/transform.h"
 #include "System/Window/glew.h"
 #include "System/Engine/EngineObjects/object.h"

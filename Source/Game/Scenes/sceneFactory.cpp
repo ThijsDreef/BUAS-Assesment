@@ -51,9 +51,14 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.6), spaceToStart));
   spaceToStart->addComponent(new LoadSceneEvent("start", "endlessRunnerScene", spaceToStart, this, engine, spaceToStart));
   spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start"), KeyEvent(65, "incrementLut")}, engine.getInput(), spaceToStart));
-  spaceToStart->addComponent(new ChangeLutEvent(*colorGrade, engine, spaceToStart));
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
+
+  Object * lutObject = new Object({});
+  lutObject->addComponent(new EventOnKey({KeyEvent(65, "incrementLut")}, engine.getInput(), lutObject));
+  lutObject->addComponent(new ChangeLutEvent(Vec2<float>(0, 0), *colorGrade, engine, lutObject));
+  objects.push_back(lutObject);
+
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);

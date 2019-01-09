@@ -1,7 +1,7 @@
 #include "System/Window/glew.h"
 #include <iostream>
 #include "Util/picoPNG.h"
-#include "Util/util.h"
+#include "Util/loadingUtils.h"
 
 #ifndef TEXTURE__
 #define TEXTURE__ 

@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A762509B-02C2-4848-AEF8-5575DFA3B733}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -215,9 +215,10 @@ rmdir Debug</Command>
     <ClInclude Include="headers\system\window\wglew.h" />
     <ClInclude Include="headers\system\window\window.h" />
     <ClInclude Include="headers\util\ease.h" />
+    <ClInclude Include="headers\Util\loadingUtils.h" />
     <ClInclude Include="headers\util\picoPNG.h" />
+    <ClInclude Include="headers\Util\platformUtils.h" />
     <ClInclude Include="headers\util\rapidxml.hpp" />
-    <ClInclude Include="headers\util\util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Graphics\colorGrade.cpp" />
@@ -281,7 +282,8 @@ rmdir Debug</Command>
     <ClCompile Include="source\system\physics\octree.cpp" />
     <ClCompile Include="source\system\window\window.cpp" />
     <ClCompile Include="source\util\ease.cpp" />
-    <ClCompile Include="source\util\util.cpp" />
+    <ClCompile Include="Source\Util\loadingUtils.cpp" />
+    <ClCompile Include="Source\Util\platformUtils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
