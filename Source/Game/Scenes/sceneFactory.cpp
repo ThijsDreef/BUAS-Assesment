@@ -95,7 +95,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   Object * particles = new Object({});
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
-  for (unsigned int i = 0; i < 1000; i++) {
+  for (unsigned int i = 0; i < 25; i++) {
     Object * o = new Object({});
     o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "ice", {"ice"}, o));
     autoScroller->getComponent<AutoScroller>()->addTransform(o->getComponent<Transform>());
@@ -129,7 +129,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     Object * platform = new Object({});
     platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "ice", {"ice"}, platform));
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
-    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2.5, engine.deltaTime, platform));
+    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
     platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 5, 4), Vec3<float>(8, 5, 8), platform, platform));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
