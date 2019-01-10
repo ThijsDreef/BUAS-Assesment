@@ -49,7 +49,7 @@ public:
   Scene * createScene(const std::string & sceneName, Engine & engine);
   Scene * createMainMenuScene(Engine & engine);
   Scene * createEndlessRunnerScene(Engine & engine);
-  Scene * createMainScene(Engine & engine);
+  // Scene * createMainScene(Engine & engine);
   virtual ~SceneFactory();
 };
 

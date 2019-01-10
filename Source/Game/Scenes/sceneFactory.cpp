@@ -25,6 +25,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   ColorGrade * colorGrade = new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib());
 
   std::vector<Object*> objects;
+
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
   objects.push_back(sea);
@@ -50,12 +51,12 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   Object * spaceToStart = new Object({});
   spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.6), spaceToStart));
   spaceToStart->addComponent(new LoadSceneEvent("start", "endlessRunnerScene", spaceToStart, this, engine, spaceToStart));
-  spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start"), KeyEvent(65, "incrementLut")}, engine.getInput(), spaceToStart));
+  spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start")}, engine.getInput(), spaceToStart));
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
 
   Object * lutObject = new Object({});
-  lutObject->addComponent(new EventOnKey({KeyEvent(65, "incrementLut")}, engine.getInput(), lutObject));
+  lutObject->addComponent(new EventOnKey({KeyEvent(68, "incrementLut"), KeyEvent(65, "decrementLut")}, engine.getInput(), lutObject));
   lutObject->addComponent(new ChangeLutEvent(Vec2<float>(0, 0), *colorGrade, engine, lutObject));
   objects.push_back(lutObject);
 
@@ -92,6 +93,17 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
   objects.push_back(player);
 
+  Object * particles = new Object({});
+  ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
+  for (unsigned int i = 0; i < 1000; i++) {
+    Object * o = new Object({});
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "ice", {"ice"}, o));
+    autoScroller->getComponent<AutoScroller>()->addTransform(o->getComponent<Transform>());
+    objects.push_back(o);
+    particleComponet->addToInstance(o->getComponent<Transform>());
+  }
+  particles->addComponent(particleComponet);
+  objects.push_back(particles);
 
   Object * pause = new Object({});
   pause->addComponent(new EventOnKey({KeyEvent(27, "pause"), KeyEvent(32, "unPause"), KeyEvent(68, "unPause"), KeyEvent(87, "unPause"), KeyEvent(65, "unPause"), KeyEvent(83, "unPause")}, engine.getInput(), pause));
@@ -147,8 +159,8 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   objects.push_back(camera);
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
-  renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
-  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
+  renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f); 
+  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("lut" + engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},
@@ -156,101 +168,101 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   });
 }
 
-Scene * SceneFactory::createMainScene(Engine & engine)
-{
-  std::vector<Object*> objects;
+// Scene * SceneFactory::createMainScene(Engine & engine)
+// {
+//   std::vector<Object*> objects;
 
-  //create snowman here
-  Object * snowMan = new Object({});
-  snowMan->addComponent(new Transform(Vec3<float>(3, 3, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, snowMan));
-  snowMan->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 2.5, 1.5)), snowMan->getComponent<Transform>(), snowMan));
+//   //create snowman here
+//   Object * snowMan = new Object({});
+//   snowMan->addComponent(new Transform(Vec3<float>(3, 3, 1), Vec3<float>(0.2, 0.2, 0.2), Vec3<float>(0, 90, 0), "snowman", {}, snowMan));
+//   snowMan->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(1.5, 2.5, 1.5)), snowMan->getComponent<Transform>(), snowMan));
 
-  //for loop for INSERT AREA TARGET HERE
-  for (int x = -3; x < 3; x++) {
-    for (int z = -3; z < 3; z++) {
-      Object * o = new Object({});
-      o->addComponent(new Transform(Vec3<float>(x * 20, 0, z * 20), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"ice"}, o));
-      o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(10, 1, 10)), o->getComponent<Transform>(), o, "ground"));
-      objects.push_back(o);
-    }
-  }
-  Object * instancedFence = new Object({});
-  InstancedTransform * it = new InstancedTransform(instancedFence);
-  instancedFence->addComponent(it);
-  //for loop for INSERT AREA TARGET HERE
-  for (int x = -20; x < 20; x ++) {
-    Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(39, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, o));
-    o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
-
-
-    Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(-40, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, ot));
-    ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
-
-    it->addToInstance(o->getComponent<Transform>());
-    it->addToInstance(ot->getComponent<Transform>());
-
-    objects.push_back(o);
-    objects.push_back(ot);
-  }
-  //for loop for INSERT AREA TARGET HERE
-  for (int z = -20; z < 20; z ++) {
-    Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 39.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, o));
-    o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
+//   //for loop for INSERT AREA TARGET HERE
+//   for (int x = -3; x < 3; x++) {
+//     for (int z = -3; z < 3; z++) {
+//       Object * o = new Object({});
+//       o->addComponent(new Transform(Vec3<float>(x * 20, 0, z * 20), Vec3<float>(10, 1, 10), Vec3<float>(), "cube", {"ice"}, o));
+//       o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(10, 1, 10)), o->getComponent<Transform>(), o, "ground"));
+//       objects.push_back(o);
+//     }
+//   }
+//   Object * instancedFence = new Object({});
+//   InstancedTransform * it = new InstancedTransform(instancedFence);
+//   instancedFence->addComponent(it);
+//   //for loop for INSERT AREA TARGET HERE
+//   for (int x = -20; x < 20; x ++) {
+//     Object * o = new Object({});
+//     o->addComponent(new Transform(Vec3<float>(39, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, o));
+//     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
 
 
-    Object * ot = new Object({});
-    ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -39.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, ot));
-    ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
+//     Object * ot = new Object({});
+//     ot->addComponent(new Transform(Vec3<float>(-40, 2, 1 + x * 2), Vec3<float>(1, 1, 1), Vec3<float>(), "railing", {"None"}, ot));
+//     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
 
-    it->addToInstance(o->getComponent<Transform>());
-    it->addToInstance(ot->getComponent<Transform>());
-    objects.push_back(o);
-    objects.push_back(ot);
-  }
+//     it->addToInstance(o->getComponent<Transform>());
+//     it->addToInstance(ot->getComponent<Transform>());
 
-  //create ScoreObject
-  Object * scoreObject = new Object({});
-  scoreObject->addComponent(new Score(Vec2<float>(-0.15, 1), scoreObject));
-  //create TrickObject
-  Object * trickObject = new Object({});
-  trickObject->addComponent(new Trick(Vec2<float>(-0.2, 0.6), scoreObject->getComponent<Score>(), trickObject));
+//     objects.push_back(o);
+//     objects.push_back(ot);
+//   }
+//   //for loop for INSERT AREA TARGET HERE
+//   for (int z = -20; z < 20; z ++) {
+//     Object * o = new Object({});
+//     o->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, 39.25), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, o));
+//     o->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), o->getComponent<Transform>(), o, "none"));
 
-  //create Player
-  Object * player = new Object({});
-  player->addComponent(new Transform(Vec3<float>(0, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "pinguin", {}, player));
-  player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
-  player->addComponent(new PlayerMoveStateMachine(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), trickObject->getComponent<Trick>(), engine.deltaTime, player));
-  player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2.25f, 1.45, 2.25f)), player->getComponent<Transform>(), player));
 
-  //create particle trail
-  Object * particles = new Object({});
-  ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
-  for (unsigned int i = 0; i < 500; i++) {
-    Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"ice"}, o));
-    objects.push_back(o);
-    particleComponet->addToInstance(o->getComponent<Transform>());
-  }
-  particles->addComponent(particleComponet);
+//     Object * ot = new Object({});
+//     ot->addComponent(new Transform(Vec3<float>(0.75 + z * 2, 2, -39.75), Vec3<float>(1, 1, 1), Vec3<float>(0, 90, 0), "railing", {"None"}, ot));
+//     ot->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(1, 200, 1)), ot->getComponent<Transform>(), ot, "none"));
 
-  //create camera
-  Object * camera = new Object({});
-  camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+//     it->addToInstance(o->getComponent<Transform>());
+//     it->addToInstance(ot->getComponent<Transform>());
+//     objects.push_back(o);
+//     objects.push_back(ot);
+//   }
 
-  objects.push_back(camera);
-  objects.push_back(instancedFence);
-  objects.push_back(snowMan);
-  objects.push_back(player);
-  objects.push_back(particles);
-  objects.push_back(trickObject);
-  objects.push_back(scoreObject);
+//   //create ScoreObject
+//   Object * scoreObject = new Object({});
+//   scoreObject->addComponent(new Score(Vec2<float>(-0.15, 1), scoreObject));
+//   //create TrickObject
+//   Object * trickObject = new Object({});
+//   trickObject->addComponent(new Trick(Vec2<float>(-0.2, 0.6), scoreObject->getComponent<Score>(), trickObject));
 
-  CollisionModule * collisionModule = new CollisionModule(200, 4);
+//   //create Player
+//   Object * player = new Object({});
+//   player->addComponent(new Transform(Vec3<float>(0, 5, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "pinguin", {}, player));
+//   player->addComponent(new RotateToMouse(&player->getComponent<Transform>()->getRot(), engine.getInput(), player));
+//   player->addComponent(new PlayerMoveStateMachine(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), trickObject->getComponent<Trick>(), engine.deltaTime, player));
+//   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2.25f, 1.45, 2.25f)), player->getComponent<Transform>(), player));
 
-  RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
-  renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
-  return new Scene(objects, {{collisionModule}, {renderModule}, {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
-}
+//   //create particle trail
+//   Object * particles = new Object({});
+//   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
+//   for (unsigned int i = 0; i < 500; i++) {
+//     Object * o = new Object({});
+//     o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "cube", {"ice"}, o));
+//     objects.push_back(o);
+//     particleComponet->addToInstance(o->getComponent<Transform>());
+//   }
+//   particles->addComponent(particleComponet);
+
+//   //create camera
+//   Object * camera = new Object({});
+//   camera->addComponent(new FollowCamera(&player->getComponent<Transform>()->getPos(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
+
+//   objects.push_back(camera);
+//   objects.push_back(instancedFence);
+//   objects.push_back(snowMan);
+//   objects.push_back(player);
+//   objects.push_back(particles);
+//   objects.push_back(trickObject);
+//   objects.push_back(scoreObject);
+
+//   CollisionModule * collisionModule = new CollisionModule(200, 4);
+
+//   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
+//   renderModule->updateOrthoGraphic(2560, 1440, -1000.0f, 1000.0f);
+//   return new Scene(objects, {{collisionModule}, {renderModule}, {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}});
+// }

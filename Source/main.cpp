@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
     }
   }
   engine.options.setOption(OptionData("lutNumber", std::to_string(lutNumber)));
-  engine.options.setOption(OptionData("currentLut", "lut1"));
+  engine.options.setOption(OptionData("currentLut", "1"));
 
   Texture * lut = new Texture("shaders/postProccesing/luts/sepia.png");
   engine.getMatLib()->addTexture("defaultLut", lut);

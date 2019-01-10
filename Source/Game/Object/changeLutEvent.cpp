@@ -5,7 +5,6 @@ ChangeLutEvent::ChangeLutEvent(Vec2<float> pos, ColorGrade & colorGrade, Engine 
     scale = 1;
     alpha = 1;
     currentLut = engine.options.getOptionI("currentLut");
-    std::cout << currentLut << "\n";
     maxLut = engine.options.getOptionI("lutNumber");
     object->subscribe("incrementLut", this);
     object->subscribe("decrementLut", this);
@@ -38,14 +37,14 @@ void ChangeLutEvent::receiveMessage(const std::string & message, void * data)
         updateDelay = 0.3;
         currentLut ++;
         currentLut %= maxLut;
-        engine.options.setOption(OptionData("currentLut", "lut" + std::to_string(currentLut)));
+        engine.options.setOption(OptionData("currentLut", std::to_string(currentLut)));
         color.setTexture(engine.getMatLib()->getTexture("lut" + std::to_string(currentLut)));
         setText(lutNames[currentLut]);
     } else if (message == "decrementLut" && updateDelay < 0) {
         currentLut --;
         updateDelay = 0.3;
         currentLut = (currentLut >= 0) ? currentLut : maxLut - 1;
-        engine.options.setOption(OptionData("currentLut", "lut" + std::to_string(currentLut)));
+        engine.options.setOption(OptionData("currentLut", std::to_string(currentLut)));
         color.setTexture(engine.getMatLib()->getTexture("lut" + std::to_string(currentLut)));
         setText(lutNames[currentLut]);
     }

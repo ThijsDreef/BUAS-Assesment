@@ -74,12 +74,13 @@ void MaterialLib::setUpBuffer()
   glBindBufferRange (GL_UNIFORM_BUFFER, 0, matBuffer.getBufferId(), 16, 16);
 
 
-}
+}	
 
 MaterialLib::~MaterialLib()
 {
   for (auto & i : textures)
   {
+	if (!i.second) continue;
     unsigned int id = i.second->getId();
     glDeleteTextures(1, &id);
     delete i.second;

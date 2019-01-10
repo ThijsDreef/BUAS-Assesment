@@ -6,7 +6,7 @@ SinkAble::SinkAble(Vec3<float> * position, float sinkDistance, double & deltaTim
   lowestY = (*position)[1] - sinkDistance;
   originalY = (*position)[1];
   object->subscribe("collision", this);
-  passedTime = 0.35;
+  bezierTime = 0.15;
 }
 
 SinkAble::~SinkAble()
@@ -16,21 +16,25 @@ SinkAble::~SinkAble()
 
 void SinkAble::update()
 {
+  elastic = Ease::elasticEaseOut(std::fabs(elasticEaseTime));
+  bezier = Ease::cubicEaseInOut(std::fabs(bezierTime));
   if (hit) {
-    passedTime -= dt * 0.25;
-    if (passedTime < -0.4) {
+    elasticEaseTime -= dt * 0.25;
+    if (elasticEaseTime < -0.15) {
       hit = false;
       loop = false;
-      passedTime = 0.4;
     }
+    (*targetPos)[1] = (1.0 - elastic) * originalY + (elastic) * lowestY;
   } else {
-    passedTime += dt * 0.25 * ((loop) ? -1 : 1) * timeScale;
-    if (passedTime > 0.4 || passedTime < 0.3) {
+    bezierTime += dt * 0.25 * ((loop) ? -1 : 1) * timeScale;
+    if (bezierTime > 0.18 || bezierTime < 0.13) {
       loop = !loop;
-      timeScale = fmax((float)rand() / RAND_MAX, 0.45);
+      timeScale = 0.5f + (float)rand() / RAND_MAX * 0.1;
     }
+    (*targetPos)[1] = bezier * originalY + (1.0 - bezier) * lowestY;
   }
-  (*targetPos)[1] = Ease::elasticEaseOut(std::fabs(passedTime)) * originalY + (1.0 - Ease::elasticEaseOut(std::fabs(passedTime))) * lowestY;
+  lastCollision = collision;
+  collision = false;
 }
 
 void SinkAble::receiveMessage(const std::string & name, void* data)
@@ -38,7 +42,9 @@ void SinkAble::receiveMessage(const std::string & name, void* data)
   if (name == "collision") {
     CollisionData * coll = static_cast<CollisionData*>(data);
     if (coll->firstResolution[1] != 0) {
-      hit = true;
+      collision = true;
+      if (!hit && lastCollision != collision) elastic = 0.15;
+      if (!hit && lastCollision != collision) hit = true;
     }
   }
 }

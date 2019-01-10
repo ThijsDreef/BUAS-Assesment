@@ -14,7 +14,12 @@ private:
   Vec3<float> * targetPos;
   double & dt;
   double timeScale = 0.5;
-  double passedTime = 0;
+  double elasticEaseTime = 0;
+  double bezierTime = 0;
+  float elastic;
+  float bezier;
+  bool collision = false;
+  bool lastCollision = false;
 public:
   void update();
   void receiveMessage(const std::string & message, void* data);  

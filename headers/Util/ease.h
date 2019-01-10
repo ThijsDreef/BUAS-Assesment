@@ -13,6 +13,10 @@ namespace Ease
   float quintEaseInOut(float t, float b = 0, float c = 1, float d = 1);
   float quintEaseIn(float t, float b = 0, float c = 1, float d = 1);
   float quintEaseOut(float t, float b = 0, float c = 1, float d = 1);
+  float cubicEaseOut(float t, float b = 0, float c = 1, float d = 1);
+  float cubicEaseIn(float t, float b = 0, float c = 1, float d = 1);
+  float cubicEaseInOut(float t, float b = 0, float c = 1, float d = 1);
+
 }
 
 #endif

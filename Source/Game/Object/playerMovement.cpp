@@ -48,14 +48,14 @@ void PlayerMovement::update()
 
   if (targetAngle != -1) {
     int delta = ((int)targetAngle - (int)(*rotPointer)[1] + 540) % 360 - 180;
-    (*rotPointer)[1] += delta * 0.175;
+    (*rotPointer)[1] += delta * 0.25;
   }
 
   if (input->getKeyDown(32) && grounded) {
     frameForce[1] += 55;
     force[1] = 0;
     boosted = false;
-  } else if (input->getKeyDown(16) && !boosted && !grounded && force[1] < 0) {
+  } else if (input->getKeyDown(32) && !boosted && !grounded && force[1] < 0) {
     object->sendMessage("explosion", posPointer);
     boosted = true;
 		force[1] = 0;

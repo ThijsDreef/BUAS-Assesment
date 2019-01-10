@@ -38,8 +38,7 @@ void PostProcces::draw(Fbo * previousFbo, bool lastDraw)
 
 void PostProcces::setUniforms()
 {
-    unsigned int loc = shaderManager->uniformLocation(shader, "uScreen");
-    glUniform2f(loc, sw * 0.25, sh * 0.25);
+
 }
 
 Fbo * PostProcces::getFbo()
