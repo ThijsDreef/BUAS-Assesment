@@ -58,7 +58,7 @@ void MaterialLib::setUpBuffer()
   byId.clear();
   //and prepare a buffer
   for (auto & i : map)
-  {
+  { 
     byId.push_back(i.first);
     loc[i.first] = size;
     allMats.push_back(i.second);

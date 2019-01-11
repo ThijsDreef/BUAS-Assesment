@@ -28,6 +28,8 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
 
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  sea->getComponent<WaveCustomTransform>()->castShadow = false;
+
   objects.push_back(sea);
 
   Object * pinguin = new Object({});
@@ -35,7 +37,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   objects.push_back(pinguin);
 
   Object * ice = new Object({});
-  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "ice", {"ice"}, ice));
+  ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "berg", {"ice"}, ice));
   objects.push_back(ice);
 
   Object * camera = new Object({});
@@ -127,12 +129,13 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
-    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "ice", {"ice"}, platform));
+    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "berg", {"ice"}, platform));
     platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
     platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
     platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 5, 4), Vec3<float>(8, 5, 8), platform, platform));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
+    
     Object * coin = new Object({});
     coin->addComponent(new Transform(Vec3<float>(15 + 30 * i, 7.5f, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
     coin->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 1, 1)), coin->getComponent<Transform>(), coin));
@@ -151,12 +154,15 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
   sea->getComponent<WaveCustomTransform>()->setTimeScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
+  sea->getComponent<WaveCustomTransform>()->castShadow = false;
   objects.push_back(sea);
-  
+
   Object * camera = new Object({});
   //this needs refractoring this is a memory leak
   camera->addComponent(new FollowCamera(new Vec3<float>(), camera, Vec3<float>(-50, 52, 50), Vec3<float>(35.2, 45, 0), Vec3<float>(1, 0, 1)));
   objects.push_back(camera);
+
+
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f); 

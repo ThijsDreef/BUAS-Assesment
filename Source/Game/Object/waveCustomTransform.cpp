@@ -13,6 +13,7 @@ WaveCustomTransform::~WaveCustomTransform()
 
 void WaveCustomTransform::onDraw(ShaderManager * shaderManger)
 {
+  glEnable(GL_BLEND);
   glUniform1f(shaderManger->uniformLocation(shader, "uTime"), 0.1 + passedTime * 0.2);
   glUniform1f(shaderManger->uniformLocation(shader, "uTexScroll"), 0.1 + passedTime * 0.08);
 
@@ -26,5 +27,5 @@ void WaveCustomTransform::setTimeScale(float * scale)
 
 void WaveCustomTransform::onDrawExit(ShaderManager * shaderManger)
 {
-
+  glDisable(GL_BLEND);
 }

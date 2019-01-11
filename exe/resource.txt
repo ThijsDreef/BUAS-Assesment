@@ -4,3 +4,4 @@ models/pinguin.obj
 models/sea.obj
 models/coin.obj
 models/shark.obj
+models/berg.obj

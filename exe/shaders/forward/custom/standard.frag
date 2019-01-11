@@ -72,4 +72,5 @@ void main(void)
   out_color.xyz *= max(dot(out_normal, directionalLight), 0.);
   out_color *= vec4(1.0) - vec4(ShadowCalculation(uLightVP * out_pos, out_normal));
   out_color *= 0.8;
+  out_color.w = 0.5;
 }
