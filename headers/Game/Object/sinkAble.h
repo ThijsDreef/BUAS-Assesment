@@ -9,7 +9,7 @@ class SinkAble : public Component
 {
 private:
   bool hit = false, loop = false;
-  float lowestY;
+  float sinkDistance;
   float originalY;
   Vec3<float> * targetPos;
   double & dt;

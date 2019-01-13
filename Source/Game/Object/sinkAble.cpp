@@ -3,7 +3,7 @@
 SinkAble::SinkAble(Vec3<float> * position, float sinkDistance, double & deltaTime, Object * object) : Component(object), dt(deltaTime)
 {
   targetPos = position;
-  lowestY = (*position)[1] - sinkDistance;
+  this->sinkDistance = sinkDistance;
   originalY = (*position)[1];
   object->subscribe("collision", this);
   bezierTime = 0.5;
@@ -19,16 +19,12 @@ void SinkAble::update()
 {
 	
   elastic = 1.0 - Ease::cubicEaseOut(std::fabs(elasticEaseTime));
-  bezier = Ease::cubicEaseInOut(std::fabs(bezierTime)) * 0.3 + 0.7;
+  bezier = Ease::cubicEaseInOut(std::fabs(bezierTime)) * 0.4 + 0.6;
   if (hit) {
     elasticEaseTime -= dt * 1.5;
     if (elasticEaseTime < -1) {
       hit = false;
-      
-			//elasticEaseTime = 1;
-      // bezierTime = 0.5;
     }
-    // (*targetPos)[1] = ((elastic * bezier)) * originalY + (1.0 - elastic * ) * lowestY;
   } else {
     bezierTime += dt * ((loop) ? -1 : 1) * timeScale;
     if (bezierTime > 1 || bezierTime < 0) {
@@ -36,7 +32,8 @@ void SinkAble::update()
       timeScale = 0.3 + (float)rand() / RAND_MAX * 0.2;
     }
   }
-  (*targetPos)[1] = (bezier * elastic) * originalY + ((1.0 - elastic) * (1.0 - bezier)) * lowestY;
+  //this should be fixed worst case scenario you double allowed sinkdistance
+  (*targetPos)[1] = originalY + elastic * sinkDistance + bezier * sinkDistance;
   lastCollision = collision;
   collision = false;
 }

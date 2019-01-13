@@ -36,6 +36,7 @@
 #include "Game/Object/explosionEvent.h"
 #include "Game/Object/rotateComponent.h"
 #include "Game/Object/changeLutEvent.h"
+#include "Game/Object/sharkStateMachine.h"
 #include "Game/Graphics/colorGrade.h"
 
 

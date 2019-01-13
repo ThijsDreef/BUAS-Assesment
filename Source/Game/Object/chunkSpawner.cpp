@@ -17,7 +17,7 @@ void ChunkSpawner::update()
 		transform->getObject()->sendMessage("Respawn", 0);
     transform->getPos()[2] = ((float)rand() / (float)RAND_MAX) * 25.0f - 17.5f;
     CollisionComponent * coll = transform->getObject()->getComponent<CollisionComponent>();
-    if (coll) coll->getCollider()->setScale(transform->getScale());
+    // if (coll) coll->getCollider()->setScale(transform->getScale());
     autoScrollerObject->addTransform(transform);
   }
 }

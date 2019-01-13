@@ -22,7 +22,6 @@ Scene * SceneFactory::createScene(const std::string & sceneName, Engine & engine
 
 Scene * SceneFactory::createMainMenuScene(Engine & engine)
 {
-  ColorGrade * colorGrade = new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib());
 
   std::vector<Object*> objects;
 
@@ -39,6 +38,13 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   Object * ice = new Object({});
   ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "berg", {"ice"}, ice));
   objects.push_back(ice);
+  
+  for (int x = 0; x < 2; x++) {
+    Object * shark = new Object({});
+    shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -10, -5), Vec3<float>(1, 1, 1), Vec3<float>(), "shark", {}, shark));
+    shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
+    objects.push_back(shark);
+  }
 
   Object * camera = new Object({});
   //this needs refractoring this is a memory leak
@@ -57,16 +63,19 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(spaceToStart);
 
-  Object * lutObject = new Object({});
-  lutObject->addComponent(new EventOnKey({KeyEvent(68, "incrementLut"), KeyEvent(65, "decrementLut")}, engine.getInput(), lutObject));
-  lutObject->addComponent(new ChangeLutEvent(Vec2<float>(0, 0), *colorGrade, engine, lutObject));
-  objects.push_back(lutObject);
 
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
 
-  renderModule->addToPostProccesStack(colorGrade);
+  if (engine.options.getOptionI("lutNumber") > 0) {
+    ColorGrade * colorGrade = new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib());
+    Object * lutObject = new Object({});
+    lutObject->addComponent(new EventOnKey({KeyEvent(68, "incrementLut"), KeyEvent(65, "decrementLut")}, engine.getInput(), lutObject));
+    lutObject->addComponent(new ChangeLutEvent(Vec2<float>(0, 0), *colorGrade, engine, lutObject));
+    objects.push_back(lutObject);
+    renderModule->addToPostProccesStack(colorGrade);
+  }
   return new Scene(objects, {
     {renderModule},
     {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
@@ -129,11 +138,11 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   for (int i = 0; i < 4; i++) {
     Object * platform = new Object({});
-    platform->addComponent(new Transform(Vec3<float>(30 * i, -5, 0), Vec3<float>(10, 5, 10), Vec3<float>(), "berg", {"ice"}, platform));
-    platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 5, 10)), platform->getComponent<Transform>(), platform, "ground"));
-    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), 2, engine.deltaTime, platform));
+    platform->addComponent(new Transform(Vec3<float>(30 * i, 0, 0), Vec3<float>(10, 8, 10), Vec3<float>(), "berg", {"ice"}, platform));
+    platform->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(10, 8, 10)), platform->getComponent<Transform>(), platform, "ground"));
+    platform->addComponent(new SinkAble(&platform->getComponent<Transform>()->getPos(), -5, engine.deltaTime, platform));
     platform->getComponent<CollisionComponent>()->getCollider()->isMoveAble = false;
-    platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 5, 4), Vec3<float>(8, 5, 8), platform, platform));
+    platform->addComponent(new ScaleOnRespawn(Vec3<float> (4, 8, 4), Vec3<float>(8, 8, 8), platform, platform));
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     
     Object * coin = new Object({});
@@ -166,7 +175,9 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f); 
-  renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("lut" + engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
+  if (engine.options.getOptionI("lutNumber") > 0) {
+    renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("lut" + engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
+  }
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},
