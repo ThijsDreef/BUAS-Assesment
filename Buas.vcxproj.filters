@@ -243,6 +243,9 @@
     <ClInclude Include="headers\Util\platformUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\Game\Object\sharkStateMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\game\object\autoScroller.cpp">
@@ -432,6 +435,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Util\platformUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\sharkStateMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

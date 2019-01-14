@@ -162,6 +162,7 @@ rmdir Debug</Command>
     <ClInclude Include="headers\game\object\rotateTransform.h" />
     <ClInclude Include="headers\Game\Object\scaleOnRespawn.h" />
     <ClInclude Include="headers\game\object\score.h" />
+    <ClInclude Include="headers\Game\Object\sharkStateMachine.h" />
     <ClInclude Include="headers\game\object\sinkAble.h" />
     <ClInclude Include="headers\game\object\trick.h" />
     <ClInclude Include="headers\game\object\waveCustomTransform.h" />
@@ -240,6 +241,7 @@ rmdir Debug</Command>
     <ClCompile Include="source\game\object\rotateTransform.cpp" />
     <ClCompile Include="Source\Game\Object\scaleOnRespawn.cpp" />
     <ClCompile Include="source\game\object\score.cpp" />
+    <ClCompile Include="Source\Game\Object\sharkStateMachine.cpp" />
     <ClCompile Include="source\game\object\sinkAble.cpp" />
     <ClCompile Include="source\game\object\trick.cpp" />
     <ClCompile Include="source\game\object\waveCustomTransform.cpp" />

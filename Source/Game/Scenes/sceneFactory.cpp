@@ -39,9 +39,9 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   ice->addComponent(new Transform(Vec3<float>(0, -5, 0), Vec3<float>(5, 5, 5), Vec3<float>(), "berg", {"ice"}, ice));
   objects.push_back(ice);
   
-  for (int x = 0; x < 2; x++) {
+  for (int x = 0; x < 2; x++) { 
     Object * shark = new Object({});
-    shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -10, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
+    shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -5, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
     // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
     objects.push_back(shark);
@@ -104,6 +104,13 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   player->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, player));
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
   objects.push_back(player);
+
+  Object * shark = new Object({});
+  shark->addComponent(new Transform(Vec3<float>(-40, -5, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
+  // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
+  shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
+  shark->getComponent<SharkStateMachine>()->setChase(&player->getComponent<Transform>()->getPos());
+  objects.push_back(shark);
 
   Object * particles = new Object({});
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
