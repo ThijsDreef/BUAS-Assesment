@@ -349,8 +349,8 @@ inline Matrix<T> Matrix<T>::rotation(Vec3<T> rotation)
 	//z y x rotation
 	Matrix<T> result;
 	Matrix<T> temp;
-	result.setAxisrotation(rotation[1], Y);
 	temp.setAxisrotation(rotation[0], X);
+	result.setAxisrotation(rotation[1], Y);
 	result = result.multiplyByMatrix(temp);
 	temp.setAxisrotation(rotation[2], Z);
 	return result.multiplyByMatrix(temp);

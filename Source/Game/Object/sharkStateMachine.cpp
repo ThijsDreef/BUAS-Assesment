@@ -11,19 +11,21 @@ SharkStateMachine::~SharkStateMachine()
 
 }
 
-float getAngle2DPlane(Vec3<float> from, Vec3<float> to, int component)
+Vec3<float> getLookAtRotation(Vec3<float> from, Vec3<float> to)
 {
-  Vec3<float> delta = from - to;
-  delta = delta.normalize();
-  int minusComponent = component - 1;
-  minusComponent = (minusComponent < 0) ? 2 : minusComponent;
-  float angle = acosf(delta[component]) * 180 * M_PI;
-  return (delta[minusComponent] > 0) ? angle : -angle;
+
+  Vec3<float> look = from - to;
+  look = look.normalize();
+  Vec3<float> rotation;
+  rotation[0] = -atan2f(look[2], look[1]);
+  rotation[1] = -atan2f(look[0] * cosf(rotation[0]), look[2]);
+  rotation[2] = 0;
+  return rotation * 180 / M_PI; 
 }
 
 float interpolateEulerAngle(int from, int to, float speed)
 {
-  return ((to - from + 540)% 360 - 180) * speed;
+  return ((to - from + 540)% 360 - 180) * speed; 
 }
 
 void SharkStateMachine::circle()
@@ -37,12 +39,17 @@ void SharkStateMachine::circle()
 void SharkStateMachine::moveTo()
 {
   Vec3<float> & rotation = sharkTransform->getRot();
+  Vec3<float> toRotation = getLookAtRotation(sharkTransform->getPos(), target);
+  rotation = toRotation;
   for (int i = 0; i < 3; i++) {
-    rotation[i] += interpolateEulerAngle(rotation[i], getAngle2DPlane(sharkTransform->getPos(), target, i), dt * 3);
+    rotation[i] += interpolateEulerAngle(rotation[i], toRotation[2 - i], dt * 3);
   }
+  
   Matrix<float> rot;
   rot = rot.rotation(rotation);
   sharkTransform->getPos() += rot.multiplyByVector(Vec3<float>(0, 0, -10)) * dt;
+  Vec3<float> distance = sharkTransform->getPos() - target;
+  if (distance.length() < 0.2) state = CIRCLE;
 }
 
 void SharkStateMachine::jumpTo()

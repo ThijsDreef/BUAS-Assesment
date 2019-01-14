@@ -4,6 +4,8 @@
 #include "System/Engine/EngineObjects/transform.h"
 #include "Util/ease.h"
 
+// dutch humor btw
+// also know as AHAAi
 enum SharkState {CIRCLE, MOVETO, JUMPTO};
 
 class SharkStateMachine : public Component
@@ -11,7 +13,7 @@ class SharkStateMachine : public Component
 private:
   Transform * sharkTransform;
   SharkState state;
-  Vec3<float> target = Vec3<float>(5, -10, 5);
+  Vec3<float> target = Vec3<float>(0, -10, 0);
   double passedTime = 0;
   double & dt;
   void circle();
