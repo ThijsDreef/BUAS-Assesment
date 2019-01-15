@@ -16,7 +16,6 @@ namespace Ease
   float cubicEaseOut(float t, float b = 0, float c = 1, float d = 1);
   float cubicEaseIn(float t, float b = 0, float c = 1, float d = 1);
   float cubicEaseInOut(float t, float b = 0, float c = 1, float d = 1);
-
 }
 
 #endif

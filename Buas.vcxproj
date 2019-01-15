@@ -80,8 +80,8 @@
     <IntDir>$(SolutionDir)\visual-studio\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);headers</IncludePath>
-    <LibraryPath>libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)headers</IncludePath>
+    <LibraryPath>$(SolutionDir)libs;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\visual-studio\builds\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\visual-studio\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>

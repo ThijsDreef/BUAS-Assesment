@@ -44,6 +44,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
     shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -5, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
     // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
+    shark->getComponent<SharkStateMachine>()->jumpTo(Vec3<float>(10, -10, 10));
     objects.push_back(shark);
   }
 

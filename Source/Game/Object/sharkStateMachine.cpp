@@ -1,14 +1,30 @@
 #include "Game/Object/sharkStateMachine.h"
 
+float SharkStateMachine::interpolateEulerAngle(int from, int to, float speed)
+{
+  return ((to - from + 540)% 360 - 180) * speed; 
+}
+
 SharkStateMachine::SharkStateMachine(double & deltaTime, Object * object) : Component(object), dt(deltaTime)
 {
   sharkTransform = object->getComponent<Transform>();
-  state = MOVETO;
+  originalFromJump = sharkTransform->getPos();
+  state = CIRCLE;
 }
 
 SharkStateMachine::~SharkStateMachine()
 {
 
+}
+
+void SharkStateMachine::lookAt(Vec3<float> to, float speed)
+{
+  Vec3<float> & rotation = sharkTransform->getRot();
+  Vec3<float> toRotation = getLookAtRotation(sharkTransform->getPos(), to);
+  rotation = toRotation;
+  for (int i = 0; i < 3; i++) {
+    rotation[i] += interpolateEulerAngle(rotation[i], toRotation[2 - i], dt * 0.33);
+  }
 }
 
 Vec3<float> SharkStateMachine::getLookAtRotation(Vec3<float> from, Vec3<float> to)
@@ -23,21 +39,12 @@ Vec3<float> SharkStateMachine::getLookAtRotation(Vec3<float> from, Vec3<float> t
   return rotation * 180 / M_PI; 
 }
 
-float interpolateEulerAngle(int from, int to, float speed)
-{
-  return ((to - from + 540)% 360 - 180) * speed; 
-}
 
 void SharkStateMachine::chase()
 {
-  Vec3<float> & rotation = sharkTransform->getRot();
-  Vec3<float> toRotation = getLookAtRotation(sharkTransform->getPos(), *chaseTarget);
-  rotation = toRotation;
-  for (int i = 0; i < 3; i++) {
-    rotation[i] += interpolateEulerAngle(rotation[i], toRotation[2 - i], dt * 0.33);
-  }
+  lookAt(*chaseTarget, dt * 0.33);
   Matrix<float> rot;
-  rot = rot.rotation(rotation);
+  rot = rot.rotation(sharkTransform->getRot());
   sharkTransform->getPos() += rot.multiplyByVector(Vec3<float>(0, 0, -10)) * dt;
 }
 
@@ -51,28 +58,37 @@ void SharkStateMachine::circle()
 
 void SharkStateMachine::moveTo()
 {
-  Vec3<float> & rotation = sharkTransform->getRot();
-  Vec3<float> toRotation = getLookAtRotation(sharkTransform->getPos(), target);
-  rotation = toRotation;
-  for (int i = 0; i < 3; i++) {
-    rotation[i] += interpolateEulerAngle(rotation[i], toRotation[2 - i], dt * 3);
-  }
-  
+  lookAt(target, dt);
   Matrix<float> rot;
-  rot = rot.rotation(rotation);
+  rot = rot.rotation(sharkTransform->getRot());
   sharkTransform->getPos() += rot.multiplyByVector(Vec3<float>(0, 0, -10)) * dt;
   Vec3<float> distance = sharkTransform->getPos() - target;
   if (distance.length() < 0.2) 
   {
     state = CIRCLE;
+    //compensate for x rotation changed during this state
     sharkTransform->getRot()[0] = 0;
-    std::cout << "entering circle state \n";
+    object->sendMessage("CIRCLE", &sharkTransform->getPos());
   }
 }
 
 void SharkStateMachine::jumpTo()
-{
-
+{ 
+  passedTime += dt;
+  float easeTime = Ease::cubicEaseInOut(passedTime * jumpTime);
+  Vec3<float> nextJumpPlace;
+  nextJumpPlace = originalFromJump * (1.0 - easeTime) + target * (easeTime);
+  nextJumpPlace[1] = sinf(easeTime * M_PI) * jumpHeight + swimHeight;
+  lookAt(nextJumpPlace, dt); 
+  sharkTransform->getPos() = nextJumpPlace;
+  Vec3<float> distance = sharkTransform->getPos() - target;
+  if (distance.length() < 0.5) 
+  {
+    state = CIRCLE;
+    //compensate for x rotation changed during this state
+    sharkTransform->getRot()[0] = 0;
+    object->sendMessage("CIRCLE", &sharkTransform->getPos());
+  }
 }
 
 void SharkStateMachine::update()
@@ -103,4 +119,16 @@ void SharkStateMachine::setChase(Vec3<float> * toChase)
 {
   chaseTarget = toChase;
   state = CHASE;
+}
+
+void SharkStateMachine::jumpTo(Vec3<float> jumpTarget)
+{
+  target = jumpTarget;
+  originalFromJump = sharkTransform->getPos();
+  state = JUMPTO;
+}
+
+void SharkStateMachine::setJumpTime(float time)
+{
+  jumpTime = 1/time;
 }

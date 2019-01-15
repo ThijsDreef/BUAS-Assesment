@@ -106,7 +106,7 @@ void Engine::run()
     std::chrono::duration<double> elapsed = end - start;
     elapsedTime += elapsed.count();
     fpsTimer += elapsed.count();
-    inputResetTimer += elapsedTime;
+    inputResetTimer += elapsed.count();;
   } 
   if (!window.done)
     window.killWindow();
