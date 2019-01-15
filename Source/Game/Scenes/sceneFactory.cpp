@@ -107,10 +107,15 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   objects.push_back(player);
 
   Object * shark = new Object({});
-  shark->addComponent(new Transform(Vec3<float>(-40, -5, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
+  shark->addComponent(new Transform(Vec3<float>(45, -10, 10), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
   // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
   shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
-  shark->getComponent<SharkStateMachine>()->setChase(&player->getComponent<Transform>()->getPos());
+  // shark->getComponent<SharkStateMachine>()->setChase(&player->getComponent<Transform>()->getPos());
+  autoScroller->getComponent<AutoScroller>()->addTransform(shark->getComponent<Transform>());
+  autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getOriginalFromJump());
+  autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getTarget());
+  shark->getComponent<SharkStateMachine>()->setMoveScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
+
   objects.push_back(shark);
 
   Object * particles = new Object({});

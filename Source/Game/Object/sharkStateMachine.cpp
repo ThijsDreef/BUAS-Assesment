@@ -132,3 +132,18 @@ void SharkStateMachine::setJumpTime(float time)
 {
   jumpTime = 1/time;
 }
+
+Vec3<float> & SharkStateMachine::getOriginalFromJump()
+{
+  return originalFromJump;
+}
+
+Vec3<float> & SharkStateMachine::getTarget()
+{
+  return target;
+}
+
+void SharkStateMachine::setMoveScale(float * scale)
+{
+  moveScale = scale;
+}

@@ -19,11 +19,13 @@ private:
   double passedTime = 0;
   float moveScale = 1.0f;
   std::vector<Transform*> activeTransforms;
+  std::vector<Vec3<float>*> scrollingVectors;
   std::stack<Transform*> freeTransforms;
 public:
   unsigned int getFreeTransformCount();
   Transform* getFreeTransform();
   void addTransform(Transform * transform);
+  void addScrollingVector(Vec3<float> * vector);
   void update();
   float & getMoveScale();
   AutoScroller(Vec3<float> spawn, Vec3<float> respawn, Vec3<float> direction, double & deltaTime, Object * object);

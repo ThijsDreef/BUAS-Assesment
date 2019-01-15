@@ -14,6 +14,7 @@ private:
   Transform * sharkTransform;
   SharkState state;
   Vec3<float> target = Vec3<float>(0, -10, 0);
+  float * moveScale = 0;
   float jumpHeight = 30;
   float swimHeight = -10;
   float jumpTime = 1/3.0f;
@@ -29,8 +30,11 @@ private:
   void jumpTo();
   void chase();
 public:
+  Vec3<float> & getOriginalFromJump();
+  Vec3<float> & getTarget();
   SharkStateMachine(double & deltaTime, Object * object);
   ~SharkStateMachine();
+  void setMoveScale(float * scale);
   void setChase(Vec3<float> * toChase);
   void jumpTo(Vec3<float> target);
   void setJumpTime(float time);

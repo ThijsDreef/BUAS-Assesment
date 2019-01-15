@@ -38,6 +38,11 @@ void AutoScroller::addTransform(Transform * transform)
   activeTransforms.push_back(transform);
 }
 
+void AutoScroller::addScrollingVector(Vec3<float> * vector)
+{
+  scrollingVectors.push_back(vector);
+}
+
 void AutoScroller::update()
 {
   passedTime += dt;
@@ -46,6 +51,11 @@ void AutoScroller::update()
     moveScale *= 1.1;
   }
   score->addScore(std::fabs(moveDirection.length()) * dt * moveScale);
+  for (unsigned int i = 0; i < scrollingVectors.size(); i++)
+  {
+    if (!scrollingVectors[i]) scrollingVectors.erase(scrollingVectors.begin() + i);
+    *scrollingVectors[i] += moveDirection * dt * moveScale;
+  }
   for (unsigned int i = 0; i < activeTransforms.size(); i++) 
   {
     if (!activeTransforms[i]) activeTransforms.erase(activeTransforms.begin() + i);
