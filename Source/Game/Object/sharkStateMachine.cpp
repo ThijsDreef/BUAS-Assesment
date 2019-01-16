@@ -112,7 +112,16 @@ void SharkStateMachine::update()
 
 void SharkStateMachine::receiveMessage(const std::string & message, void* data)
 {
-
+  if (message == "JUMPTO") {
+    jumpTo(*static_cast<Vec3<float>*>(data));
+  } else if (message == "CIRCLE") {
+    state = CIRCLE;
+  } else if (message == "CHASE") {
+    setChase(static_cast<Vec3<float>*>(data));
+  } else if (message == "MOVETO") {
+    target = *static_cast<Vec3<float>*>(data);
+    state = MOVETO;
+  }
 }
 
 void SharkStateMachine::setChase(Vec3<float> * toChase)
