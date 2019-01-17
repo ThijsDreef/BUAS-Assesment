@@ -55,6 +55,12 @@ void AutoScroller::update()
   {
     if (!scrollingVectors[i]) scrollingVectors.erase(scrollingVectors.begin() + i);
     *scrollingVectors[i] += moveDirection * dt * moveScale;
+    Vec3<float> distance = (*scrollingVectors[i]) - resetLocation;
+    
+    if (distance.length() < 2.5)
+    {
+      (*scrollingVectors[i])[0] = spawnLocation[0];
+    }
   }
   for (unsigned int i = 0; i < activeTransforms.size(); i++) 
   {

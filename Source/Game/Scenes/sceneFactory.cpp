@@ -41,10 +41,9 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   
   for (int x = 0; x < 2; x++) { 
     Object * shark = new Object({});
-    shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -5, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
-    // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
+    shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -10, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
+    shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 2), Vec3<float>(0, 0, 20), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
-    shark->getComponent<SharkStateMachine>()->jumpTo(Vec3<float>(10, -10, 10));
     objects.push_back(shark);
   }
 
@@ -107,9 +106,11 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   objects.push_back(player);
 
   Object * shark = new Object({});
-  shark->addComponent(new Transform(Vec3<float>(45, -10, 10), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
-  // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
+  shark->addComponent(new Transform(Vec3<float>(45, -10, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
+  shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 2), Vec3<float>(0, 0, 20), engine.deltaTime, shark));
   shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
+
+  // shark->addComponent(new RotateComponent(shark->getComponent<Transform>()->getRot(), Vec3<float>(360, 0, 0), engine.deltaTime, shark));
   // shark->getComponent<SharkStateMachine>()->setChase(&player->getComponent<Transform>()->getPos());
   autoScroller->getComponent<AutoScroller>()->addTransform(shark->getComponent<Transform>());
   autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getOriginalFromJump());
