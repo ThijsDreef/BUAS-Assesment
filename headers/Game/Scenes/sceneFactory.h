@@ -38,6 +38,7 @@
 #include "Game/Object/changeLutEvent.h"
 #include "Game/Object/sharkStateMachine.h"
 #include "Game/Object/sharkDispatch.h"
+#include "Game/Object/pushOnCollision.h"
 #include "Game/Graphics/colorGrade.h"
 
 

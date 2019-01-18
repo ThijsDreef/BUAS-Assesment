@@ -6,6 +6,8 @@ PlayerMovement::PlayerMovement(Vec3<float> * targetPosition, Vec3<float> * targe
   posPointer = targetPosition;
   rotPointer = targetRotation;
   object->subscribe("collision", this);
+  object->subscribe("push", this);
+
 }
 
 float PlayerMovement::getTargetAngle(Vec3<float> & frameForce)
@@ -92,5 +94,9 @@ void PlayerMovement::receiveMessage(const std::string & name, void* data)
         force[1] = -20;
       }
     }
+  } else if (name == "push") {
+    Vec3<float> pushVector = *static_cast<Vec3<float>*>(data);
+    force += pushVector * 30;
+
   }
 }
