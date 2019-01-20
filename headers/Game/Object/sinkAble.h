@@ -14,8 +14,8 @@ private:
   Vec3<float> * targetPos;
   double & dt;
   double timeScale = 0.5;
-  double elasticEaseTime = 0;
-  double bezierTime = 0;
+  double elasticEaseTime = 1;
+  double bezierTime = 1;
   float elastic;
   float bezier;
   bool collision = false;

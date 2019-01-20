@@ -42,7 +42,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   for (int x = 0; x < 2; x++) { 
     Object * shark = new Object({});
     shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -10, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
-    shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 0), Vec3<float>(0, 0, 10), engine.deltaTime, shark));
+    shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 10), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
     objects.push_back(shark);
   }
@@ -53,7 +53,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   objects.push_back(camera);
 
   Object * title = new Object({});
-  title->addComponent(new UIText("endless runner", Vec2<float>(-1, 0.8), title));
+  title->addComponent(new UIText("Pinguin on a Mission", Vec2<float>(-1, 0.8), title));
   title->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(title);
 
@@ -73,7 +73,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
     ColorGrade * colorGrade = new ColorGrade(engine.getMatLib()->getTexture(engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib());
     Object * lutObject = new Object({});
     lutObject->addComponent(new EventOnKey({KeyEvent(68, "incrementLut"), KeyEvent(65, "decrementLut")}, engine.getInput(), lutObject));
-    lutObject->addComponent(new ChangeLutEvent(Vec2<float>(0, 0), *colorGrade, engine, lutObject));
+    lutObject->addComponent(new ChangeLutEvent(Vec2<float>(-0.9, 0.9), *colorGrade, engine, lutObject));
     objects.push_back(lutObject);
     renderModule->addToPostProccesStack(colorGrade);
   }
@@ -88,10 +88,10 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   std::vector<Object*> objects;
 
   Object* autoScroller = new Object({});
-  autoScroller->addComponent(new Score(Vec2<float>(-0.2, 1), autoScroller));
+  autoScroller->addComponent(new Score(Vec2<float>(0, 0.95), autoScroller));
   autoScroller->getComponent<Score>()->shouldCenter = true;
 
-  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-4, 0, 0), engine.deltaTime, autoScroller));
+  autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-7, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);
 
@@ -101,17 +101,17 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "player"));
   player->addComponent(new DeathWall(-50, player));
   player->addComponent(new LoadSceneEvent("dead", "menu", player, this, engine, player));
-  player->addComponent(new TextDebug<unsigned int>("fps: ", Vec2<float>(-1, 1), &engine.frames, player));
+  
   autoScroller->getComponent<AutoScroller>()->addTransform(player->getComponent<Transform>());
   objects.push_back(player);
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     Object * shark = new Object({});
     shark->addComponent(new Transform(Vec3<float>(15 + i * 30, -10, 15), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 0), "shark", {}, shark));
-    shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 2), Vec3<float>(0, 0, 30), engine.deltaTime, shark));
+    shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 30), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
     shark->addComponent(new PushOnCollision(Vec3<float>(0, 0, -1), &shark->getComponent<Transform>()->getRot(), "player", shark));
-    shark->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), shark->getComponent<Transform>(), shark, "shark"));
+    shark->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2.5, 3)), shark->getComponent<Transform>(), shark, "shark"));
     autoScroller->getComponent<AutoScroller>()->addTransform(shark->getComponent<Transform>());
     autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getOriginalFromJump());
     autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getTarget());
@@ -162,7 +162,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     autoScroller->getComponent<AutoScroller>()->addTransform(platform->getComponent<Transform>());
     
     Object * coin = new Object({});
-    coin->addComponent(new Transform(Vec3<float>(15 + 30 * i, 7.5f, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
+    coin->addComponent(new Transform(Vec3<float>(15 + 30 * i, 12.5f, 0), Vec3<float>(1, 1, 1), Vec3<float>(0, 0, 90), "coin", {"coin"}, coin));
     coin->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 1, 1)), coin->getComponent<Transform>(), coin));
     coin->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
     coin->addComponent(new CoinOnCollision(engine.deltaTime, coin));
@@ -194,6 +194,7 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   if (engine.options.getOptionI("lutNumber") > 0) {
     renderModule->addToPostProccesStack(new ColorGrade(engine.getMatLib()->getTexture("lut" + engine.options.getOption("currentLut")), engine.getWidth(), engine.getHeight(), engine.getWidth(), engine.getHeight(), engine.getShaderManger(), engine.getGeoLib()));
   }
+
   return new Scene(objects, {
     {new CollisionModule(200, 4)},
     {renderModule},

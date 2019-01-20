@@ -157,6 +157,7 @@ rmdir Debug</Command>
     <ClInclude Include="headers\Game\Object\pauseEvent.h" />
     <ClInclude Include="headers\game\object\playerMovement.h" />
     <ClInclude Include="headers\game\object\playerMovementStateMachine.h" />
+    <ClInclude Include="headers\Game\Object\pushOnCollision.h" />
     <ClInclude Include="headers\Game\Object\rotateComponent.h" />
     <ClInclude Include="headers\game\object\rotateToMouse.h" />
     <ClInclude Include="headers\game\object\rotateTransform.h" />
@@ -237,6 +238,7 @@ rmdir Debug</Command>
     <ClCompile Include="Source\Game\Object\pauseEvent.cpp" />
     <ClCompile Include="source\game\object\playerMovement.cpp" />
     <ClCompile Include="source\game\object\playerMovementStateMachine.cpp" />
+    <ClCompile Include="Source\Game\Object\pushOnCollision.cpp" />
     <ClCompile Include="Source\Game\Object\rotateComponent.cpp" />
     <ClCompile Include="source\game\object\rotateToMouse.cpp" />
     <ClCompile Include="source\game\object\rotateTransform.cpp" />

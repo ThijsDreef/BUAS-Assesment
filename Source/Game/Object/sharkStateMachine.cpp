@@ -30,8 +30,7 @@ void SharkStateMachine::lookAt(Vec3<float> to, float speed)
 {
   Vec3<float> & rotation = sharkTransform->getRot();
   Vec3<float> toRotation = getLookAtRotation(sharkTransform->getPos(), to);
-  // rotation = toRotation;
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 3; i++) {
     rotation[i] += interpolateEulerAngle(rotation[i], toRotation[i], speed);
   }
 }
@@ -73,7 +72,7 @@ void SharkStateMachine::moveTo()
   rot = rot.rotation(sharkTransform->getRot());
   sharkTransform->getPos() += rot.multiplyByVector(Vec3<float>(0, 0, -10)) * dt;
   Vec3<float> distance = sharkTransform->getPos() - target;
-  if (distance.length() < 0.5) 
+  if (distance.length() < 0.8) 
   {
     sharkTransform->getPos() = target;
     state = CIRCLE;
@@ -91,12 +90,9 @@ void SharkStateMachine::jumpTo()
   lookAt(nextJumpPlace, dt * 3); 
   sharkTransform->getPos() = nextJumpPlace;
   Vec3<float> distance = sharkTransform->getPos() - target;
-  if (distance.length() < 0.5 || easeTime > 1.0) 
+  if (distance.length() < 0.5 || easeTime >= 1.0) 
   {
-    // sharkTransform->getPos() = target;
-
     state = CIRCLE;
-    //compensate for x rotation changed during this state
     object->sendMessage("CIRCLE", &target);
   }
 }
@@ -132,9 +128,9 @@ void SharkStateMachine::receiveMessage(const std::string & message, void* data)
   } else if (message == "Respawn") {
     sharkTransform->getPos()[2] = 0;
     sharkTransform->getPos()[1] = swimHeight;
+		target = sharkTransform->getPos();
     state = CIRCLE;
-    // target =
-    object->sendMessage("CIRCLE", &sharkTransform->getPos());
+    object->sendMessage("CIRCLE", &target);
   }
 }
 

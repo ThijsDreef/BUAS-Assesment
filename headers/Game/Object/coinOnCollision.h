@@ -3,6 +3,7 @@
 
 #include "System/Engine/EngineObjects/object.h"
 #include "System/Engine/EngineObjects/transform.h"
+#include "System/Physics/collisionModule.h"
 
 
 class CoinOnCollision : public Component

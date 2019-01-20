@@ -6,8 +6,6 @@ SinkAble::SinkAble(Vec3<float> * position, float sinkDistance, double & deltaTim
   this->sinkDistance = sinkDistance;
   originalY = (*position)[1];
   object->subscribe("collision", this);
-  bezierTime = 0.5;
-  elasticEaseTime = 1;
 }
 
 SinkAble::~SinkAble()
