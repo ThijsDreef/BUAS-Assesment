@@ -27,6 +27,8 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
 
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+  sea->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(100, 0.5, 100)), sea->getComponent<Transform>(), sea, "sea"));
+  sea->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
   sea->getComponent<WaveCustomTransform>()->castShadow = false;
 
   objects.push_back(sea);
@@ -44,7 +46,20 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
     shark->addComponent(new Transform(Vec3<float>(-15 + x * 30, -10, -5), Vec3<float>(1, 1, 1), Vec3<float>(0, 45, 0), "shark", {}, shark));
     shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 10), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
+    shark->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(), Vec3<float>(1, 0.5, 1)), shark->getComponent<Transform>(), shark, "shark"));
+    shark->addComponent(new ExplosionOnCollision("sea", shark));
     objects.push_back(shark);
+
+    Object * particleSystem = new Object({});
+    particleSystem->addComponent(new ExplosionEvent(particleSystem, engine.deltaTime, particleSystem));
+    shark->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
+    for (int i = 0; i < 50; i++) {
+      Object * p = new Object({});
+      p->addComponent(new Transform("sphere", {"water"}, p));
+      particleSystem->getComponent<ParticleSystem>()->addToInstance(p->getComponent<Transform>());
+      objects.push_back(p);
+    }
+    objects.push_back(particleSystem);
   }
 
   Object * camera = new Object({});
@@ -53,18 +68,24 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
   objects.push_back(camera);
 
   Object * title = new Object({});
-  title->addComponent(new UIText("Pinguin on a Mission", Vec2<float>(-1, 0.8), title));
+  title->addComponent(new UIText("Pinguin on a Mission", Vec2<float>(-1, 0.9), title));
   title->getComponent<UIText>()->shouldCenter = true;
   objects.push_back(title);
 
   Object * spaceToStart = new Object({});
-  spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.6), spaceToStart));
+  spaceToStart->addComponent(new UIText("press space to start", Vec2<float>(0, -0.75), spaceToStart));
   spaceToStart->addComponent(new LoadSceneEvent("start", "endlessRunnerScene", spaceToStart, this, engine, spaceToStart));
   spaceToStart->addComponent(new EventOnKey({KeyEvent(32, "start")}, engine.getInput(), spaceToStart));
   spaceToStart->getComponent<UIText>()->shouldCenter = true;
+  
   objects.push_back(spaceToStart);
 
+  Object * highScore = new Object({});
+  highScore->addComponent(new UIText("Highscore: " + engine.options.getOption("highScore"), Vec2<float>(0, 0.7), highScore));
+  highScore->getComponent<UIText>()->shouldCenter = true;
+  highScore->getComponent<UIText>()->setScale(0.8);
 
+  objects.push_back(highScore);
 
   RenderModule * renderModule = new RenderModule(engine.getGeoLib(), engine.getMatLib(), engine.getShaderManger(), engine.getWidth(), engine.getHeight());
   renderModule->updateOrthoGraphic(engine.getWidth(), engine.getHeight(), -1000.0f, 1000.0f);
@@ -78,6 +99,7 @@ Scene * SceneFactory::createMainMenuScene(Engine & engine)
     renderModule->addToPostProccesStack(colorGrade);
   }
   return new Scene(objects, {
+    {new CollisionModule(200, 4)},
     {renderModule},
     {new UiRenderer("fonts/text", engine.getShaderManger(), engine.getHeight(), engine.getWidth())}
   });
@@ -90,12 +112,14 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
   Object* autoScroller = new Object({});
   autoScroller->addComponent(new Score(Vec2<float>(0, 0.95), autoScroller));
   autoScroller->getComponent<Score>()->shouldCenter = true;
+  autoScroller->getComponent<Score>()->setOptions(&engine.options);
 
   autoScroller->addComponent(new AutoScroller(Vec3<float>(60, -5, 0), Vec3<float>(-30 * 2, 0, 0), Vec3<float>(-7, 0, 0), engine.deltaTime, autoScroller));
   autoScroller->addComponent(new ChunkSpawner(autoScroller->getComponent<AutoScroller>(), autoScroller));
   objects.push_back(autoScroller);
 
   Object * player = new Object({});
+  player->subscribe("dead", autoScroller->getComponent<Score>());
   player->addComponent(new Transform(Vec3<float>(0, 3, 0), Vec3<float>(1, 1, 1), Vec3<float>(), "pinguin", {}, player));
   player->addComponent(new PlayerMovement(&player->getComponent<Transform>()->getPos(), &player->getComponent<Transform>()->getRot(), engine.getInput(), engine.deltaTime, player));
   player->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2, 2)), player->getComponent<Transform>(), player, "player"));
@@ -111,20 +135,32 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
     shark->addComponent(new SharkDispatch(Vec3<float>(0, 0, 30), engine.deltaTime, shark));
     shark->addComponent(new SharkStateMachine(engine.deltaTime, shark));
     shark->addComponent(new PushOnCollision(Vec3<float>(0, 0, -1), &shark->getComponent<Transform>()->getRot(), "player", shark));
+		shark->addComponent(new ExplosionOnCollision("sea", shark));
     shark->addComponent(new CollisionComponent(false, new AABB(Vec3<float>(0, 0, 0), Vec3<float>(2, 2.5, 3)), shark->getComponent<Transform>(), shark, "shark"));
     autoScroller->getComponent<AutoScroller>()->addTransform(shark->getComponent<Transform>());
     autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getOriginalFromJump());
     autoScroller->getComponent<AutoScroller>()->addScrollingVector(&shark->getComponent<SharkStateMachine>()->getTarget());
     shark->getComponent<SharkStateMachine>()->setMoveScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
     objects.push_back(shark);
+
+    Object * particleSystem = new Object({});
+    particleSystem->addComponent(new ExplosionEvent(particleSystem, engine.deltaTime, particleSystem));
+    shark->subscribe("explosion", particleSystem->getComponent<ExplosionEvent>());
+    for (int i = 0; i < 50; i++) {
+      Object * p = new Object({});
+      p->addComponent(new Transform("sphere", {"water"}, p));
+      particleSystem->getComponent<ParticleSystem>()->addToInstance(p->getComponent<Transform>());
+      objects.push_back(p);
+    }
+    objects.push_back(particleSystem);
   }
 
 
   Object * particles = new Object({});
   ParticleTrail * particleComponet = new ParticleTrail(&player->getComponent<Transform>()->getRot(), &player->getComponent<Transform>()->getPos(), engine.deltaTime, particles, Vec3<float>(0, -0.9, 0.5));
-  for (unsigned int i = 0; i < 25; i++) {
+  for (unsigned int i = 0; i < 250; i++) {
     Object * o = new Object({});
-    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "ice", {"ice"}, o));
+    o->addComponent(new Transform(Vec3<float>(0, 0, 0), Vec3<float>(0.05, 0.05, 0.05), Vec3<float>(), "sphere", {"water"}, o));
     autoScroller->getComponent<AutoScroller>()->addTransform(o->getComponent<Transform>());
     objects.push_back(o);
     particleComponet->addToInstance(o->getComponent<Transform>());
@@ -173,11 +209,12 @@ Scene * SceneFactory::createEndlessRunnerScene(Engine & engine)
 
     objects.push_back(platform);
     objects.push_back(coin);
-
   }
 
   Object * sea = new Object({});
   sea->addComponent(new WaveCustomTransform(engine.deltaTime, "seaShader", Vec3<float>(0, -4, 0), Vec3<float>(5, 4, 5), Vec3<float>(), "sea", {"water"}, sea));
+	sea->addComponent(new CollisionComponent(true, new AABB(Vec3<float>(), Vec3<float>(100, 0.5, 100)), sea->getComponent<Transform>(), sea, "sea"));
+	sea->getComponent<CollisionComponent>()->getCollider()->isTrigger = true;
   sea->getComponent<WaveCustomTransform>()->setTimeScale(&autoScroller->getComponent<AutoScroller>()->getMoveScale());
   sea->getComponent<WaveCustomTransform>()->castShadow = false;
   objects.push_back(sea);

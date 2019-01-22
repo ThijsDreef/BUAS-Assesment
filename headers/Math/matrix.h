@@ -31,7 +31,6 @@ public:
 	Matrix<T> multiplyByMatrix(Matrix<T> otherMatrix);
 	Vec3<T> multiplyByVector(Vec3<T> vec);
 	Vec3<T> translateVector(Vec3<T> vec);
-	void lightBias();
 };
 
 //stolen from the GML implemntation
@@ -293,19 +292,6 @@ inline void Matrix<T>::orthographicView(float width, float height, float zNear, 
 	matrix[11] = - (zFar + zNear) / (zFar - zNear);
 	matrix[7] = - (height + -height) / (height - -height);
 	matrix[3] = - (width + -width) / (width - -width);
-	matrix[15] = 1;
-}
-
-template<class T>
-inline void Matrix<T>::lightBias()
-{
-	resetMatrix();
-	matrix[0] = 0.5;
-	matrix[5] = 0.5;
-	matrix[10] = 0.5;
-	matrix[12] = 0.5;
-	matrix[13] = 0.5;
-	matrix[14] = 0.5;
 	matrix[15] = 1;
 }
 

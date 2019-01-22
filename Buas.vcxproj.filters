@@ -252,6 +252,9 @@
     <ClInclude Include="headers\Game\Object\pushOnCollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\Game\Object\explosionOnCollision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\game\object\autoScroller.cpp">
@@ -450,6 +453,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Object\pushOnCollision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Object\explosionOnCollision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

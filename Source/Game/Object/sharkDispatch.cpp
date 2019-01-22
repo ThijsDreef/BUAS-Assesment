@@ -14,23 +14,22 @@ SharkDispatch::~SharkDispatch()
 
 void SharkDispatch::update()
 {
-    for (unsigned int i = 0; i < timedEvents.size(); i++) {
-        timedEvents[i].first -= dt;
-        if (timedEvents[i].first < 0) {
-					move = -move;
+    event.first -= dt;
+    if (event.first < 0 && !fired) {
+        move = -move;   
 
-          Vec3<float> target = (*sharkPosition) + (move);
+        Vec3<float> target = (*sharkPosition) + (move);
 
-          object->sendMessage(timedEvents[i].second, &target);   
-          timedEvents.erase(timedEvents.begin() + i);
-        }
+        object->sendMessage(event.second, &target);   
+        fired = true;
     }
 }
 
 void SharkDispatch::receiveMessage(const std::string & message, void * data)
 {
     if (message == "CIRCLE") {
-        timedEvents.push_back(TimedEvent(minDelay + maxDelay * (float)rand() / RAND_MAX, ((float)rand() / RAND_MAX > 0.3) ? "JUMPTO" : "MOVETO"));
+        event = TimedEvent(minDelay + maxDelay * (float)rand() / RAND_MAX, ((float)rand() / RAND_MAX > 0.3) ? "JUMPTO" : "MOVETO");
         sharkPosition = static_cast<Vec3<float>*>(data);
+        fired = false;
     }
 }

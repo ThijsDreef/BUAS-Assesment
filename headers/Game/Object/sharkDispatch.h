@@ -13,7 +13,8 @@ private:
   float minDelay = 1;
   Vec3<float> move;
   Vec3<float> * sharkPosition;
-  std::vector<TimedEvent> timedEvents;
+  bool fired = true;
+  TimedEvent event;
 public:
   SharkDispatch(Vec3<float> min, double & deltaTime, Object * object);
   ~SharkDispatch();

@@ -72,7 +72,7 @@ void SharkStateMachine::moveTo()
   rot = rot.rotation(sharkTransform->getRot());
   sharkTransform->getPos() += rot.multiplyByVector(Vec3<float>(0, 0, -10)) * dt;
   Vec3<float> distance = sharkTransform->getPos() - target;
-  if (distance.length() < 0.8) 
+  if (distance.length() < 1) 
   {
     sharkTransform->getPos() = target;
     state = CIRCLE;
@@ -90,8 +90,9 @@ void SharkStateMachine::jumpTo()
   lookAt(nextJumpPlace, dt * 3); 
   sharkTransform->getPos() = nextJumpPlace;
   Vec3<float> distance = sharkTransform->getPos() - target;
-  if (distance.length() < 0.5 || easeTime >= 1.0) 
+  if (distance.length() < 0.8 || easeTime >= 1.0) 
   {
+		sharkTransform->getPos() = target;
     state = CIRCLE;
     object->sendMessage("CIRCLE", &target);
   }

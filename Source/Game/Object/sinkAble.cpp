@@ -40,7 +40,7 @@ void SinkAble::receiveMessage(const std::string & name, void* data)
 {
   if (name == "collision") {
     CollisionData * coll = static_cast<CollisionData*>(data);
-    if (coll->firstResolution[1] != 0) {
+    if (coll->firstResolution[1] != 0 && coll->other->tag != "sea") {
       collision = true;
       if (!hit && lastCollision != collision) elasticEaseTime = 1;
       if (!hit && lastCollision != collision) hit = true;

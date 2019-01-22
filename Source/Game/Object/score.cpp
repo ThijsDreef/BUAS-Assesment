@@ -11,6 +11,11 @@ Score::~Score()
 
 }
 
+void Score::setOptions(Options * opt)
+{
+  options = opt;
+}
+
 void Score::update()
 {
   int sd = scoreDelta * 0.15f;
@@ -28,5 +33,11 @@ void Score::receiveMessage(const std::string & message, void* data)
 {
 	if (message == "addScore") {
 		addScore(*static_cast<float*>(data));
-	}
+	} else if (message == "dead") {
+    if (options) {
+      if (options->getOptionI("highScore") < score) {
+        options->setOption(OptionData("highScore", std::to_string(score)));
+      }
+    }
+  }
 }

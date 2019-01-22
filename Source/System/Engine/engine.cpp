@@ -83,10 +83,10 @@ void Engine::run()
     auto start = std::chrono::system_clock::now();
     if (elapsedTime > frameCap)
     {
-      window.updateFrameBuffer();
       deltaTime = elapsedTime * timeScale;
       window.handleMessages();
       sceneStack.top()->update();
+      window.updateFrameBuffer();
       currentFrames ++;
       if (fpsTimer > 1) {
         frames = currentFrames;
@@ -161,7 +161,7 @@ Input * Engine::getInput()
 
 Engine::~Engine()
 {
-
+  options.saveOptions("options.txt");
 }
 
 int Engine::getWidth()

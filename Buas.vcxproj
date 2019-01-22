@@ -151,6 +151,7 @@ rmdir Debug</Command>
     <ClInclude Include="headers\game\object\deathWall.h" />
     <ClInclude Include="headers\game\object\eventOnKey.h" />
     <ClInclude Include="headers\Game\Object\explosionEvent.h" />
+    <ClInclude Include="headers\Game\Object\explosionOnCollision.h" />
     <ClInclude Include="headers\game\object\followCamera.h" />
     <ClInclude Include="headers\game\object\loadSceneEvent.h" />
     <ClInclude Include="headers\game\object\particleTrail.h" />
@@ -232,6 +233,7 @@ rmdir Debug</Command>
     <ClCompile Include="source\game\object\deathWall.cpp" />
     <ClCompile Include="source\game\object\eventOnKey.cpp" />
     <ClCompile Include="Source\Game\Object\explosionEvent.cpp" />
+    <ClCompile Include="Source\Game\Object\explosionOnCollision.cpp" />
     <ClCompile Include="source\game\object\followCamera.cpp" />
     <ClCompile Include="source\game\object\loadSceneEvent.cpp" />
     <ClCompile Include="source\game\object\particleTrail.cpp" />

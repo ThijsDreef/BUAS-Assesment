@@ -1,6 +1,9 @@
+currentLut=0
 fpsLimit=60
-fullScreen=0
-height=540
+fullScreen=1
+height=1080
+highScore=2946
+lutNumber=5
 title=Pinguin on a Mission
 vsync=true
-width=960
+width=1920

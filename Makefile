@@ -25,9 +25,9 @@ LDFLAGS=$(subst co,-Ico, $(INCLUDE))
 
 
 $(EXE) : $(objects)
-	$(CC) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -g -o $(EXE)$(TARGET) $(objects) $(LDFLAGS) -Llibs/ -lglew32 -lgdi32 -lopengl32  -m64
+	$(CC) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -o $(EXE)$(TARGET) $(objects) $(LDFLAGS) -Llibs/ -lglew32 -lgdi32 -lopengl32  -m64
 $(BUILD)%.o : $(SOURCE)%.cpp
-	$(CC)$(LDFLAGS) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -g -c $< -o $@ -m64 
+	$(CC)$(LDFLAGS) $(OPTIMALIZATIONLEVEL) -std=c++11 -Wall -c $< -o $@ -m64 
 
 $(BUILD):
 
